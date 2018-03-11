@@ -39,8 +39,45 @@ PHP_METHOD(CodeBlock, __construct)
 	n->node = cmark_node_new_with_mem(CMARK_NODE_CODE_BLOCK, &php_cmark_node_mem);
 }
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_code_block_set_fence, 0, 0, 1)
+	ZEND_ARG_INFO(0, info)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(CodeBlock, setFence)
+{
+	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
+	zend_string *info;
+
+	if (php_cmark_parse_parameters("S", &info) != SUCCESS) {
+		php_cmark_wrong_parameters("info expected");
+		return;
+	}
+
+	cmark_node_set_fence_info(n->node, ZSTR_VAL(info));
+
+	php_cmark_chain();
+}
+
+PHP_METHOD(CodeBlock, getFence)
+{
+	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
+	const char *c;
+
+	php_cmark_no_parameters();
+
+	c = cmark_node_get_fence_info(n->node);
+
+	if (!c || !c[0]) {
+		return;
+	}
+
+	RETURN_STRING(c);
+}
+
 static zend_function_entry php_cmark_node_code_block_methods[] = {
 	PHP_ME(CodeBlock, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(CodeBlock, setFence, php_cmark_node_code_block_set_fence, ZEND_ACC_PUBLIC)
+	PHP_ME(CodeBlock, getFence, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 

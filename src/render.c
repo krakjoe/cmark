@@ -38,13 +38,8 @@ PHP_FUNCTION(Render_XML)
 
 	n = php_cmark_node_fetch(z);
 
-	c = cmark_render_xml(n->node, options);
-
-	if (!c) {
-		return;
-	}
-	
-	ZVAL_STRING(return_value, c);
+	ZVAL_STRING(return_value, 
+		(c = cmark_render_xml(n->node, options)));
 
 	efree(c);
 }
@@ -63,14 +58,9 @@ PHP_FUNCTION(Render_HTML)
 	}
 
 	n = php_cmark_node_fetch(z);
-
-	c = cmark_render_html(n->node, options);
-
-	if (!c) {
-		return;
-	}
 	
-	ZVAL_STRING(return_value, c);
+	ZVAL_STRING(return_value, 
+		(c = cmark_render_html(n->node, options)));
 
 	efree(c);
 }
@@ -90,14 +80,9 @@ PHP_FUNCTION(Render_Man)
 	}
 
 	n = php_cmark_node_fetch(z);
-
-	c = cmark_render_man(n->node, options, width);
-
-	if (!c) {
-		return;
-	}
 	
-	ZVAL_STRING(return_value, c);
+	ZVAL_STRING(return_value, 
+		(c = cmark_render_man(n->node, options, width)));
 
 	efree(c);
 }
@@ -117,14 +102,9 @@ PHP_FUNCTION(Render_CommonMark)
 	}
 
 	n = php_cmark_node_fetch(z);
-
-	c = cmark_render_commonmark(n->node, options, width);
-
-	if (!c) {
-		return;
-	}
 	
-	ZVAL_STRING(return_value, c);
+	ZVAL_STRING(return_value, 
+		(c = cmark_render_commonmark(n->node, options, width)));
 
 	efree(c);
 }
@@ -144,14 +124,9 @@ PHP_FUNCTION(Render_Latex)
 	}
 
 	n = php_cmark_node_fetch(z);
-
-	c = cmark_render_latex(n->node, options, width);
-
-	if (!c) {
-		return;
-	}
 	
-	ZVAL_STRING(return_value, c);
+	ZVAL_STRING(return_value, 
+		(c = cmark_render_latex(n->node, options, width)));
 
 	efree(c);
 }

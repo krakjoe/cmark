@@ -48,10 +48,7 @@ PHP_METHOD(List, setTight)
 		return;
 	}
 
-	if (!cmark_node_set_list_tight(n->node, tight)) {
-		php_cmark_throw("failed to set tightness");
-		return;
-	}
+	cmark_node_set_list_tight(n->node, tight);
 
 	php_cmark_chain();
 }
@@ -72,10 +69,7 @@ PHP_METHOD(List, setDelimitPeriod)
 
 	php_cmark_no_parameters();
 
-	if (!cmark_node_set_list_delim(n->node, CMARK_PERIOD_DELIM)) {
-		php_cmark_throw("failed to set delimit type");	
-		return;
-	}
+	cmark_node_set_list_delim(n->node, CMARK_PERIOD_DELIM);
 
 	php_cmark_chain();
 }
@@ -87,10 +81,7 @@ PHP_METHOD(List, setDelimitParen)
 
 	php_cmark_no_parameters();
 
-	if (!cmark_node_set_list_delim(n->node, CMARK_PAREN_DELIM)) {
-		php_cmark_throw("failed to set delimit type");	
-		return;
-	}
+	cmark_node_set_list_delim(n->node, CMARK_PAREN_DELIM);
 
 	php_cmark_chain();
 }
@@ -132,26 +123,16 @@ PHP_METHOD(OrderedList, __construct)
 	n->node = cmark_node_new_with_mem(
 		CMARK_NODE_LIST, &php_cmark_node_mem);
 
-	if (!cmark_node_set_list_type(n->node, CMARK_ORDERED_LIST)) {
-		php_cmark_throw("failed to initialize ordered list");
-	}
+	cmark_node_set_list_type(n->node, CMARK_ORDERED_LIST);
 }
 
 PHP_METHOD(OrderedList, getStart)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	int c;
 
 	php_cmark_no_parameters();
 
-	c = cmark_node_get_list_start(n->node);
-
-	if (!c) {
-		php_cmark_throw("failed to get list start");
-		return;
-	}
-
-	RETURN_LONG(c);
+	RETURN_LONG(cmark_node_get_list_start(n->node));
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_list_ordered_set_start, 0, 0, 1)
@@ -169,15 +150,11 @@ PHP_METHOD(OrderedList, setStart)
 	}
 
 	if (start < 1) {
-		php_cmark_throw(
-			"start must be a positive integer");
+		php_cmark_wrong_parameters("start must be a positive integer");
 		return;
 	}
 
-	if (!cmark_node_set_list_start(n->node, start)) {
-		php_cmark_throw("failed to set start to %d", start);
-		return;
-	}
+	cmark_node_set_list_start(n->node, start);
 
 	php_cmark_chain();
 }
@@ -198,9 +175,7 @@ PHP_METHOD(BulletList, __construct)
 	n->node = cmark_node_new_with_mem(
 		CMARK_NODE_LIST, &php_cmark_node_mem);
 
-	if (!cmark_node_set_list_type(n->node, CMARK_BULLET_LIST)) {
-		php_cmark_throw("failed to initialize bullet list");
-	}
+	cmark_node_set_list_type(n->node, CMARK_BULLET_LIST);
 }
 
 static zend_function_entry php_cmark_node_list_bullet_methods[] = {

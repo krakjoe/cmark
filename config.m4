@@ -4,6 +4,8 @@ dnl config.m4 for extension cmark
 PHP_ARG_WITH(cmark, whether to enable cmark support,
 dnl Make sure that the comment is aligned:
 [  --with-cmark          Enable cmark support], no)
+PHP_ARG_WITH(cmark-coverage,      whether to enable cmark coverage support,
+[  --with-cmark-coverage          Enable cmark coverage support], no, no)
 
 if test "$PHP_CMARK" != "no"; then
   SEARCH_PATH="/usr/local /usr"
@@ -49,4 +51,13 @@ if test "$PHP_CMARK" != "no"; then
   AC_DEFINE(HAVE_CMARK, 1, [ Have cmark support ])
 
   PHP_NEW_EXTENSION(cmark, cmark.c src/node.c src/document.c src/quote.c src/list.c src/item.c src/block.c src/paragraph.c src/heading.c src/break.c src/text.c src/code.c src/inline.c src/media.c src/render.c src/parse.c, $ext_shared)
+
+  AC_MSG_CHECKING([cmark coverage])
+  if test "$PHP_CMARK_COVERAGE" != "no"; then
+    AC_MSG_RESULT([enabled])
+
+    PHP_ADD_MAKEFILE_FRAGMENT
+  else
+    AC_MSG_RESULT([disabled])
+  fi
 fi

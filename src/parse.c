@@ -100,10 +100,6 @@ PHP_METHOD(Parser, finish)
 
 	c = cmark_parser_finish(p->parser);
 
-	if (!c) {
-		return;
-	}
-
 	object_init_ex(return_value, php_cmark_node_class(c));
 
 	n = php_cmark_node_fetch(return_value);

@@ -35,18 +35,14 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Text, setLiteral)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_string *l;
+	zend_string *literal;
 
-	if (php_cmark_parse_parameters("S", &l) != SUCCESS) {
-		php_cmark_wrong_parameters("expected content");
+	if (php_cmark_parse_parameters("S", &literal) != SUCCESS) {
+		php_cmark_wrong_parameters("expected literal");
 		return;
 	}
 
-	if (!cmark_node_set_literal(n->node, ZSTR_VAL(l))) {
-		php_cmark_throw(
-			"failed to set literal content");
-		return;
-	}
+	cmark_node_set_literal(n->node, ZSTR_VAL(literal));
 
 	php_cmark_chain();
 }

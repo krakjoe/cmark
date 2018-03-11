@@ -34,8 +34,42 @@ PHP_METHOD(Heading, __construct)
 	n->node = cmark_node_new_with_mem(CMARK_NODE_HEADING, &php_cmark_node_mem);
 }
 
+PHP_METHOD(Heading, getHeadingLevel)
+{
+	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
+
+	php_cmark_no_parameters();
+
+	RETURN_LONG(cmark_node_get_heading_level(n->node));
+}
+
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_heading_set_heading_level, 0, 0, 1)
+	ZEND_ARG_INFO(0, level)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Heading, setHeadingLevel)
+{
+	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
+	zend_long level;
+
+	if (php_cmark_parse_parameters("l", &level) != SUCCESS) {
+		php_cmark_wrong_parameters("level expected");
+		return;
+	}
+
+	if (!cmark_node_set_heading_level(n->node, level)) {
+		php_cmark_throw(
+			"failed to set heading level to %d", level);
+		return;
+	}
+
+	php_cmark_chain();
+}
+
 static zend_function_entry php_cmark_node_heading_methods[] = {
 	PHP_ME(Heading, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Heading, getHeadingLevel, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Heading, setHeadingLevel, php_cmark_node_heading_set_heading_level, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 

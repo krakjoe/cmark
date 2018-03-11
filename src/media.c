@@ -41,10 +41,9 @@ PHP_METHOD(Media, setURL)
 		return;
 	}
 
-	if (!cmark_node_set_url(n->node, ZSTR_VAL(url))) {
-		php_cmark_throw("failed to set URL");
-		return;
-	}
+	cmark_node_set_url(n->node, ZSTR_VAL(url));
+
+	php_cmark_chain();
 }
 
 PHP_METHOD(Media, getURL)
@@ -56,7 +55,7 @@ PHP_METHOD(Media, getURL)
 
 	c = cmark_node_get_url(n->node);
 
-	if (!c) {
+	if (!c || !c[0]) {
 		return;
 	}
 
@@ -77,10 +76,9 @@ PHP_METHOD(Media, setTitle)
 		return;
 	}
 
-	if (!cmark_node_set_title(n->node, ZSTR_VAL(url))) {
-		php_cmark_throw("failed to set URL");
-		return;
-	}
+	cmark_node_set_title(n->node, ZSTR_VAL(url));
+
+	php_cmark_chain();
 }
 
 PHP_METHOD(Media, getTitle)
@@ -92,7 +90,7 @@ PHP_METHOD(Media, getTitle)
 
 	c = cmark_node_get_title(n->node);
 
-	if (!c) {
+	if (!c || !c[0]) {
 		return;
 	}
 
@@ -147,11 +145,11 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Media)
 
 	php_cmark_node_media_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
 
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "Link", php_cmark_node_link_methods);
+	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node\\Media", "Link", php_cmark_node_link_methods);
 
 	php_cmark_node_link_ce = zend_register_internal_class_ex(&ce, php_cmark_node_media_ce);
 
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "Image", php_cmark_node_image_methods);
+	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node\\Media", "Image", php_cmark_node_image_methods);
 
 	php_cmark_node_image_ce = zend_register_internal_class_ex(&ce, php_cmark_node_media_ce);
 

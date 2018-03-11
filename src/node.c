@@ -98,7 +98,7 @@ void php_cmark_node_free(zend_object *zo) {
 	php_cmark_node_t *n = php_cmark_node_from(zo);
 
 	if (n->node) {
-		if (!cmark_node_parent(n->node)) {
+		if (!n->shadow && !cmark_node_parent(n->node)) {
 			cmark_node_free(n->node);
 		}
 	}
@@ -120,10 +120,11 @@ PHP_METHOD(Node, getNext)
 		return;
 	}
 
-	object_init_ex(return_value, php_cmark_node_ce);
-
 	object_init_ex(return_value, php_cmark_node_class(c));
+
+	r = php_cmark_node_fetch(return_value);
 	r->node = c;
+	r->shadow = 1;
 }
 
 PHP_METHOD(Node, getPrevious)
@@ -144,6 +145,7 @@ PHP_METHOD(Node, getPrevious)
 
 	r = php_cmark_node_fetch(return_value);
 	r->node = c;
+	r->shadow = 1;
 }
 
 PHP_METHOD(Node, getParent)
@@ -164,6 +166,7 @@ PHP_METHOD(Node, getParent)
 
 	r = php_cmark_node_fetch(return_value);
 	r->node = c;
+	r->shadow = 1;
 }
 
 PHP_METHOD(Node, getFirstChild)
@@ -184,6 +187,7 @@ PHP_METHOD(Node, getFirstChild)
 
 	r = php_cmark_node_fetch(return_value);
 	r->node = c;
+	r->shadow = 1;
 }
 
 PHP_METHOD(Node, getLastChild)
@@ -204,78 +208,10 @@ PHP_METHOD(Node, getLastChild)
 
 	r = php_cmark_node_fetch(return_value);
 	r->node = c;
+	r->shadow = 1;
 }
 
-PHP_METHOD(Node, getHeadingLevel)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	RETURN_LONG(cmark_node_get_heading_level(n->node));
-}
-
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_set_heading_level, 0, 0, 1)
-	ZEND_ARG_INFO(0, level)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(Node, setHeadingLevel)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_long level;
-
-	if (php_cmark_parse_parameters("l", &level) != SUCCESS) {
-		return;
-	}
-
-	if (!cmark_node_set_heading_level(n->node, level)) {
-		php_cmark_throw(
-			"failed to set heading level to %d", level);
-		return;
-	}
-
-	php_cmark_chain();
-}
-
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_set_fence, 0, 0, 1)
-	ZEND_ARG_INFO(0, info)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(Node, setFence)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_string *info;
-
-	if (php_cmark_parse_parameters("S", &info) != SUCCESS) {
-		php_cmark_wrong_parameters("info expected");
-		return;
-	}
-
-	if (!cmark_node_set_fence_info(n->node, ZSTR_VAL(info))) {
-		php_cmark_throw("failed to set fence");
-		return;
-	}
-
-	php_cmark_chain();
-}
-
-PHP_METHOD(Node, getFence)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	const char *c;
-
-	php_cmark_no_parameters();
-
-	c = cmark_node_get_fence_info(n->node);
-
-	if (!c) {
-		return;
-	}
-
-	RETURN_STRING(c);
-}
-
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_add, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_add, 0, 0, 1)
 	ZEND_ARG_INFO(0, child)
 ZEND_END_ARG_INFO()
 
@@ -321,7 +257,7 @@ PHP_METHOD(Node, prependChild)
 	php_cmark_chain();
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_insert, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_insert, 0, 0, 1)
 	ZEND_ARG_INFO(0, sibling)
 ZEND_END_ARG_INFO()
 
@@ -373,10 +309,6 @@ static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, getParent, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, getFirstChild, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, getLastChild, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, setHeadingLevel, php_cmark_node_set_heading_level, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getHeadingLevel, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, setFence, php_cmark_set_string_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getFence, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, appendChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, prependChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, insertBefore, php_cmark_node_insert, ZEND_ACC_PUBLIC)
