@@ -154,7 +154,7 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Media)
 
 PHP_RINIT_FUNCTION(CommonMark_Node_Media)
 {
-	php_cmark_node_media_ce->ce_flags |= ZEND_ACC_FINAL;
+	php_cmark_node_media_ce->ce_flags |= ZEND_ACC_FINAL|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 	php_cmark_node_link_ce->ce_flags |= ZEND_ACC_FINAL;
 	php_cmark_node_image_ce->ce_flags |= ZEND_ACC_FINAL;
 
