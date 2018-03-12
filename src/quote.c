@@ -27,11 +27,9 @@ zend_class_entry *php_cmark_node_quote_ce;
 
 PHP_METHOD(BlockQuote, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_BLOCK_QUOTE, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_BLOCK_QUOTE);
 }
 
 static zend_function_entry php_cmark_node_quote_methods[] = {

@@ -32,11 +32,9 @@ zend_class_entry *php_cmark_node_last_block_ce;
 
 PHP_METHOD(CodeBlock, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_CODE_BLOCK, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_CODE_BLOCK);
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_code_block_set_fence, 0, 0, 1)
@@ -83,11 +81,9 @@ static zend_function_entry php_cmark_node_code_block_methods[] = {
 
 PHP_METHOD(HTMLBlock, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
-
-	n->node = cmark_node_new_with_mem(CMARK_NODE_HTML_BLOCK, &php_cmark_node_mem);
+	
+	php_cmark_node_new(getThis(), CMARK_NODE_HTML_BLOCK);
 }
 
 static zend_function_entry php_cmark_node_html_block_methods[] = {
@@ -97,11 +93,9 @@ static zend_function_entry php_cmark_node_html_block_methods[] = {
 
 PHP_METHOD(CustomBlock, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_CUSTOM_BLOCK, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_CUSTOM_BLOCK);
 }
 
 static zend_function_entry php_cmark_node_custom_block_methods[] = {
@@ -111,11 +105,9 @@ static zend_function_entry php_cmark_node_custom_block_methods[] = {
 
 PHP_METHOD(FirstBlock, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_FIRST_BLOCK, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_FIRST_BLOCK);
 }
 
 static zend_function_entry php_cmark_node_first_block_methods[] = {
@@ -125,11 +117,9 @@ static zend_function_entry php_cmark_node_first_block_methods[] = {
 
 PHP_METHOD(LastBlock, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_LAST_BLOCK, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_LAST_BLOCK);
 }
 
 static zend_function_entry php_cmark_node_last_block_methods[] = {

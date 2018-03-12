@@ -43,14 +43,65 @@ zend_class_entry*      php_cmark_node_ce;
 zend_object_handlers   php_cmark_node_handlers;
 cmark_mem              php_cmark_node_mem;
 
+typedef int (*php_cmark_node_edit_f) (cmark_node*, cmark_node*);
+
+static inline zend_bool php_cmark_node_edit(php_cmark_node_edit_f handler, php_cmark_node_t *object, php_cmark_node_t *arg) {
+	php_cmark_node_t *n = 
+		(php_cmark_node_t*) cmark_node_get_user_data(arg->node);
+
+	if (!n) {
+		return 0;
+	}
+
+	if (!handler(object->node, arg->node)) {
+		return 0;
+	}
+
+	GC_ADDREF(&n->std);
+
+	return 1;
+}
+
+void php_cmark_node_new(zval *object, cmark_node_type type) {
+	php_cmark_node_t *n = php_cmark_node_fetch(object);
+
+	n->node = cmark_node_new_with_mem(type, &php_cmark_node_mem);
+
+	if (!n->node) {
+		return;
+	}
+
+	cmark_node_set_user_data(n->node, n);
+}
+
+void php_cmark_node_list_new(zval *object, cmark_list_type type) {
+	php_cmark_node_t *n = php_cmark_node_fetch(object);
+
+	n->node = cmark_node_new_with_mem(
+		CMARK_NODE_LIST, &php_cmark_node_mem);
+
+	if (!n->node) {
+		return;
+	}
+
+	cmark_node_set_list_type(n->node, type);
+	cmark_node_set_user_data(n->node, n);
+}
+
 zend_class_entry* php_cmark_node_class(cmark_node* node) {
 	switch (cmark_node_get_type(node)) {
 		case CMARK_NODE_DOCUMENT:
 			return php_cmark_node_document_ce;
 		case CMARK_NODE_BLOCK_QUOTE:
 			return php_cmark_node_quote_ce;
-		case CMARK_NODE_LIST:
-			return php_cmark_node_list_ce;
+		case CMARK_NODE_LIST: switch (cmark_node_get_list_type(node)) {
+			case CMARK_ORDERED_LIST:
+				return php_cmark_node_list_ordered_ce;
+			case CMARK_BULLET_LIST:
+				return php_cmark_node_list_bullet_ce;
+			default:
+				return php_cmark_node_list_ce;
+		}
 		case CMARK_NODE_ITEM:
 			return php_cmark_node_item_ce;
 		case CMARK_NODE_CODE_BLOCK:
@@ -89,8 +140,7 @@ zend_object* php_cmark_node_create(zend_class_entry *ce) {
 
 	zend_object_std_init(&n->std, ce);
 
-	n->std.handlers = &php_cmark_node_handlers;	
-	n->shadow = 0;
+	n->std.handlers = &php_cmark_node_handlers;
 
 	return &n->std;
 }
@@ -102,20 +152,46 @@ void php_cmark_node_shadow(zval *return_value, cmark_node *node) {
 		return;
 	}
 
-	object_init_ex(return_value, php_cmark_node_class(node));
+	if (!(n = cmark_node_get_user_data(node))) {
+		object_init_ex(return_value, php_cmark_node_class(node));
 
-	n = php_cmark_node_fetch(return_value);
-	n->node = node;
-	n->shadow = 1;
+		n = php_cmark_node_fetch(return_value);
+		n->node = node;
+
+		cmark_node_set_user_data(n->node, n);
+		GC_ADDREF(&n->std);
+		return;
+	}
+
+	ZVAL_OBJ(return_value, &n->std);
+	Z_ADDREF_P(return_value);
+}
+
+static inline void php_cmark_nodes_free(const php_cmark_node_t *n) {
+	cmark_node *last = cmark_node_last_child(n->node);
+
+	while (last) {
+		php_cmark_node_t *u = 
+			(php_cmark_node_t*) cmark_node_get_user_data(last);
+
+		if (u) {
+			last = cmark_node_previous(last);
+			cmark_node_unlink(u->node);
+			OBJ_RELEASE(&u->std);
+			continue;
+		}
+
+		break;
+	}
+
+	cmark_node_free(n->node);
 }
 
 void php_cmark_node_free(zend_object *zo) {
 	php_cmark_node_t *n = php_cmark_node_from(zo);
 
 	if (n->node) {
-		if (!n->shadow && cmark_node_parent(n->node) == NULL) {
-			cmark_node_free(n->node);
-		}
+		php_cmark_nodes_free(n);
 	}
 
 	zend_object_std_dtor(&n->std);
@@ -180,11 +256,11 @@ PHP_METHOD(Node, appendChild)
 		return;
 	}
 
-	if (!cmark_node_append_child(n->node, php_cmark_node_fetch(child)->node)) {
+	if (!php_cmark_node_edit(cmark_node_append_child, n, php_cmark_node_fetch(child))) {
 		php_cmark_throw(
-			"%s may not have %s children",
-			ZSTR_VAL(n->std.ce->name),
-			ZSTR_VAL(Z_OBJCE_P(child)->name));
+			"failed to set %s as child of %s",
+			ZSTR_VAL(Z_OBJCE_P(child)->name),
+			ZSTR_VAL(n->std.ce->name));
 		return;
 	}
 
@@ -201,11 +277,11 @@ PHP_METHOD(Node, prependChild)
 		return;
 	}
 
-	if (!cmark_node_prepend_child(n->node, php_cmark_node_fetch(child)->node)) {
+	if (!php_cmark_node_edit(cmark_node_prepend_child, n, php_cmark_node_fetch(child))) {
 		php_cmark_throw(
-			"%s may not have %s children",
-			ZSTR_VAL(n->std.ce->name),
-			ZSTR_VAL(Z_OBJCE_P(child)->name));
+			"failed to set %s as child of %s",
+			ZSTR_VAL(Z_OBJCE_P(child)->name),
+			ZSTR_VAL(n->std.ce->name));
 		return;
 	}
 
@@ -226,11 +302,11 @@ PHP_METHOD(Node, insertBefore)
 		return;
 	}
 
-	if (!cmark_node_insert_before(n->node, php_cmark_node_fetch(sibling)->node)) {
+	if (!php_cmark_node_edit(cmark_node_insert_before, n, php_cmark_node_fetch(sibling))) {
 		php_cmark_throw(
-			"%s may not have %s siblings",
-			ZSTR_VAL(n->std.ce->name),
-			ZSTR_VAL(Z_OBJCE_P(sibling)->name));
+			"failed to set %s as sibling of %s",
+			ZSTR_VAL(Z_OBJCE_P(sibling)->name),
+			ZSTR_VAL(n->std.ce->name));
 		return;
 	}
 
@@ -247,11 +323,11 @@ PHP_METHOD(Node, insertAfter)
 		return;
 	}
 
-	if (!cmark_node_insert_after(n->node, php_cmark_node_fetch(sibling)->node)) {
+	if (!php_cmark_node_edit(cmark_node_insert_after, n, php_cmark_node_fetch(sibling))) {
 		php_cmark_throw(
-			"%s may not have %s siblings",
-			ZSTR_VAL(n->std.ce->name),
-			ZSTR_VAL(Z_OBJCE_P(sibling)->name));
+			"failed to set %s as sibling of %s",
+			ZSTR_VAL(Z_OBJCE_P(sibling)->name),
+			ZSTR_VAL(n->std.ce->name));
 		return;
 	}
 	

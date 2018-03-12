@@ -110,11 +110,9 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(Link, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_LINK, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_LINK);
 }
 
 static zend_function_entry php_cmark_node_link_methods[] = {
@@ -124,11 +122,9 @@ static zend_function_entry php_cmark_node_link_methods[] = {
 
 PHP_METHOD(Image, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_LINK, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_IMAGE);
 }
 
 static zend_function_entry php_cmark_node_image_methods[] = {

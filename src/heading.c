@@ -27,11 +27,9 @@ zend_class_entry *php_cmark_node_heading_ce;
 
 PHP_METHOD(Heading, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_HEADING, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_HEADING);
 }
 
 PHP_METHOD(Heading, getHeadingLevel)

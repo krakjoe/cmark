@@ -25,7 +25,6 @@ extern cmark_mem         php_cmark_node_mem;
 
 typedef struct _php_cmark_node_t {
 	cmark_node* node;
-	zend_bool   shadow;
 	zend_object std;
 } php_cmark_node_t;
 
@@ -37,5 +36,7 @@ typedef struct _php_cmark_node_t {
 extern PHP_MINIT_FUNCTION(CommonMark_Node);
 extern PHP_RINIT_FUNCTION(CommonMark_Node);
 
+extern void php_cmark_node_new(zval *object, cmark_node_type type);
+extern void php_cmark_node_list_new(zval *object, cmark_list_type type);
 extern zend_class_entry* php_cmark_node_class(cmark_node* node);
 #endif

@@ -31,11 +31,9 @@ zend_class_entry *php_cmark_node_last_inline_ce;
 
 PHP_METHOD(HTMLInline, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_HTML_INLINE, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_HTML_INLINE);
 }
 
 static zend_function_entry php_cmark_node_html_inline_methods[] = {
@@ -45,11 +43,9 @@ static zend_function_entry php_cmark_node_html_inline_methods[] = {
 
 PHP_METHOD(CustomInline, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_CUSTOM_INLINE, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_CUSTOM_INLINE);
 }
 
 static zend_function_entry php_cmark_node_custom_inline_methods[] = {
@@ -59,11 +55,9 @@ static zend_function_entry php_cmark_node_custom_inline_methods[] = {
 
 PHP_METHOD(FirstInline, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_FIRST_INLINE, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_FIRST_INLINE);
 }
 
 static zend_function_entry php_cmark_node_first_inline_methods[] = {
@@ -73,11 +67,9 @@ static zend_function_entry php_cmark_node_first_inline_methods[] = {
 
 PHP_METHOD(LastInline, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(CMARK_NODE_LAST_INLINE, &php_cmark_node_mem);
+	php_cmark_node_new(getThis(), CMARK_NODE_LAST_INLINE);
 }
 
 static zend_function_entry php_cmark_node_last_inline_methods[] = {

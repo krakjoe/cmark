@@ -116,14 +116,9 @@ static zend_function_entry php_cmark_node_list_methods[] = {
 
 PHP_METHOD(OrderedList, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(
-		CMARK_NODE_LIST, &php_cmark_node_mem);
-
-	cmark_node_set_list_type(n->node, CMARK_ORDERED_LIST);
+	php_cmark_node_list_new(getThis(), CMARK_ORDERED_LIST);
 }
 
 PHP_METHOD(OrderedList, getStart)
@@ -168,14 +163,9 @@ static zend_function_entry php_cmark_node_list_ordered_methods[] = {
 
 PHP_METHOD(BulletList, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
 	php_cmark_no_parameters();
 
-	n->node = cmark_node_new_with_mem(
-		CMARK_NODE_LIST, &php_cmark_node_mem);
-
-	cmark_node_set_list_type(n->node, CMARK_BULLET_LIST);
+	php_cmark_node_list_new(getThis(), CMARK_BULLET_LIST);
 }
 
 static zend_function_entry php_cmark_node_list_bullet_methods[] = {
