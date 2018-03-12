@@ -274,7 +274,6 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(Node, appendChild)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 	zval *child;
 
 	if (php_cmark_parse_parameters("O", &child, php_cmark_node_ce) != SUCCESS) {
@@ -282,13 +281,16 @@ PHP_METHOD(Node, appendChild)
 		return;
 	}
 
-	switch (php_cmark_node_edit(cmark_node_append_child, n, php_cmark_node_fetch(child))) {
+	switch (php_cmark_node_edit(
+			cmark_node_append_child,
+				php_cmark_node_fetch(getThis()), 
+				php_cmark_node_fetch(child))) {
 		case PHP_CMARK_NODE_EDIT_MISSING:
 		case PHP_CMARK_NODE_EDIT_HANDLER:
 			php_cmark_throw(
 				"failed to set %s as child of %s",
 				ZSTR_VAL(Z_OBJCE_P(child)->name),
-				ZSTR_VAL(n->std.ce->name));
+				ZSTR_VAL(Z_OBJCE_P(getThis())->name));
 			return;
 
 		case PHP_CMARK_NODE_EDIT_USED:
@@ -303,7 +305,6 @@ PHP_METHOD(Node, appendChild)
 
 PHP_METHOD(Node, prependChild)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 	zval *child;
 
 	if (php_cmark_parse_parameters("O", &child, php_cmark_node_ce) != SUCCESS) {
@@ -311,13 +312,16 @@ PHP_METHOD(Node, prependChild)
 		return;
 	}
 
-	switch (php_cmark_node_edit(cmark_node_prepend_child, n, php_cmark_node_fetch(child))) {
+	switch (php_cmark_node_edit(
+			cmark_node_prepend_child, 
+				php_cmark_node_fetch(getThis()), 
+				php_cmark_node_fetch(child))) {
 		case PHP_CMARK_NODE_EDIT_MISSING:
 		case PHP_CMARK_NODE_EDIT_HANDLER:
 			php_cmark_throw(
 				"failed to set %s as child of %s",
 				ZSTR_VAL(Z_OBJCE_P(child)->name),
-				ZSTR_VAL(n->std.ce->name));
+				ZSTR_VAL(Z_OBJCE_P(getThis())->name));
 			return;
 
 		case PHP_CMARK_NODE_EDIT_USED:
@@ -336,7 +340,6 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(Node, insertBefore)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 	zval *sibling;
 
 	if (php_cmark_parse_parameters("O", &sibling, php_cmark_node_ce) != SUCCESS) {
@@ -344,13 +347,16 @@ PHP_METHOD(Node, insertBefore)
 		return;
 	}
 
-	switch (php_cmark_node_edit(cmark_node_insert_before, n, php_cmark_node_fetch(sibling))) {
+	switch (php_cmark_node_edit(
+			cmark_node_insert_before, 
+				php_cmark_node_fetch(getThis()), 
+				php_cmark_node_fetch(sibling))) {
 		case PHP_CMARK_NODE_EDIT_MISSING:
 		case PHP_CMARK_NODE_EDIT_HANDLER:
 			php_cmark_throw(
 				"failed to set %s as sibling of %s",
 				ZSTR_VAL(Z_OBJCE_P(sibling)->name),
-				ZSTR_VAL(n->std.ce->name));
+				ZSTR_VAL(Z_OBJCE_P(getThis())->name));
 			return;
 
 		case PHP_CMARK_NODE_EDIT_USED:
@@ -365,7 +371,6 @@ PHP_METHOD(Node, insertBefore)
 
 PHP_METHOD(Node, insertAfter)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 	zval *sibling;
 
 	if (php_cmark_parse_parameters("O", &sibling, php_cmark_node_ce) != SUCCESS) {
@@ -373,13 +378,16 @@ PHP_METHOD(Node, insertAfter)
 		return;
 	}
 
-	switch (php_cmark_node_edit(cmark_node_insert_after, n, php_cmark_node_fetch(sibling))) {
+	switch (php_cmark_node_edit(
+			cmark_node_insert_after, 
+				php_cmark_node_fetch(getThis()), 
+				php_cmark_node_fetch(sibling))) {
 		case PHP_CMARK_NODE_EDIT_MISSING:
 		case PHP_CMARK_NODE_EDIT_HANDLER:
 			php_cmark_throw(
 				"failed to set %s as sibling of %s",
 				ZSTR_VAL(Z_OBJCE_P(sibling)->name),
-				ZSTR_VAL(n->std.ce->name));
+				ZSTR_VAL(Z_OBJCE_P(getThis())->name));
 			return;
 
 		case PHP_CMARK_NODE_EDIT_USED:
