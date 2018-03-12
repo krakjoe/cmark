@@ -30,7 +30,7 @@ matrix:
       env: OPCACHE=0 TEST_PHP_ARGS="$DEF $MEMCHECK"
 
 before_install:
-  - test $CONF != "enable-cmark-coverage" || pip install --user cpp-coveralls
+  - test $CONF != "with-cmark-coverage" || pip install --user cpp-coveralls
 
 before_script:
   - echo "variables_order=EGPCS"                 >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php.ini
@@ -57,4 +57,4 @@ script:
   - php run-tests.php -P
 
 after_success:
-  - test $CONF != "enable-cmark-coverage" || coveralls -b $TRAVIS_BUILD_DIR -E Zend --gcov-options '\-lp'
+  - test $CONF != "with-cmark-coverage" || coveralls -b $TRAVIS_BUILD_DIR -E Zend --gcov-options '\-lp'
