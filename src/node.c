@@ -88,6 +88,15 @@ void php_cmark_node_list_new(zval *object, cmark_list_type type) {
 	cmark_node_set_user_data(n->node, n);
 }
 
+void php_cmark_node_text_new(zval *object, cmark_node_type type, zend_string *literal) {
+	php_cmark_node_new(object, type);
+
+	if (literal) {
+		cmark_node_set_literal(
+			php_cmark_node_fetch(object)->node, ZSTR_VAL(literal));
+	}
+}
+
 zend_class_entry* php_cmark_node_class(cmark_node* node) {
 	switch (cmark_node_get_type(node)) {
 		case CMARK_NODE_DOCUMENT:

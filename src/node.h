@@ -38,5 +38,6 @@ extern PHP_RINIT_FUNCTION(CommonMark_Node);
 
 extern void php_cmark_node_new(zval *object, cmark_node_type type);
 extern void php_cmark_node_list_new(zval *object, cmark_list_type type);
+extern void php_cmark_node_text_new(zval *object, cmark_node_type type, zend_string *literal);
 extern zend_class_entry* php_cmark_node_class(cmark_node* node);
 #endif
