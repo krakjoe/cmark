@@ -14,7 +14,7 @@ php:
 env:
   global:
     - REPORT_EXIT_STATUS=1
-    - CONF="disable-cmark-coverage"
+    - CONF="without-cmark-coverage"
     - RULE="all"
     - DEF="-q --show-diff"
     - MEMCHECK="-m --show-mem"
@@ -22,7 +22,7 @@ env:
     - OPCACHE=0 TEST_PHP_ARGS="$DEF"
     - OPCACHE=1 TEST_PHP_ARGS="$DEF"
     - OPCACHE=0 TEST_PHP_ARGS="$DEF $MEMCHECK"
-    - OPCACHE=0 TEST_PHP_ARGS="$DEF" CONF="enable-cmark-coverage" RULE="cmark-test-coverage-travis"
+    - OPCACHE=0 TEST_PHP_ARGS="$DEF" CONF="with-cmark-coverage" RULE="cmark-test-coverage-travis"
 
 matrix:
   allow_failures:
