@@ -28,6 +28,7 @@ zend_object_handlers php_cmark_parser_handlers;
 
 typedef struct _php_cmark_parser_t {
 	cmark_parser *parser;
+	zend_bool finished;
 	zend_object std;
 } php_cmark_parser_t;
 
@@ -40,6 +41,13 @@ static inline void php_cmark_parser_free(zend_object *zo) {
 	php_cmark_parser_t *p = php_cmark_parser_from(zo);
 
 	if (p->parser) {
+		if (!p->finished) {
+			cmark_node *n = cmark_parser_finish(p->parser);
+
+			if (n) {
+				cmark_node_free(n);
+			}
+		}
 		cmark_parser_free(p->parser);
 	}
 
@@ -97,6 +105,13 @@ PHP_METHOD(Parser, finish)
 	cmark_node *c;
 
 	php_cmark_no_parameters();
+
+	if (p->finished) {
+		php_cmark_throw("already finished");
+		return;
+	}
+
+	p->finished = 1;
 
 	c = cmark_parser_finish(p->parser);
 

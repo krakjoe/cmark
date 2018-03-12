@@ -43,7 +43,7 @@ zend_class_entry*      php_cmark_node_ce;
 zend_object_handlers   php_cmark_node_handlers;
 cmark_mem              php_cmark_node_mem;
 
-extern zend_class_entry* php_cmark_node_class(cmark_node* node) {
+zend_class_entry* php_cmark_node_class(cmark_node* node) {
 	switch (cmark_node_get_type(node)) {
 		case CMARK_NODE_DOCUMENT:
 			return php_cmark_node_document_ce;
@@ -90,15 +90,30 @@ zend_object* php_cmark_node_create(zend_class_entry *ce) {
 	zend_object_std_init(&n->std, ce);
 
 	n->std.handlers = &php_cmark_node_handlers;	
+	n->shadow = 0;
 
 	return &n->std;
+}
+
+void php_cmark_node_shadow(zval *return_value, cmark_node *node) {
+	php_cmark_node_t *n;
+
+	if (!node) {
+		return;
+	}
+
+	object_init_ex(return_value, php_cmark_node_class(node));
+
+	n = php_cmark_node_fetch(return_value);
+	n->node = node;
+	n->shadow = 1;
 }
 
 void php_cmark_node_free(zend_object *zo) {
 	php_cmark_node_t *n = php_cmark_node_from(zo);
 
 	if (n->node) {
-		if (!n->shadow && !cmark_node_parent(n->node)) {
+		if (!n->shadow && cmark_node_parent(n->node) == NULL) {
 			cmark_node_free(n->node);
 		}
 	}
@@ -109,106 +124,46 @@ void php_cmark_node_free(zend_object *zo) {
 PHP_METHOD(Node, getNext)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	php_cmark_node_t *r;
-	cmark_node *c;
 
 	php_cmark_no_parameters();
 
-	c = cmark_node_next(n->node);
-
-	if (!c) {
-		return;
-	}
-
-	object_init_ex(return_value, php_cmark_node_class(c));
-
-	r = php_cmark_node_fetch(return_value);
-	r->node = c;
-	r->shadow = 1;
+	php_cmark_node_shadow(return_value, cmark_node_next(n->node));
 }
 
 PHP_METHOD(Node, getPrevious)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	php_cmark_node_t *r;
-	cmark_node *c;
 
 	php_cmark_no_parameters();
 
-	c = cmark_node_previous(n->node);
-
-	if (!c) {
-		return;
-	}
-
-	object_init_ex(return_value, php_cmark_node_class(c));
-
-	r = php_cmark_node_fetch(return_value);
-	r->node = c;
-	r->shadow = 1;
+	php_cmark_node_shadow(return_value, cmark_node_previous(n->node));
 }
 
 PHP_METHOD(Node, getParent)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	php_cmark_node_t *r;
-	cmark_node *c;
 
 	php_cmark_no_parameters();
 
-	c = cmark_node_parent(n->node);
-
-	if (!c) {
-		return;
-	}
-
-	object_init_ex(return_value, php_cmark_node_class(c));
-
-	r = php_cmark_node_fetch(return_value);
-	r->node = c;
-	r->shadow = 1;
+	php_cmark_node_shadow(return_value, cmark_node_parent(n->node));
 }
 
 PHP_METHOD(Node, getFirstChild)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	php_cmark_node_t *r;
-	cmark_node *c;
 
 	php_cmark_no_parameters();
 
-	c = cmark_node_first_child(n->node);
-
-	if (!c) {
-		return;
-	}
-
-	object_init_ex(return_value, php_cmark_node_class(c));
-
-	r = php_cmark_node_fetch(return_value);
-	r->node = c;
-	r->shadow = 1;
+	php_cmark_node_shadow(return_value, cmark_node_first_child(n->node));
 }
 
 PHP_METHOD(Node, getLastChild)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	php_cmark_node_t *r;
-	cmark_node *c;
 
 	php_cmark_no_parameters();
 
-	c = cmark_node_last_child(n->node);
-
-	if (!c) {
-		return;
-	}
-
-	object_init_ex(return_value, php_cmark_node_class(c));
-
-	r = php_cmark_node_fetch(return_value);
-	r->node = c;
-	r->shadow = 1;
+	php_cmark_node_shadow(return_value, cmark_node_last_child(n->node));
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_add, 0, 0, 1)
