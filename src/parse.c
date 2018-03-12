@@ -28,7 +28,7 @@ zend_object_handlers php_cmark_parser_handlers;
 
 typedef struct _php_cmark_parser_t {
 	cmark_parser *parser;
-	zend_bool finished;
+	zval root;
 	zend_object std;
 } php_cmark_parser_t;
 
@@ -39,14 +39,17 @@ typedef struct _php_cmark_parser_t {
 
 static inline void php_cmark_parser_free(zend_object *zo) {
 	php_cmark_parser_t *p = php_cmark_parser_from(zo);
+	zend_bool finished = 0;
+
+	if (!Z_ISUNDEF(p->root)) {
+		zval_ptr_dtor(&p->root);
+		finished = 1;
+	}
 
 	if (p->parser) {
-		if (!p->finished) {
-			cmark_node *n = cmark_parser_finish(p->parser);
-
-			if (n) {
-				cmark_node_free(n);
-			}
+		if (!finished) {
+			cmark_node_free(
+				cmark_parser_finish(p->parser));
 		}
 		cmark_parser_free(p->parser);
 	}
@@ -60,6 +63,8 @@ zend_object* php_cmark_parser_create(zend_class_entry *ce) {
 	zend_object_std_init(&p->std, ce);
 
 	p->std.handlers = &php_cmark_parser_handlers;
+
+	ZVAL_UNDEF(&p->root);
 
 	return &p->std;
 }
@@ -102,23 +107,19 @@ PHP_METHOD(Parser, finish)
 {
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
 	php_cmark_node_t *n;
-	cmark_node *c;
 
 	php_cmark_no_parameters();
 
-	if (p->finished) {
+	if (!Z_ISUNDEF(p->root)) {
 		php_cmark_throw("already finished");
 		return;
 	}
 
-	p->finished = 1;
+	n = php_cmark_node_shadow(
+		return_value, cmark_parser_finish(p->parser));
 
-	c = cmark_parser_finish(p->parser);
-
-	object_init_ex(return_value, php_cmark_node_class(c));
-
-	n = php_cmark_node_fetch(return_value);
-	n->node = c;
+	ZVAL_COPY(&n->parser, getThis());
+	ZVAL_COPY(&p->root,   return_value);
 }
 
 static zend_function_entry php_cmark_parser_methods[] = {

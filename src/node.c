@@ -154,11 +154,11 @@ zend_object* php_cmark_node_create(zend_class_entry *ce) {
 	return &n->std;
 }
 
-void php_cmark_node_shadow(zval *return_value, cmark_node *node) {
+php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node) {
 	php_cmark_node_t *n;
 
 	if (!node) {
-		return;
+		return NULL;
 	}
 
 	if (!(n = cmark_node_get_user_data(node))) {
@@ -168,12 +168,12 @@ void php_cmark_node_shadow(zval *return_value, cmark_node *node) {
 		n->node = node;
 
 		cmark_node_set_user_data(n->node, n);
-		GC_ADDREF(&n->std);
-		return;
+		return n;
 	}
 
 	ZVAL_OBJ(return_value, &n->std);
 	Z_ADDREF_P(return_value);
+	return n;
 }
 
 static inline void php_cmark_nodes_free(const php_cmark_node_t *n) {
@@ -201,6 +201,10 @@ void php_cmark_node_free(zend_object *zo) {
 
 	if (n->node) {
 		php_cmark_nodes_free(n);
+	}
+
+	if (!Z_ISUNDEF(n->parser)) {
+		zval_ptr_dtor(&n->parser);
 	}
 
 	zend_object_std_dtor(&n->std);

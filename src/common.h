@@ -27,6 +27,10 @@
 #	define GC_ADDREF(g) ++GC_REFCOUNT(g)
 #endif
 
+#ifndef GC_DELREF
+#	define GC_DELREF(g) --GC_REFCOUNT(g)
+#endif
+
 #define php_cmark_parse_parameters(s, ...) \
 	zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS(), s, ##__VA_ARGS__)
 #define php_cmark_throw_ex(e, s, ...) \
