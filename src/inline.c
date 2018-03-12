@@ -22,6 +22,7 @@
 
 #include <src/common.h>
 #include <src/node.h>
+#include <src/text.h>
 
 zend_class_entry *php_cmark_node_html_inline_ce;
 zend_class_entry *php_cmark_node_custom_inline_ce;
@@ -83,7 +84,7 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Inline)
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "HTMLInline", php_cmark_node_html_inline_methods);
 
-	php_cmark_node_html_inline_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
+	php_cmark_node_html_inline_ce = zend_register_internal_class_ex(&ce, php_cmark_node_text_ce);
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "CustomInline", php_cmark_node_custom_inline_methods);
 

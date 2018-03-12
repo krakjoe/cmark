@@ -26,6 +26,7 @@
 #include "php_cmark.h"
 
 #include <src/node.h>
+#include <src/text.h>
 #include <src/document.h>
 #include <src/quote.h>
 #include <src/list.h>
@@ -34,7 +35,6 @@
 #include <src/paragraph.h>
 #include <src/heading.h>
 #include <src/break.h>
-#include <src/text.h>
 #include <src/code.h>
 #include <src/inline.h>
 #include <src/media.h>
@@ -46,6 +46,7 @@
 PHP_MINIT_FUNCTION(cmark)
 {
 	PHP_MINIT(CommonMark_Node)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Document)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_BlockQuote)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_List)(INIT_FUNC_ARGS_PASSTHRU);
@@ -54,7 +55,6 @@ PHP_MINIT_FUNCTION(cmark)
 	PHP_MINIT(CommonMark_Node_Paragraph)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Heading)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Break)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Code)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Inline)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Media)(INIT_FUNC_ARGS_PASSTHRU);
@@ -77,6 +77,7 @@ PHP_RINIT_FUNCTION(cmark)
 #endif
 
 	PHP_RINIT(CommonMark_Node)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_RINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Document)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_BlockQuote)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_List)(INIT_FUNC_ARGS_PASSTHRU);
@@ -85,7 +86,6 @@ PHP_RINIT_FUNCTION(cmark)
 	PHP_RINIT(CommonMark_Node_Paragraph)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Heading)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Break)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_RINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Code)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Inline)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Media)(INIT_FUNC_ARGS_PASSTHRU);
