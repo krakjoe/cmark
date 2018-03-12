@@ -26,6 +26,7 @@ extern cmark_mem         php_cmark_node_mem;
 typedef struct _php_cmark_node_t {
 	cmark_node* node;
 	zval parser;
+	zend_bool used;
 	zend_object std;
 } php_cmark_node_t;
 

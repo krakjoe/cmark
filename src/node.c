@@ -43,23 +43,36 @@ zend_class_entry*      php_cmark_node_ce;
 zend_object_handlers   php_cmark_node_handlers;
 cmark_mem              php_cmark_node_mem;
 
+typedef enum _php_cmark_node_edit_result {
+	PHP_CMARK_NODE_EDIT_MISSING,
+	PHP_CMARK_NODE_EDIT_USED,
+	PHP_CMARK_NODE_EDIT_HANDLER,
+	PHP_CMARK_NODE_EDIT_OK
+} php_cmark_node_edit_result;
+
 typedef int (*php_cmark_node_edit_f) (cmark_node*, cmark_node*);
 
-static inline zend_bool php_cmark_node_edit(php_cmark_node_edit_f handler, php_cmark_node_t *object, php_cmark_node_t *arg) {
+static inline php_cmark_node_edit_result php_cmark_node_edit(php_cmark_node_edit_f handler, php_cmark_node_t *object, php_cmark_node_t *arg) {
 	php_cmark_node_t *n = 
 		(php_cmark_node_t*) cmark_node_get_user_data(arg->node);
 
 	if (!n) {
-		return 0;
+		return PHP_CMARK_NODE_EDIT_MISSING;
+	}
+
+	if (arg->used) {
+		return PHP_CMARK_NODE_EDIT_USED;
 	}
 
 	if (!handler(object->node, arg->node)) {
-		return 0;
+		return PHP_CMARK_NODE_EDIT_HANDLER;
 	}
 
 	GC_ADDREF(&n->std);
 
-	return 1;
+	arg->used = 1;
+
+	return PHP_CMARK_NODE_EDIT_OK;
 }
 
 void php_cmark_node_new(zval *object, cmark_node_type type) {
@@ -269,12 +282,20 @@ PHP_METHOD(Node, appendChild)
 		return;
 	}
 
-	if (!php_cmark_node_edit(cmark_node_append_child, n, php_cmark_node_fetch(child))) {
-		php_cmark_throw(
-			"failed to set %s as child of %s",
-			ZSTR_VAL(Z_OBJCE_P(child)->name),
-			ZSTR_VAL(n->std.ce->name));
-		return;
+	switch (php_cmark_node_edit(cmark_node_append_child, n, php_cmark_node_fetch(child))) {
+		case PHP_CMARK_NODE_EDIT_MISSING:
+		case PHP_CMARK_NODE_EDIT_HANDLER:
+			php_cmark_throw(
+				"failed to set %s as child of %s",
+				ZSTR_VAL(Z_OBJCE_P(child)->name),
+				ZSTR_VAL(n->std.ce->name));
+			return;
+
+		case PHP_CMARK_NODE_EDIT_USED:
+			php_cmark_throw(
+				"%s is already in use",
+				ZSTR_VAL(Z_OBJCE_P(child)->name));
+			return;
 	}
 
 	php_cmark_chain();
@@ -290,12 +311,20 @@ PHP_METHOD(Node, prependChild)
 		return;
 	}
 
-	if (!php_cmark_node_edit(cmark_node_prepend_child, n, php_cmark_node_fetch(child))) {
-		php_cmark_throw(
-			"failed to set %s as child of %s",
-			ZSTR_VAL(Z_OBJCE_P(child)->name),
-			ZSTR_VAL(n->std.ce->name));
-		return;
+	switch (php_cmark_node_edit(cmark_node_prepend_child, n, php_cmark_node_fetch(child))) {
+		case PHP_CMARK_NODE_EDIT_MISSING:
+		case PHP_CMARK_NODE_EDIT_HANDLER:
+			php_cmark_throw(
+				"failed to set %s as child of %s",
+				ZSTR_VAL(Z_OBJCE_P(child)->name),
+				ZSTR_VAL(n->std.ce->name));
+			return;
+
+		case PHP_CMARK_NODE_EDIT_USED:
+			php_cmark_throw(
+				"%s is already in use",
+				ZSTR_VAL(Z_OBJCE_P(child)->name));
+			return;
 	}
 
 	php_cmark_chain();
@@ -315,12 +344,20 @@ PHP_METHOD(Node, insertBefore)
 		return;
 	}
 
-	if (!php_cmark_node_edit(cmark_node_insert_before, n, php_cmark_node_fetch(sibling))) {
-		php_cmark_throw(
-			"failed to set %s as sibling of %s",
-			ZSTR_VAL(Z_OBJCE_P(sibling)->name),
-			ZSTR_VAL(n->std.ce->name));
-		return;
+	switch (php_cmark_node_edit(cmark_node_insert_before, n, php_cmark_node_fetch(sibling))) {
+		case PHP_CMARK_NODE_EDIT_MISSING:
+		case PHP_CMARK_NODE_EDIT_HANDLER:
+			php_cmark_throw(
+				"failed to set %s as sibling of %s",
+				ZSTR_VAL(Z_OBJCE_P(sibling)->name),
+				ZSTR_VAL(n->std.ce->name));
+			return;
+
+		case PHP_CMARK_NODE_EDIT_USED:
+			php_cmark_throw(
+				"%s is already in use",
+				ZSTR_VAL(Z_OBJCE_P(sibling)->name));
+			return;
 	}
 
 	php_cmark_chain();
@@ -336,12 +373,20 @@ PHP_METHOD(Node, insertAfter)
 		return;
 	}
 
-	if (!php_cmark_node_edit(cmark_node_insert_after, n, php_cmark_node_fetch(sibling))) {
-		php_cmark_throw(
-			"failed to set %s as sibling of %s",
-			ZSTR_VAL(Z_OBJCE_P(sibling)->name),
-			ZSTR_VAL(n->std.ce->name));
-		return;
+	switch (php_cmark_node_edit(cmark_node_insert_after, n, php_cmark_node_fetch(sibling))) {
+		case PHP_CMARK_NODE_EDIT_MISSING:
+		case PHP_CMARK_NODE_EDIT_HANDLER:
+			php_cmark_throw(
+				"failed to set %s as sibling of %s",
+				ZSTR_VAL(Z_OBJCE_P(sibling)->name),
+				ZSTR_VAL(n->std.ce->name));
+			return;
+
+		case PHP_CMARK_NODE_EDIT_USED:
+			php_cmark_throw(
+				"%s is already in use",
+				ZSTR_VAL(Z_OBJCE_P(sibling)->name));
+			return;
 	}
 	
 	php_cmark_chain();
