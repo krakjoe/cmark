@@ -38,11 +38,15 @@ before_script:
   - echo "extension=cmark.so"                     > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/cmark.ini
   - echo "opcache.enable_cli=$OPCACHE"            > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
   - echo "opcache.optimization_level=0x7FFEBFFF" >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
+  - git clone --depth=1 https://github.com/commonmark/cmark $HOME/libcmark-src
+  - cd $HOME/libcmark-src && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/libcmark
+  - make
+  - make install
 
 script:
   - phpize
   - wget -q -O run-tests.php https://raw.githubusercontent.com/php/php-src/master/run-tests.php
-  - ./configure --$CONF
+  - ./configure --$CONF --with-cmark=$HOME/libcmark
   - make $RULE
   - make install
   - php run-tests.php -P
