@@ -78,11 +78,8 @@ static inline php_cmark_node_edit_result php_cmark_node_edit(php_cmark_node_edit
 void php_cmark_node_new(zval *object, cmark_node_type type) {
 	php_cmark_node_t *n = php_cmark_node_fetch(object);
 
-	n->node = cmark_node_new_with_mem(type, &php_cmark_node_mem);
-
-	if (!n->node) {
-		return;
-	}
+	n->node = cmark_node_new_with_mem(
+		type, &php_cmark_node_mem);
 
 	cmark_node_set_user_data(n->node, n);
 }
@@ -92,10 +89,6 @@ void php_cmark_node_list_new(zval *object, cmark_list_type type) {
 
 	n->node = cmark_node_new_with_mem(
 		CMARK_NODE_LIST, &php_cmark_node_mem);
-
-	if (!n->node) {
-		return;
-	}
 
 	cmark_node_set_list_type(n->node, type);
 	cmark_node_set_user_data(n->node, n);
@@ -400,6 +393,44 @@ PHP_METHOD(Node, insertAfter)
 	php_cmark_chain();
 }
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_replace, 0, 0, 1)
+	ZEND_ARG_INFO(0, target)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Node, replace)
+{
+	zval *target;
+
+	if (php_cmark_parse_parameters("O", &target, php_cmark_node_ce) != SUCCESS) {
+		php_cmark_wrong_parameters("node expected");
+		return;
+	}
+
+	switch (php_cmark_node_edit(
+			cmark_node_replace, 
+				php_cmark_node_fetch(getThis()), 
+				php_cmark_node_fetch(target))) {
+		case PHP_CMARK_NODE_EDIT_MISSING:
+		case PHP_CMARK_NODE_EDIT_HANDLER:
+			php_cmark_throw(
+				"failed to replace %s with %s",
+				ZSTR_VAL(Z_OBJCE_P(getThis())->name),
+				ZSTR_VAL(Z_OBJCE_P(target)->name));
+			return;
+
+		case PHP_CMARK_NODE_EDIT_USED:
+			php_cmark_throw(
+				"%s is already in use",
+				ZSTR_VAL(Z_OBJCE_P(target)->name));
+			return;
+
+		default: 
+			zval_ptr_dtor(getThis());
+	}
+
+	php_cmark_chain_ex(target);
+}
+
 static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, getNext, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, getPrevious, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
@@ -410,6 +441,7 @@ static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, prependChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, insertBefore, php_cmark_node_insert, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, insertAfter, php_cmark_node_insert, ZEND_ACC_PUBLIC)
+	PHP_ME(Node, replace, php_cmark_node_replace, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 

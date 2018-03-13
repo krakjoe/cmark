@@ -46,7 +46,8 @@
 	} \
 } while(0)
 
-#define php_cmark_chain() ZVAL_ZVAL(return_value, getThis(), 1, 0)
+#define php_cmark_chain_ex(t) ZVAL_ZVAL(return_value, t, 1, 0)
+#define php_cmark_chain()     php_cmark_chain_ex(getThis())
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_no_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
