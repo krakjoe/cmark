@@ -4,7 +4,7 @@ CommonMark\Node\Text Bad Construct
 <?php
 try {
 	new CommonMark\Node\Text([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

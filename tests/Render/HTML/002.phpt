@@ -4,7 +4,7 @@ CommonMark\Render HTML Error
 <?php
 try {
 	CommonMark\Render\HTML([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

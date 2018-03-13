@@ -6,7 +6,7 @@ $block = new CommonMark\Node\CodeBlock;
 
 try {
 	$block->setFence([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 

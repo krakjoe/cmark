@@ -4,7 +4,7 @@ CommonMark\Render Latex Error
 <?php
 try {
 	CommonMark\Render\Latex([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

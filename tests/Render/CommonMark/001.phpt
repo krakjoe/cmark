@@ -8,7 +8,7 @@ $document->appendChild(
 		->appendChild(
 			(new CommonMark\Node\Text)
 				->setLiteral("Hello World")));
-echo CommonMark\Render\CommonMark($document);
+echo CommonMark\Render($document);
 ?>
 --EXPECT--
 Hello World

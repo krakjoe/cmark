@@ -9,7 +9,7 @@ $doc->appendChild($para);
 
 try {
 	$para->replace([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

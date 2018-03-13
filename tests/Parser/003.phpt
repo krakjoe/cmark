@@ -6,7 +6,7 @@ $parser = new CommonMark\Parser();
 
 try {
 	$parser->parse([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

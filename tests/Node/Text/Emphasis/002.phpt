@@ -4,7 +4,7 @@ CommonMark\Node\Text\Emphasis Bad Construct
 <?php
 try {
 	new CommonMark\Node\Text\Emphasis([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

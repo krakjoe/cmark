@@ -26,6 +26,7 @@
 #include "php_cmark.h"
 
 #include <src/node.h>
+#include <src/visitor.h>
 #include <src/text.h>
 #include <src/document.h>
 #include <src/quote.h>
@@ -46,6 +47,7 @@
 PHP_MINIT_FUNCTION(cmark)
 {
 	PHP_MINIT(CommonMark_Node)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(CommonMark_Node_Visitor)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Document)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_BlockQuote)(INIT_FUNC_ARGS_PASSTHRU);
@@ -77,6 +79,7 @@ PHP_RINIT_FUNCTION(cmark)
 #endif
 
 	PHP_RINIT(CommonMark_Node)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_RINIT(CommonMark_Node_Visitor)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Document)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_BlockQuote)(INIT_FUNC_ARGS_PASSTHRU);
@@ -110,11 +113,11 @@ PHP_MINFO_FUNCTION(cmark)
 /* {{{ cmark_functions[]
  */
 static const zend_function_entry cmark_functions[] = {
-	ZEND_NS_NAMED_FE("CommonMark\\Render", XML,        zif_Render_XML,         php_cmark_render_without_width)
-	ZEND_NS_NAMED_FE("CommonMark\\Render", HTML,       zif_Render_HTML,        php_cmark_render_without_width)
-	ZEND_NS_NAMED_FE("CommonMark\\Render", Man,        zif_Render_Man,         php_cmark_render_with_width)
-	ZEND_NS_NAMED_FE("CommonMark\\Render", CommonMark, zif_Render_CommonMark,  php_cmark_render_with_width)
-	ZEND_NS_NAMED_FE("CommonMark\\Render", Latex,      zif_Render_Latex,       php_cmark_render_with_width)
+	ZEND_NS_NAMED_FE("CommonMark",         Render,     zif_CommonMark_Render,               php_cmark_render_with_width)
+	ZEND_NS_NAMED_FE("CommonMark\\Render", XML,        zif_CommonMark_Render_XML,           php_cmark_render_without_width)
+	ZEND_NS_NAMED_FE("CommonMark\\Render", HTML,       zif_CommonMark_Render_HTML,          php_cmark_render_without_width)
+	ZEND_NS_NAMED_FE("CommonMark\\Render", Man,        zif_CommonMark_Render_Man,           php_cmark_render_with_width)
+	ZEND_NS_NAMED_FE("CommonMark\\Render", Latex,      zif_CommonMark_Render_Latex,         php_cmark_render_with_width)
 	PHP_FE_END
 };
 /* }}} */

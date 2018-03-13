@@ -6,7 +6,7 @@ $list = new CommonMark\Node\OrderedList;
 
 try {
 	$list->setStart(-1);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

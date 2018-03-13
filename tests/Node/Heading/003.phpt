@@ -6,7 +6,7 @@ $heading = new CommonMark\Node\Heading;
 
 try {
 	$heading->setHeadingLevel([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

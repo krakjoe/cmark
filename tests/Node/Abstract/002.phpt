@@ -1,12 +1,12 @@
 --TEST--
-CommonMark\Node Append Child InvalidArgumentException
+CommonMark\Node Append Child TypeError
 --FILE--
 <?php
 $document = new CommonMark\Node\Document;
 
 try {
 	$document->appendChild([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";	
 }
 ?>

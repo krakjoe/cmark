@@ -6,7 +6,7 @@ $text = new CommonMark\Node\Text;
 
 try {
 	$text->setLiteral([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

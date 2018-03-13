@@ -3,8 +3,8 @@ CommonMark\Render CommonMark Error
 --FILE--
 <?php
 try {
-	CommonMark\Render\CommonMark([]);
-} catch (InvalidArgumentException $ex) {
+	CommonMark\Render([]);
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

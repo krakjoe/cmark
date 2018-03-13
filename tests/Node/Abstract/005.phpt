@@ -1,12 +1,12 @@
 --TEST--
-CommonMark\Node Prepend Child InvalidArgumentException
+CommonMark\Node Prepend Child TypeError
 --FILE--
 <?php
 $document = new CommonMark\Node\Document;
 
 try {
 	$document->prependChild([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";	
 }
 ?>

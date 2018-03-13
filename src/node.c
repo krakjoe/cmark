@@ -23,6 +23,7 @@
 #include <ext/spl/spl_exceptions.h>
 
 #include <zend_exceptions.h>
+#include <zend_interfaces.h>
 
 #include <src/common.h>
 #include <src/node.h>
@@ -38,6 +39,7 @@
 #include <src/code.h>
 #include <src/inline.h>
 #include <src/media.h>
+#include <src/visitor.h>
 
 zend_class_entry*      php_cmark_node_ce;
 zend_object_handlers   php_cmark_node_handlers;
@@ -262,7 +264,7 @@ PHP_METHOD(Node, getLastChild)
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_add, 0, 0, 1)
-	ZEND_ARG_INFO(0, child)
+	ZEND_ARG_OBJ_INFO(0, child, CommonMark\\Node, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Node, appendChild)
@@ -328,7 +330,7 @@ PHP_METHOD(Node, prependChild)
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_insert, 0, 0, 1)
-	ZEND_ARG_INFO(0, sibling)
+	ZEND_ARG_OBJ_INFO(0, sibling, CommonMark\\Node, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Node, insertBefore)
@@ -394,7 +396,7 @@ PHP_METHOD(Node, insertAfter)
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_replace, 0, 0, 1)
-	ZEND_ARG_INFO(0, target)
+	ZEND_ARG_OBJ_INFO(0, target, CommonMark\\Node, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Node, replace)
@@ -431,6 +433,69 @@ PHP_METHOD(Node, replace)
 	php_cmark_chain_ex(target);
 }
 
+static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
+	cmark_event_type event;	
+	cmark_iter *iterator = cmark_iter_new(root->node);
+
+	while ((event = cmark_iter_next(iterator)) != CMARK_EVENT_DONE) {
+		zval visiting;
+		zval result;
+
+		php_cmark_node_t *node = 
+			php_cmark_node_shadow(
+				&visiting, cmark_iter_get_node(iterator));
+
+		ZVAL_NULL(&result);
+
+		if (GC_REFCOUNT(Z_OBJ(visiting)) < 3) {
+			Z_ADDREF(visiting);
+		}
+
+		switch (event) {
+			case CMARK_EVENT_ENTER:	
+				zend_call_method_with_1_params(visitor, Z_OBJCE_P(visitor), NULL, "enter", &result, &visiting);
+			break;
+
+			case CMARK_EVENT_EXIT:
+				zend_call_method_with_1_params(visitor, Z_OBJCE_P(visitor), NULL, "leave", &result, &visiting);
+			break;
+		}
+
+		if (GC_REFCOUNT(Z_OBJ(visiting)) > 2) {
+			Z_TRY_DELREF(visiting);
+		}
+
+		if (Z_TYPE(result) == IS_LONG && Z_LVAL(result) > CMARK_EVENT_NONE) {
+			cmark_iter_reset(iterator, 
+				node->node, (cmark_event_type) Z_LVAL(result));
+		}
+
+		zval_ptr_dtor(&visiting);
+		if (Z_REFCOUNTED(result)) {
+			zval_ptr_dtor(&result);
+		}
+	}
+
+	cmark_iter_free(iterator);
+}
+
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_accept, 0, 0, 1)
+	ZEND_ARG_OBJ_INFO(0, visitor, CommonMark\\Node\\Visitor, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Node, accept)
+{
+	zval *visitor = NULL;
+
+	if (php_cmark_parse_parameters("O", &visitor, php_cmark_node_visitor_ce) != SUCCESS) {
+		php_cmark_wrong_parameters(
+			"node, with optional options and width expected");
+		return;
+	}
+
+	php_cmark_node_accept_impl(php_cmark_node_fetch(getThis()), visitor);
+}
+
 static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, getNext, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, getPrevious, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
@@ -442,6 +507,7 @@ static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, insertBefore, php_cmark_node_insert, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, insertAfter, php_cmark_node_insert, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, replace, php_cmark_node_replace, ZEND_ACC_PUBLIC)
+	PHP_ME(Node, accept, php_cmark_node_accept, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
@@ -471,6 +537,8 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 
 PHP_RINIT_FUNCTION(CommonMark_Node)
 {
+	zend_class_implements(php_cmark_node_ce, 1, php_cmark_node_visitable_ce);
+
 	php_cmark_node_ce->ce_flags |= ZEND_ACC_FINAL|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
 	return SUCCESS;

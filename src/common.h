@@ -38,7 +38,7 @@
 #define php_cmark_throw(s, ...) \
 	php_cmark_throw_ex(RuntimeException, s, ##__VA_ARGS__)
 #define php_cmark_wrong_parameters(s, ...) \
-	php_cmark_throw_ex(InvalidArgumentException, s, ##__VA_ARGS__);
+	zend_throw_exception_ex(zend_ce_type_error, 0, s, ##__VA_ARGS__)
 #define php_cmark_no_parameters() do { \
 	if (php_cmark_parse_parameters("") != SUCCESS) { \
 		php_cmark_wrong_parameters("no parameters expected"); \

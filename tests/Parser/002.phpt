@@ -4,7 +4,7 @@ CommonMark\Parser Constructor Error
 <?php
 try {
 	$parser = new CommonMark\Parser([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

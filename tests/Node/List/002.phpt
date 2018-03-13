@@ -6,7 +6,7 @@ $list = new CommonMark\Node\OrderedList;
 
 try {
 	$list->setTight([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

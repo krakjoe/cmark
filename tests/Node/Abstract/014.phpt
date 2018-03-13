@@ -6,7 +6,7 @@ $document = new CommonMark\Node\Document;
 
 try {
 	$document->insertBefore([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

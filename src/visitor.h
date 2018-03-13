@@ -15,28 +15,12 @@
   | Author: krakjoe <krakjoe@php.net>                                    |
   +----------------------------------------------------------------------+
  */
-#ifndef PHP_CMARK_RENDER_H
-#define PHP_CMARK_RENDER_H
+#ifndef PHP_CMARK_NODE_VISITOR_H
+#define PHP_CMARK_NODE_VISITOR_H
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_render_without_width, 0, 0, 1)
-	ZEND_ARG_OBJ_INFO(0, node, CommonMark\\Node, 0)
-	ZEND_ARG_INFO(0, options)
-	ZEND_ARG_INFO(0, width)
-ZEND_END_ARG_INFO()
+extern zend_class_entry *php_cmark_node_visitor_ce;
+extern zend_class_entry *php_cmark_node_visitable_ce;
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_render_with_width, 0, 0, 1)
-	ZEND_ARG_OBJ_INFO(0, node, CommonMark\\Node, 0)
-	ZEND_ARG_INFO(0, options)
-	ZEND_ARG_INFO(0, width)
-ZEND_END_ARG_INFO()
-
-extern PHP_FUNCTION(CommonMark_Render);
-extern PHP_FUNCTION(CommonMark_Render_XML);
-extern PHP_FUNCTION(CommonMark_Render_HTML);
-extern PHP_FUNCTION(CommonMark_Render_Man);
-extern PHP_FUNCTION(CommonMark_Render_Latex);
-extern PHP_FUNCTION(CommonMark_Render_Visitor);
-
-extern PHP_MINIT_FUNCTION(CommonMark_Render);
-extern PHP_RINIT_FUNCTION(CommonMark_Render);
+extern PHP_MINIT_FUNCTION(CommonMark_Node_Visitor);
+extern PHP_RINIT_FUNCTION(CommonMark_Node_Visitor);
 #endif

@@ -4,7 +4,7 @@ CommonMark\Render Man Error
 <?php
 try {
 	CommonMark\Render\Man([]);
-} catch (InvalidArgumentException $ex) {
+} catch (TypeError $ex) {
 	echo "OK";
 }
 ?>

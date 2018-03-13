@@ -6,7 +6,7 @@ $link = new CommonMark\Node\Media\Link;
 
 try {
 	$link->setTitle([]);
-} catch(InvalidArgumentException $ex) {
+} catch(TypeError $ex) {
 	echo "OK\n";
 }
 ?>
