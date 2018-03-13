@@ -439,41 +439,38 @@ static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visi
 
 	while ((event = cmark_iter_next(iterator)) != CMARK_EVENT_DONE) {
 		zval visiting;
+		zval arg;
 		zval result;
 
 		php_cmark_node_t *node = 
 			php_cmark_node_shadow(
 				&visiting, cmark_iter_get_node(iterator));
 
+		ZVAL_COPY(&arg, &visiting);
 		ZVAL_NULL(&result);
 
-		if (GC_REFCOUNT(Z_OBJ(visiting)) < 3) {
-			Z_ADDREF(visiting);
-		}
-
 		switch (event) {
-			case CMARK_EVENT_ENTER:	
-				zend_call_method_with_1_params(visitor, Z_OBJCE_P(visitor), NULL, "enter", &result, &visiting);
+			case CMARK_EVENT_ENTER:
+				zend_call_method_with_1_params(visitor, Z_OBJCE_P(visitor), NULL, "enter", &result, &arg);
 			break;
 
 			case CMARK_EVENT_EXIT:
-				zend_call_method_with_1_params(visitor, Z_OBJCE_P(visitor), NULL, "leave", &result, &visiting);
+				zend_call_method_with_1_params(visitor, Z_OBJCE_P(visitor), NULL, "leave", &result, &arg);
 			break;
 		}
 
-		if (GC_REFCOUNT(Z_OBJ(visiting)) > 2) {
-			Z_TRY_DELREF(visiting);
-		}
+		zval_ptr_dtor(&arg);
 
 		if (Z_TYPE(result) == IS_LONG && Z_LVAL(result) > CMARK_EVENT_NONE) {
 			cmark_iter_reset(iterator, 
 				node->node, (cmark_event_type) Z_LVAL(result));
 		}
 
-		zval_ptr_dtor(&visiting);
 		if (Z_REFCOUNTED(result)) {
 			zval_ptr_dtor(&result);
 		}
+
+		zval_ptr_dtor(&visiting);
 	}
 
 	cmark_iter_free(iterator);
