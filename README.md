@@ -21,7 +21,6 @@ API
 
 ```
 namespace CommonMark\Node {
-	
 	final class Document extends \CommonMark\Node {}
 	final class BlockQuote extends \CommonMark\Node {}
 
@@ -65,8 +64,18 @@ namespace CommonMark\Node {
 		public function getTitle() : ?string;
 	}
 
-	final class Image extends Media;
-	final class Link extends Media;
+	final class Image extends Media {}
+	final class Link extends Media {}
+
+	final interface Visitor {
+		public function enter(Node $node);
+		public function leave(Node $node);
+	}
+
+	final interface Visitable {
+		public function accept(Visitor $visitor);
+	}
+
 }
 
 namespace CommonMark {
