@@ -106,11 +106,11 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Text)
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node\\Text", "Emphasis", php_cmark_node_text_emphasis_methods);
 
-	php_cmark_node_text_emphasis_ce = zend_register_internal_class_ex(&ce, php_cmark_node_text_ce);
+	php_cmark_node_text_emphasis_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node\\Text", "Strong", php_cmark_node_text_strong_methods);
 
-	php_cmark_node_text_strong_ce = zend_register_internal_class_ex(&ce, php_cmark_node_text_ce);
+	php_cmark_node_text_strong_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
 
 	return SUCCESS;
 }

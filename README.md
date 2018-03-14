@@ -29,6 +29,9 @@ namespace CommonMark\Node {
 	final class OrderedList extends List {}
 	final class Item extends CommonMark\Node {}
 
+	final class Strong extends \CommonMark\Node {}
+	final class Emphasis extends \CommonMark\Node {}
+
 	final class Text extends \CommonMark\Node {
 		public function __construct(string $literal);
 
@@ -37,8 +40,6 @@ namespace CommonMark\Node {
 	}
 
 	final class Code extends Text {}
-	final class Strong extends Text {}
-	final class Emphasis extends Text {}
 	final class CodeBlock extends Text {}
 	final class HTMLInline extends Text {}
 	final class HTMLBlock extends Text {}

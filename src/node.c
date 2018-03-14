@@ -133,8 +133,16 @@ zend_class_entry* php_cmark_node_class(cmark_node* node) {
 			return php_cmark_node_heading_ce;
 		case CMARK_NODE_THEMATIC_BREAK:
 			return php_cmark_node_thematic_break_ce;
+		case CMARK_NODE_SOFTBREAK:
+			return php_cmark_node_soft_break_ce;
+		case CMARK_NODE_LINEBREAK:
+			return php_cmark_node_line_break_ce;
 		case CMARK_NODE_TEXT:
 			return php_cmark_node_text_ce;
+		case CMARK_NODE_STRONG:
+			return php_cmark_node_text_strong_ce;
+		case CMARK_NODE_EMPH:
+			return php_cmark_node_text_emphasis_ce;
 		case CMARK_NODE_CODE:
 			return php_cmark_node_code_ce;
 		case CMARK_NODE_HTML_INLINE:
@@ -160,6 +168,169 @@ zend_object* php_cmark_node_create(zend_class_entry *ce) {
 	n->std.handlers = &php_cmark_node_handlers;
 
 	return &n->std;
+}
+
+static inline void php_cmark_node_clone_impl(php_cmark_node_t *target, cmark_node *source);
+
+static inline void php_cmark_node_clone_children_impl(php_cmark_node_t *target, cmark_node *source) {
+	cmark_node *current = cmark_node_first_child(source);
+
+	if (!current) {
+		return;
+	}
+
+	do {
+		zval zv;
+
+		object_init_ex(&zv, 
+			php_cmark_node_class(current));
+
+		php_cmark_node_clone_impl(
+			php_cmark_node_fetch(&zv), current);
+
+		cmark_node_append_child(target->node, 
+			php_cmark_node_fetch(&zv)->node);
+
+		current = cmark_node_next(current);
+	} while (current);
+}
+
+static inline void php_cmark_node_clone_impl(php_cmark_node_t *target, cmark_node *source) {
+	cmark_node_type type = cmark_node_get_type(source);
+
+	target->node = cmark_node_new_with_mem(type, &php_cmark_node_mem);
+
+	switch (type) {
+		case CMARK_NODE_LIST:
+			cmark_node_set_list_type(
+				target->node, 
+				cmark_node_get_list_type(source));
+			cmark_node_set_list_tight(
+				target->node, 
+				cmark_node_get_list_tight(source));
+			cmark_node_set_list_delim(
+				target->node, 
+				cmark_node_get_list_delim(source));
+		break;
+
+		case CMARK_NODE_CODE_BLOCK:
+			cmark_node_set_fence_info(target->node,
+				cmark_node_get_fence_info(source));
+
+		case CMARK_NODE_TEXT:
+		case CMARK_NODE_HTML_INLINE:
+		case CMARK_NODE_CODE:
+		case CMARK_NODE_HTML_BLOCK:
+			cmark_node_set_literal(
+				target->node, 
+				cmark_node_get_literal(source));
+		break;
+
+		case CMARK_NODE_LINK:
+		case CMARK_NODE_IMAGE:
+			cmark_node_set_url(
+				target->node, 
+				cmark_node_get_url(source));
+			cmark_node_set_title(
+				target->node,
+				cmark_node_get_title(source));
+		break;
+	}
+	
+	if (cmark_node_first_child(source)) {
+		php_cmark_node_clone_children_impl(target, source);
+	}
+
+	cmark_node_set_user_data(target->node, target);
+}
+
+static inline void php_cmark_node_debug_impl(HashTable* debug, php_cmark_node_t *parent) {
+	zval children;
+	cmark_node *child;
+
+	switch (cmark_node_get_type(parent->node)) {
+		case CMARK_NODE_CODE_BLOCK: {
+			zval fence;
+
+			ZVAL_STRING(&fence,
+				cmark_node_get_fence_info(parent->node));
+			zend_hash_str_update(debug, "fence", sizeof("fence")-1, &fence);
+		}
+
+		case CMARK_NODE_TEXT:
+		case CMARK_NODE_HTML_INLINE:
+		case CMARK_NODE_HTML_BLOCK:
+		case CMARK_NODE_CODE: {
+			zval literal;
+			ZVAL_STRING(&literal,
+				cmark_node_get_literal(parent->node));
+			zend_hash_str_update(debug, "literal", sizeof("literal")-1, &literal);
+		} break;
+
+		case CMARK_NODE_IMAGE:
+		case CMARK_NODE_LINK: {
+			zval url;
+			zval title;
+
+			ZVAL_STRING(&url,
+				cmark_node_get_url(parent->node));
+			ZVAL_STRING(&title,	
+				cmark_node_get_title(parent->node));
+
+			zend_hash_str_update(debug, "url", sizeof("url")-1, &url);
+			zend_hash_str_update(debug, "title", sizeof("title")-1, &title);
+		} break;
+	}
+
+	child = cmark_node_first_child(parent->node);
+
+	if (!child) {
+		return;
+	}
+
+	array_init(&children);
+
+	do {
+		zval zv;
+
+		if (!php_cmark_node_shadow(&zv, child)) {
+			break;
+		}
+
+		add_next_index_zval(&children, &zv);
+
+		child = cmark_node_next(child);
+	} while(child);
+
+	zend_hash_str_update(debug, "children", sizeof("children")-1, &children);
+}
+
+HashTable* php_cmark_node_debug(zval *zv, int *tmp) {
+	HashTable *debug;
+
+	ALLOC_HASHTABLE(debug);
+	zend_hash_init(debug, 8, NULL, ZVAL_PTR_DTOR, 0);
+
+	php_cmark_node_debug_impl(debug, php_cmark_node_fetch(zv));
+
+	*tmp = 1;
+
+	return debug;
+}
+
+zend_object* php_cmark_node_clone(zval *zv) {
+	php_cmark_node_t *zo = php_cmark_node_fetch(zv);
+	php_cmark_node_t *co = 
+		(php_cmark_node_t*) 
+			ecalloc(1, sizeof(php_cmark_node_t));
+
+	zend_object_std_init(&co->std, zo->std.ce);
+
+	php_cmark_node_clone_impl(co, zo->node);
+	
+	co->std.handlers = &php_cmark_node_handlers;
+	
+	return &co->std;
 }
 
 php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node) {
@@ -522,6 +693,8 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 
 	memcpy(&php_cmark_node_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
+	php_cmark_node_handlers.get_debug_info = php_cmark_node_debug;
+	php_cmark_node_handlers.clone_obj = php_cmark_node_clone;
 	php_cmark_node_handlers.free_obj = php_cmark_node_free;
 	php_cmark_node_handlers.offset = XtOffsetOf(php_cmark_node_t, std);
 
