@@ -21,6 +21,7 @@
 #include <php.h>
 
 #include <src/common.h>
+#include <src/parse.h>
 #include <src/node.h>
 
 zend_class_entry *php_cmark_parser_ce;
@@ -76,12 +77,12 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Parser, __construct)
 {
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
-	zend_long options = 0;
-	
-	if (php_cmark_parse_parameters("|l", &options) != SUCCESS) {
-		php_cmark_wrong_parameters("optional options expected");
-		return;
-	}
+	zend_long options;
+
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG(options)
+	ZEND_PARSE_PARAMETERS_END();
 
 	p->parser = cmark_parser_new_with_mem(options, &php_cmark_node_mem);
 }
@@ -95,10 +96,9 @@ PHP_METHOD(Parser, parse)
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
 	zend_string *buffer;
 
-	if (php_cmark_parse_parameters("S", &buffer) != SUCCESS) {
-		php_cmark_wrong_parameters("buffer expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		Z_PARAM_STR(buffer)
+	ZEND_PARSE_PARAMETERS_END();
 
 	cmark_parser_feed(p->parser, ZSTR_VAL(buffer), ZSTR_LEN(buffer));
 }
@@ -131,14 +131,15 @@ static zend_function_entry php_cmark_parser_methods[] = {
 
 PHP_FUNCTION(CommonMark_Parse) 
 {
-	zend_string *content = NULL;
-	zend_long options = 0;
+	zend_string *content;
+	zend_long options;
 	cmark_parser *parser;
 
-	if (php_cmark_parse_parameters("S|l", &content, &options) != SUCCESS) {
-		php_cmark_wrong_parameters("content expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
+		Z_PARAM_STR(content)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG(options)
+	ZEND_PARSE_PARAMETERS_END();
 
 	parser = cmark_parser_new_with_mem(options, &php_cmark_node_mem);
 

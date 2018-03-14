@@ -47,10 +47,9 @@ PHP_METHOD(CodeBlock, setFence)
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 	zend_string *info;
 
-	if (php_cmark_parse_parameters("S", &info) != SUCCESS) {
-		php_cmark_wrong_parameters("info expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		Z_PARAM_STR(info)
+	ZEND_PARSE_PARAMETERS_END();
 
 	cmark_node_set_fence_info(n->node, ZSTR_VAL(info));
 

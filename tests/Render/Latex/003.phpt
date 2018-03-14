@@ -1,12 +1,12 @@
 --TEST--
-CommonMark\Render CommonMark Width
+CommonMark\Render Man Width
 --FILE--
 <?php
 $doc = CommonMark\Parse(<<<EOF
 words on new lines
 EOF
 );
-echo CommonMark\Render(
+echo CommonMark\Render\Latex(
 	$doc, 
 	CommonMark\Render\Normal, 5);
 ?>
@@ -15,4 +15,6 @@ words
 on
 new
 lines
+
+
 
