@@ -113,6 +113,7 @@ PHP_MINFO_FUNCTION(cmark)
 /* {{{ cmark_functions[]
  */
 static const zend_function_entry cmark_functions[] = {
+	ZEND_NS_NAMED_FE("CommonMark",         Parse,      zif_CommonMark_Parse,                php_cmark_parse_arginfo)
 	ZEND_NS_NAMED_FE("CommonMark",         Render,     zif_CommonMark_Render,               php_cmark_render_with_width)
 	ZEND_NS_NAMED_FE("CommonMark\\Render", XML,        zif_CommonMark_Render_XML,           php_cmark_render_without_width)
 	ZEND_NS_NAMED_FE("CommonMark\\Render", HTML,       zif_CommonMark_Render_HTML,          php_cmark_render_without_width)

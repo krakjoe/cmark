@@ -129,6 +129,27 @@ static zend_function_entry php_cmark_parser_methods[] = {
 	PHP_FE_END
 };
 
+PHP_FUNCTION(CommonMark_Parse) 
+{
+	zend_string *content = NULL;
+	zend_long options = 0;
+	cmark_parser *parser;
+
+	if (php_cmark_parse_parameters("S|l", &content, &options) != SUCCESS) {
+		php_cmark_wrong_parameters("content expected");
+		return;
+	}
+
+	parser = cmark_parser_new_with_mem(options, &php_cmark_node_mem);
+
+	cmark_parser_feed(parser, ZSTR_VAL(content), ZSTR_LEN(content));
+
+	php_cmark_node_shadow(
+		return_value, cmark_parser_finish(parser));
+
+	cmark_parser_free(parser);
+}
+
 PHP_MINIT_FUNCTION(CommonMark_Parser) 
 {
 	zend_class_entry ce;

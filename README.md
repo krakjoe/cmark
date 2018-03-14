@@ -132,19 +132,22 @@ namespace CommonMark {
 		public function getParent() : ?Node;
 		public function getFirstChild() : ?Node;
 		public function getLastChild() : ?Node;
-		public function appendChild(Node $child) : ?Node;
-		public function prependChild(Node $child) : ?Node;
-		public function insertBefore(Node $sibling) : ?Node;
-		public function insertAfter(Node $sibling) : ?Node;
+		public function appendChild(Node $child) : Node;
+		public function prependChild(Node $child) : Node;
+		public function insertBefore(Node $sibling) : Node;
+		public function insertAfter(Node $sibling) : Node;
 		public function replace(Node $node) : Node;
 
 		public function accept(CommonMark\Interfaces\IVisitor $visitor);
 	}
 
 	final class Parser {
+		public function __construct(int $options = 0);
 		public function parse(string $content);
 		public function finish() : Node;
 	}
+
+	function Parse(string $content, int $options = 0) : Node;
 
 	function Render(Node $node) : string;
 	function Render\HTML(Node $node) : string;

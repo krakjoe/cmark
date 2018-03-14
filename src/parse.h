@@ -20,6 +20,13 @@
 
 extern zend_class_entry *php_cmark_parser_ce;
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_parse_arginfo, 0, 0, 1)
+	ZEND_ARG_INFO(0, content)
+	ZEND_ARG_INFO(0, options)
+ZEND_END_ARG_INFO()
+
+extern PHP_FUNCTION(CommonMark_Parse);
+
 extern PHP_MINIT_FUNCTION(CommonMark_Parser);
 extern PHP_RINIT_FUNCTION(CommonMark_Parser);
 #endif
