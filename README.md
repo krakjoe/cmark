@@ -50,6 +50,7 @@ namespace CommonMark\Node {
 	final class Item extends \CommonMark\Node {}
 
 	final class Text extends \CommonMark\Node {
+		public function __construct();
 		public function __construct(string $literal);
 
 		public function setLiteral(string $ltieral) : Text;
@@ -126,6 +127,7 @@ namespace CommonMark\Interfaces {
 }
 
 namespace CommonMark {
+
 	final abstract class Node implements \CommonMark\Interfaces\IVisitable {
 		public function getNext() : ?Node;
 		public function getPrevious() : ?Node;
@@ -142,7 +144,9 @@ namespace CommonMark {
 	}
 
 	final class Parser {
-		public function __construct(int $options = 0);
+		public function __construct();
+		public function __construct(int $options);
+
 		public function parse(string $content);
 		public function finish() : Node;
 	}
