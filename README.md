@@ -25,8 +25,8 @@ namespace CommonMark\Node {
 	final class BlockQuote extends \CommonMark\Node {}
 
 	final class BulletList implements \CommonMark\Interfaces\IList {
-		public function setTight();
-		public function isTight();
+		public function setTight(bool $tightness);
+		public function isTight() : bool;
 
 		public function setDelimitPeriod();
 		public function hasPeriodDelim() : bool;
@@ -38,8 +38,8 @@ namespace CommonMark\Node {
 		public function getStart() : int;
 		public function setStart(int $start);
 
-		public function setTight();
-		public function isTight();
+		public function setTight(bool $tightness);
+		public function isTight() : bool;
 
 		public function setDelimitPeriod();
 		public function hasPeriodDelim() : bool;
@@ -95,8 +95,8 @@ namespace CommonMark\Node {
 namespace CommonMark\Interfaces {
 	
 	final interface IList {
-		public function setTight();
-		public function isTight();
+		public function setTight(bool $tightness);
+		public function isTight() : bool;
 
 		public function setDelimitPeriod();
 		public function hasPeriodDelim() : bool;
