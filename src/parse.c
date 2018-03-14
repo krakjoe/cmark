@@ -81,7 +81,7 @@ PHP_METHOD(Parser, __construct)
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_LONG(options)
+		Z_PARAM_STRICT_LONG(options)
 	ZEND_PARSE_PARAMETERS_END();
 
 	p->parser = cmark_parser_new_with_mem(options, &php_cmark_node_mem);
@@ -138,7 +138,7 @@ PHP_FUNCTION(CommonMark_Parse)
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
 		Z_PARAM_STR(content)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_LONG(options)
+		Z_PARAM_STRICT_LONG(options)
 	ZEND_PARSE_PARAMETERS_END();
 
 	parser = cmark_parser_new_with_mem(options, &php_cmark_node_mem);

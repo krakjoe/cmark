@@ -51,7 +51,7 @@ PHP_METHOD(Heading, setHeadingLevel)
 	zend_long level;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_LONG(level)
+		Z_PARAM_STRICT_LONG(level)
 	ZEND_PARSE_PARAMETERS_END();
 
 	if (!cmark_node_set_heading_level(n->node, level)) {
