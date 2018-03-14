@@ -389,6 +389,9 @@ void php_cmark_node_free(zend_object *zo) {
 	zend_object_std_dtor(&n->std);
 }
 
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_node_or_null_return, 0, 0, CommonMark\\Node, 1)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(Node, getNext)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
@@ -658,11 +661,11 @@ PHP_METHOD(Node, accept)
 }
 
 static zend_function_entry php_cmark_node_type_methods[] = {
-	PHP_ME(Node, getNext, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getPrevious, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getParent, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getFirstChild, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getLastChild, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Node, getNext, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
+	PHP_ME(Node, getPrevious, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
+	PHP_ME(Node, getParent, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
+	PHP_ME(Node, getFirstChild, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
+	PHP_ME(Node, getLastChild, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, appendChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, prependChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, insertBefore, php_cmark_node_insert, ZEND_ACC_PUBLIC)

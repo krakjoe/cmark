@@ -36,7 +36,7 @@
 		ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, ref, req, type, nullable)
 #else
 #	define ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(name, ref, req, type, nullable) \
-		ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, IS_OBJECT, type, nullable)
+		ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, IS_OBJECT, #type, nullable)
 #endif
 
 #define php_cmark_throw_ex(e, s, ...) \
