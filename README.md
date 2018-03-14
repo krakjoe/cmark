@@ -105,9 +105,9 @@ namespace CommonMark\Interfaces {
 	}
 
 	final interface IMedia {
-		public function setURL(string $url) : CommonMark\Interfaces\IMedia;
+		public function setURL(string $url) : \CommonMark\Interfaces\IMedia;
 		public function getURL() : ?string;
-		public function setTitle(string $title) : CommonMark\Interfaces\IMedia;
+		public function setTitle(string $title) : \CommonMark\Interfaces\IMedia;
 		public function getTitle() : ?string;
 	}
 
