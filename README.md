@@ -24,13 +24,30 @@ namespace CommonMark\Node {
 	final class Document extends \CommonMark\Node {}
 	final class BlockQuote extends \CommonMark\Node {}
 
-	abstract final class List extends \CommonMark\Node {}
-	final class BulletList extends List {}
-	final class OrderedList extends List {}
-	final class Item extends CommonMark\Node {}
+	final class BulletList implements \CommonMark\Interfaces\IList {
+		public function setTight();
+		public function isTight();
 
-	final class Strong extends \CommonMark\Node {}
-	final class Emphasis extends \CommonMark\Node {}
+		public function setDelimitPeriod();
+		public function hasPeriodDelim() : bool;
+		public function setDelimitParen();
+		public function hasParenDelim() : bool;
+	}
+
+	final class OrderedList implements  \CommonMark\Interfaces\IList {
+		public function getStart() : int;
+		public function setStart(int $start);
+
+		public function setTight();
+		public function isTight();
+
+		public function setDelimitPeriod();
+		public function hasPeriodDelim() : bool;
+		public function setDelimitParen();
+		public function hasParenDelim() : bool;
+	}
+
+	final class Item extends \CommonMark\Node {}
 
 	final class Text extends \CommonMark\Node {
 		public function __construct(string $literal);
@@ -46,6 +63,8 @@ namespace CommonMark\Node {
 
 	final class Heading extends \CommonMark\Node {}
 	final class Paragraph extends \CommonMark\Node {}
+	final class Strong extends \CommonMark\Node {}
+	final class Emphasis extends \CommonMark\Node {}
 	final class ThematicBreak extends \CommonMark\Node {}
 	final class SoftBreak extends \CommonMark\Node {}
 	final class LineBreak extends \CommonMark\Node {}
@@ -58,45 +77,73 @@ namespace CommonMark\Node {
 	final class FirstInline extends \CommonMark\Node {}
 	final class LastInline extends \CommonMark\Node {}
 
-	abstract final class Media extends \CommonMark\Node {
-		public function setURL(string $url) : Media;
+	final class Image implements \CommonMark\Interfaces\IMedia {
+		public function setURL(string $url) : Image;
 		public function getURL() : ?string;
-		public function setTitle(string $title) : Media;
+		public function setTitle(string $title) : Image;
 		public function getTitle() : ?string;
 	}
 
-	final class Image extends Media {}
-	final class Link extends Media {}
+	final class Link implements \CommonMark\Interfaces\IMedia {
+		public function setURL(string $url) : Link;
+		public function getURL() : ?string;
+		public function setTitle(string $title) : Link;
+		public function getTitle() : ?string;
+	}
+}
 
-	final interface Visitor {
-		public function enter(Node $node);
-		public function leave(Node $node);
+namespace CommonMark\Interfaces {
+	
+	final interface IList {
+		public function setTight();
+		public function isTight();
+
+		public function setDelimitPeriod();
+		public function hasPeriodDelim() : bool;
+		public function setDelimitParen();
+		public function hasParenDelim() : bool;
 	}
 
-	final interface Visitable {
-		public function accept(Visitor $visitor);
+	final interface IMedia {
+		public function setURL(string $url) : CommonMark\Interfaces\IMedia;
+		public function getURL() : ?string;
+		public function setTitle(string $title) : CommonMark\Interfaces\IMedia;
+		public function getTitle() : ?string;
 	}
 
+	final interface IVisitor {
+		const Done;
+		const Enter;
+		const Leave;
+
+		public function enter(\CommonMark\Node $node) : ?int;
+		public function leave(\CommonMark\Node $node) : ?int;
+	}
+
+	final interface IVisitable {
+		public function accept(CommonMark\Interfaces\IVisitor $visitor);
+	}
 }
 
 namespace CommonMark {
-	final abstract class Node implements Visitable {
-		public function getNext() : Node;
-		public function getPrevious() : Node;
-		public function getParent() : Node;
-		public function getFirstChild() : Node;
-		public function getLastChild() : Node;
-		public function appendChild(Node $child) : Node;
-		public function prependChild(Node $child) : Node;
-		public function insertBefore(Node $sibling) : Node;
-		public function insertAfter(Node $sibling) : Node;
+	final abstract class Node implements \CommonMark\Interfaces\IVisitable {
+		public function getNext() : ?Node;
+		public function getPrevious() : ?Node;
+		public function getParent() : ?Node;
+		public function getFirstChild() : ?Node;
+		public function getLastChild() : ?Node;
+		public function appendChild(Node $child) : ?Node;
+		public function prependChild(Node $child) : ?Node;
+		public function insertBefore(Node $sibling) : ?Node;
+		public function insertAfter(Node $sibling) : ?Node;
 		public function replace(Node $node) : Node;
 
-		public function accept(CommonMark\Node\Visitor $visitor);
+		public function accept(CommonMark\Interfaces\IVisitor $visitor);
 	}
 
 	final class Parser {
 		public function parse(string $content);
+		public function finish() : Node;
 	}
 
 	function Render(Node $node) : string;

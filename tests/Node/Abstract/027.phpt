@@ -9,7 +9,7 @@ $doc->appendChild($para);
 $para->appendChild(
 	new CommonMark\Node\Text("OK"));
 
-$doc->accept(new class implements CommonMark\Node\Visitor {
+$doc->accept(new class implements CommonMark\Interfaces\IVisitor {
 	public function enter(CommonMark\Node $node) {
 		if ($node instanceof CommonMark\Node\Text) {
 			echo $node->getLiteral();

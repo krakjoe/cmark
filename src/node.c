@@ -648,7 +648,7 @@ static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visi
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_accept, 0, 0, 1)
-	ZEND_ARG_OBJ_INFO(0, visitor, CommonMark\\Node\\Visitor, 0)
+	ZEND_ARG_OBJ_INFO(0, visitor, CommonMark\\Interfaces\\IVisitor, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Node, accept)

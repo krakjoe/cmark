@@ -98,10 +98,10 @@ PHP_METHOD(Media, getTitle)
 }
 
 static zend_function_entry php_cmark_node_media_methods[] = {
-	PHP_ME(Media, setURL, php_cmark_node_media_set_url, ZEND_ACC_PUBLIC)
-	PHP_ME(Media, getURL, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Media, setTitle, php_cmark_node_media_set_title, ZEND_ACC_PUBLIC)
-	PHP_ME(Media, getTitle, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ABSTRACT_ME(Media, setURL, php_cmark_node_media_set_url)
+	PHP_ABSTRACT_ME(Media, getURL, php_cmark_no_arginfo)
+	PHP_ABSTRACT_ME(Media, setTitle, php_cmark_node_media_set_title)
+	PHP_ABSTRACT_ME(Media, getTitle, php_cmark_no_arginfo)
 	PHP_FE_END
 };
 
@@ -117,6 +117,10 @@ PHP_METHOD(Link, __construct)
 
 static zend_function_entry php_cmark_node_link_methods[] = {
 	PHP_ME(Link, __construct, php_cmark_media_construct, ZEND_ACC_PUBLIC)
+	PHP_ME(Media, setURL, php_cmark_node_media_set_url, ZEND_ACC_PUBLIC)
+	PHP_ME(Media, getURL, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Media, setTitle, php_cmark_node_media_set_title, ZEND_ACC_PUBLIC)
+	PHP_ME(Media, getTitle, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
@@ -129,6 +133,10 @@ PHP_METHOD(Image, __construct)
 
 static zend_function_entry php_cmark_node_image_methods[] = {
 	PHP_ME(Image, __construct, php_cmark_media_construct, ZEND_ACC_PUBLIC)
+	PHP_ME(Media, setURL, php_cmark_node_media_set_url, ZEND_ACC_PUBLIC)
+	PHP_ME(Media, getURL, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Media, setTitle, php_cmark_node_media_set_title, ZEND_ACC_PUBLIC)
+	PHP_ME(Media, getTitle, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
@@ -137,24 +145,28 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Media)
 {
 	zend_class_entry ce;
 
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "Media", php_cmark_node_media_methods);
+	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Interfaces", "IMedia", php_cmark_node_media_methods);
 
-	php_cmark_node_media_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
+	php_cmark_node_media_ce = zend_register_internal_interface(&ce);
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node\\Media", "Link", php_cmark_node_link_methods);
 
-	php_cmark_node_link_ce = zend_register_internal_class_ex(&ce, php_cmark_node_media_ce);
+	php_cmark_node_link_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
+
+	zend_class_implements(php_cmark_node_link_ce, 1, php_cmark_node_media_ce);
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node\\Media", "Image", php_cmark_node_image_methods);
 
-	php_cmark_node_image_ce = zend_register_internal_class_ex(&ce, php_cmark_node_media_ce);
+	php_cmark_node_image_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
+
+	zend_class_implements(php_cmark_node_image_ce, 1, php_cmark_node_media_ce);
 
 	return SUCCESS;
 }
 
 PHP_RINIT_FUNCTION(CommonMark_Node_Media)
 {
-	php_cmark_node_media_ce->ce_flags |= ZEND_ACC_FINAL|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+	php_cmark_node_media_ce->ce_flags |= ZEND_ACC_FINAL;
 	php_cmark_node_link_ce->ce_flags |= ZEND_ACC_FINAL;
 	php_cmark_node_image_ce->ce_flags |= ZEND_ACC_FINAL;
 
