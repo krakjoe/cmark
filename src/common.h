@@ -49,6 +49,14 @@
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 0) \
 	ZEND_PARSE_PARAMETERS_END()
 
+#define php_cmark_assert_string(c) do { \
+	if (!c || Z_TYPE_P(c) != IS_STRING) { \
+		php_cmark_wrong_parameters( \
+			#c " is expected to be a string"); \
+		return; \
+	} \
+} while(0) \
+
 #define php_cmark_chain_ex(t) ZVAL_ZVAL(return_value, t, 1, 0)
 #define php_cmark_chain()     php_cmark_chain_ex(getThis())
 

@@ -140,7 +140,7 @@ namespace CommonMark {
 		public function insertAfter(Node $sibling) : Node;
 		public function replace(Node $node) : Node;
 
-		public function accept(CommonMark\Interfaces\IVisitor $visitor);
+		public function accept(\CommonMark\Interfaces\IVisitor $visitor);
 	}
 
 	final class Parser {
@@ -148,16 +148,27 @@ namespace CommonMark {
 		public function __construct(int $options);
 
 		public function parse(string $content);
-		public function finish() : Node;
+		public function finish() : \CommonMark\Node\Document;
 	}
 
-	function Parse(string $content, int $options = 0) : Node;
+	const Parser\Normal;
+	const Parser\Normalize;
+	const Parser\ValidateUTF8;
+	const Parser\Smart;
 
-	function Render(Node $node) : string;
+	function Parse(string $content, int $options = Parser\Normal) : \CommonMark\Node\Document;
+
+	const Render\Normal;
+	const Render\SourcePos;
+	const Render\HardBreaks;
+	const Render\Safe;
+	const Render\NoBreaks;
+
+	function Render(Node $node, int $options = Render\Normal, int $width = 0) : string;
 	function Render\HTML(Node $node) : string;
 	function Render\XML(Node $node) : string;
-	function Render\Latex(Node $node) : string;
-	function Render\Man(Node $node) : string;
+	function Render\Latex(Node $node, int $options = Render\Normal, int $width = 0) : string;
+	function Render\Man(Node $node, int $options = Render\Normal, int $width = 0) : string;
 }
 
 ```

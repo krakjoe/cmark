@@ -34,13 +34,15 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Media, setURL)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_string *url;
+	zval *url;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_STR(url)
+		Z_PARAM_ZVAL(url)
 	ZEND_PARSE_PARAMETERS_END();
 
-	cmark_node_set_url(n->node, ZSTR_VAL(url));
+	php_cmark_assert_string(url);
+
+	cmark_node_set_url(n->node, Z_STRVAL_P(url));
 
 	php_cmark_chain();
 }
@@ -68,13 +70,15 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Media, setTitle)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_string *title;
+	zval *title;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_STR(title)
+		Z_PARAM_ZVAL(title)
 	ZEND_PARSE_PARAMETERS_END();
 
-	cmark_node_set_title(n->node, ZSTR_VAL(title));
+	php_cmark_assert_string(title);
+
+	cmark_node_set_title(n->node, Z_STRVAL_P(title));
 
 	php_cmark_chain();
 }

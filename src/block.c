@@ -45,13 +45,15 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(CodeBlock, setFence)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_string *info;
+	zval *info;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_STR(info)
+		Z_PARAM_ZVAL(info)
 	ZEND_PARSE_PARAMETERS_END();
 
-	cmark_node_set_fence_info(n->node, ZSTR_VAL(info));
+	php_cmark_assert_string(info);
+
+	cmark_node_set_fence_info(n->node, Z_STRVAL_P(info));
 
 	php_cmark_chain();
 }

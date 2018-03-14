@@ -33,14 +33,18 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(Text, __construct)
 {
-	zend_string *literal;
+	zval *literal;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STR(literal)
+		Z_PARAM_ZVAL(literal)
 	ZEND_PARSE_PARAMETERS_END();
 
-	php_cmark_node_text_new(getThis(), CMARK_NODE_TEXT, literal);
+	if (ZEND_NUM_ARGS()) {
+		php_cmark_assert_string(literal);
+	}
+
+	php_cmark_node_text_new(getThis(), CMARK_NODE_TEXT, Z_STR_P(literal));
 }
 
 PHP_METHOD(Text, getLiteral)
@@ -59,14 +63,18 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Text, setLiteral)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_string *literal;
+	zval *literal;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STR(literal)
+		Z_PARAM_ZVAL(literal)
 	ZEND_PARSE_PARAMETERS_END();
 
-	cmark_node_set_literal(n->node, ZSTR_VAL(literal));
+	if (ZEND_NUM_ARGS()) {
+		php_cmark_assert_string(literal);
+	}
+
+	cmark_node_set_literal(n->node, Z_STRVAL_P(literal));
 
 	php_cmark_chain();
 }
@@ -81,14 +89,18 @@ static zend_function_entry php_cmark_node_text_methods[] = {
 
 PHP_METHOD(Emphasis, __construct)
 {
-	zend_string *literal;
+	zval *literal;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STR(literal)
+		Z_PARAM_ZVAL(literal)
 	ZEND_PARSE_PARAMETERS_END();
 
-	php_cmark_node_text_new(getThis(), CMARK_NODE_EMPH, literal);
+	if (ZEND_NUM_ARGS()) {
+		php_cmark_assert_string(literal);
+	}
+
+	php_cmark_node_text_new(getThis(), CMARK_NODE_EMPH, Z_STR_P(literal));
 }
 
 static zend_function_entry php_cmark_node_text_emphasis_methods[] = {
@@ -98,14 +110,18 @@ static zend_function_entry php_cmark_node_text_emphasis_methods[] = {
 
 PHP_METHOD(Strong, __construct)
 {
-	zend_string *literal;
+	zval *literal;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STR(literal)
+		Z_PARAM_ZVAL(literal)
 	ZEND_PARSE_PARAMETERS_END();
 
-	php_cmark_node_text_new(getThis(), CMARK_NODE_STRONG, literal);
+	if (ZEND_NUM_ARGS()) {
+		php_cmark_assert_string(literal);
+	}
+
+	php_cmark_node_text_new(getThis(), CMARK_NODE_STRONG, Z_STR_P(literal));
 }
 
 static zend_function_entry php_cmark_node_text_strong_methods[] = {

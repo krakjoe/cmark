@@ -94,13 +94,15 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Parser, parse)
 {
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
-	zend_string *buffer;
+	zval *buffer;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_STR(buffer)
+		Z_PARAM_ZVAL(buffer)
 	ZEND_PARSE_PARAMETERS_END();
 
-	cmark_parser_feed(p->parser, ZSTR_VAL(buffer), ZSTR_LEN(buffer));
+	php_cmark_assert_string(buffer);
+
+	cmark_parser_feed(p->parser, Z_STRVAL_P(buffer), Z_STRLEN_P(buffer));
 }
 
 PHP_METHOD(Parser, finish)
@@ -131,19 +133,21 @@ static zend_function_entry php_cmark_parser_methods[] = {
 
 PHP_FUNCTION(CommonMark_Parse) 
 {
-	zend_string *content;
+	zval *content;
 	zend_long options;
 	cmark_parser *parser;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
-		Z_PARAM_STR(content)
+		Z_PARAM_ZVAL(content)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_STRICT_LONG(options)
 	ZEND_PARSE_PARAMETERS_END();
 
+	php_cmark_assert_string(content);
+
 	parser = cmark_parser_new_with_mem(options, &php_cmark_node_mem);
 
-	cmark_parser_feed(parser, ZSTR_VAL(content), ZSTR_LEN(content));
+	cmark_parser_feed(parser, Z_STRVAL_P(content), Z_STRLEN_P(content));
 
 	php_cmark_node_shadow(
 		return_value, cmark_parser_finish(parser));
@@ -165,6 +169,7 @@ PHP_MINIT_FUNCTION(CommonMark_Parser)
 	php_cmark_parser_handlers.free_obj = php_cmark_parser_free;
 	php_cmark_parser_handlers.offset = XtOffsetOf(php_cmark_parser_t, std);
 
+	REGISTER_NS_LONG_CONSTANT("CommonMark\\Parser", "Normal", CMARK_OPT_DEFAULT, CONST_CS|CONST_PERSISTENT);
 	REGISTER_NS_LONG_CONSTANT("CommonMark\\Parser", "Normalize", CMARK_OPT_NORMALIZE, CONST_CS|CONST_PERSISTENT);
 	REGISTER_NS_LONG_CONSTANT("CommonMark\\Parser", "ValidateUTF8", CMARK_OPT_VALIDATE_UTF8, CONST_CS|CONST_PERSISTENT);
 	REGISTER_NS_LONG_CONSTANT("CommonMark\\Parser", "Smart", CMARK_OPT_SMART, CONST_CS|CONST_PERSISTENT);
