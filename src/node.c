@@ -437,7 +437,7 @@ PHP_METHOD(Node, getLastChild)
 	php_cmark_node_shadow(return_value, cmark_node_last_child(n->node));
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_add, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_node_add, 0, 1, CommonMark\\Node, 0)
 	ZEND_ARG_OBJ_INFO(0, child, CommonMark\\Node, 0)
 ZEND_END_ARG_INFO()
 
@@ -503,7 +503,7 @@ PHP_METHOD(Node, prependChild)
 	php_cmark_chain();
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_insert, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_node_insert, 0, 1, CommonMark\\Node, 0)
 	ZEND_ARG_OBJ_INFO(0, sibling, CommonMark\\Node, 0)
 ZEND_END_ARG_INFO()
 
@@ -569,7 +569,7 @@ PHP_METHOD(Node, insertAfter)
 	php_cmark_chain();
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_replace, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_node_replace, 0, 1, CommonMark\\Node, 0)
 	ZEND_ARG_OBJ_INFO(0, target, CommonMark\\Node, 0)
 ZEND_END_ARG_INFO()
 

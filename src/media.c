@@ -69,14 +69,14 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(Media, setTitle)
 {
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_string *url;
+	zend_string *title;
 
-	if (php_cmark_parse_parameters("S", &url) != SUCCESS) {
+	if (php_cmark_parse_parameters("S", &title) != SUCCESS) {
 		php_cmark_wrong_parameters("url expected");
 		return;
 	}
 
-	cmark_node_set_title(n->node, ZSTR_VAL(url));
+	cmark_node_set_title(n->node, ZSTR_VAL(title));
 
 	php_cmark_chain();
 }
