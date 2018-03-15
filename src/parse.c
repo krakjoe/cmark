@@ -118,7 +118,6 @@ PHP_METHOD(Parser, finish)
 	n = php_cmark_node_shadow(
 		return_value, cmark_parser_finish(p->parser));
 
-	ZVAL_COPY(&n->parser, getThis());
 	ZVAL_COPY(&p->root,   return_value);
 }
 

@@ -297,7 +297,10 @@ static inline void php_cmark_node_debug_impl(HashTable* debug, php_cmark_node_t 
 			break;
 		}
 
-		add_next_index_zval(&children, &zv);
+		if (add_next_index_zval(&children, &zv) == SUCCESS) {
+			if (Z_REFCOUNT(zv) == 1)
+				Z_ADDREF(zv);
+		}
 
 		child = cmark_node_next(child);
 	} while(child);
@@ -380,10 +383,6 @@ void php_cmark_node_free(zend_object *zo) {
 
 	if (n->node) {
 		php_cmark_nodes_free(n);
-	}
-
-	if (!Z_ISUNDEF(n->parser)) {
-		zval_ptr_dtor(&n->parser);
 	}
 
 	zend_object_std_dtor(&n->std);
@@ -615,25 +614,39 @@ static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visi
 		zval visiting;
 		zval arg;
 		zval result;
+		zend_fcall_info fci = empty_fcall_info;
+		zend_fcall_info_cache fcc = empty_fcall_info_cache;
 
 		php_cmark_node_t *node = 
 			php_cmark_node_shadow(
 				&visiting, cmark_iter_get_node(iterator));
 
-		ZVAL_COPY(&arg, &visiting);
 		ZVAL_NULL(&result);
+
+		fci.size = sizeof(zend_fcall_info);
+		fci.retval = &result;
+		fci.object = Z_OBJ_P(visitor);
+
+#if PHP_VERSION_ID < 70300
+		fcc.initialized = 1;
+#endif
+		fcc.object = fci.object;
+
+		zend_fcall_info_argn(&fci, 1, &visiting);
 
 		switch (event) {
 			case CMARK_EVENT_ENTER:
-				zend_call_method_with_1_params(visitor, Z_OBJCE_P(visitor), NULL, "enter", &result, &arg);
+				fcc.function_handler = zend_hash_str_find_ptr(
+					&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("enter"));
 			break;
 
 			case CMARK_EVENT_EXIT:
-				zend_call_method_with_1_params(visitor, Z_OBJCE_P(visitor), NULL, "leave", &result, &arg);
+				fcc.function_handler = zend_hash_str_find_ptr(
+					&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("leave"));
 			break;
 		}
 
-		zval_ptr_dtor(&arg);
+		zend_call_function(&fci, &fcc);
 
 		if (Z_TYPE(result) == IS_LONG && Z_LVAL(result) > CMARK_EVENT_NONE) {
 			cmark_iter_reset(iterator, 
@@ -643,6 +656,8 @@ static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visi
 		if (Z_REFCOUNTED(result)) {
 			zval_ptr_dtor(&result);
 		}
+
+		zend_fcall_info_args_clear(&fci, 1);
 
 		zval_ptr_dtor(&visiting);
 	}
