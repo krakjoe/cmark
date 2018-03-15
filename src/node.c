@@ -659,7 +659,9 @@ static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visi
 
 		zend_fcall_info_args_clear(&fci, 1);
 
-		zval_ptr_dtor(&visiting);
+		if (Z_REFCOUNT(visiting) > 1) {
+			zval_ptr_dtor(&visiting);
+		}
 	}
 
 	cmark_iter_free(iterator);
