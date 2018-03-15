@@ -33,12 +33,12 @@ ZEND_END_ARG_INFO()
 
 PHP_METHOD(Text, __construct)
 {
-	zend_string *literal;
+	zend_string *literal = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_STR(literal)
-	ZEND_PARSE_PARAMETERS_END();
+	if (php_cmark_parse_parameters("|S", &literal) != SUCCESS) {
+		php_cmark_wrong_parameters("optional literal expected");
+		return;
+	}
 
 	php_cmark_node_text_new(getThis(), CMARK_NODE_TEXT, literal);
 }
@@ -61,10 +61,10 @@ PHP_METHOD(Text, setLiteral)
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 	zend_string *literal;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_STR(literal)
-	ZEND_PARSE_PARAMETERS_END();
+	if (php_cmark_parse_parameters("S", &literal) != SUCCESS) {
+		php_cmark_wrong_parameters("expected literal");
+		return;
+	}
 
 	cmark_node_set_literal(n->node, ZSTR_VAL(literal));
 
@@ -83,10 +83,10 @@ PHP_METHOD(Emphasis, __construct)
 {
 	zend_string *literal = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_STR(literal)
-	ZEND_PARSE_PARAMETERS_END();
+	if (php_cmark_parse_parameters("|S", &literal) != SUCCESS) {
+		php_cmark_wrong_parameters("optional literal expected");
+		return;
+	}
 
 	php_cmark_node_text_new(getThis(), CMARK_NODE_EMPH, literal);
 }
@@ -98,12 +98,12 @@ static zend_function_entry php_cmark_node_text_emphasis_methods[] = {
 
 PHP_METHOD(Strong, __construct)
 {
-	zend_string *literal;
+	zend_string *literal = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_STR(literal)
-	ZEND_PARSE_PARAMETERS_END();
+	if (php_cmark_parse_parameters("|S", &literal) != SUCCESS) {
+		php_cmark_wrong_parameters("optional literal expected");
+		return;
+	}
 
 	php_cmark_node_text_new(getThis(), CMARK_NODE_STRONG, literal);
 }

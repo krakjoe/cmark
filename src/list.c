@@ -43,9 +43,10 @@ PHP_METHOD(List, setTight)
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 	zend_bool tight;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_BOOL(tight)
-	ZEND_PARSE_PARAMETERS_END();
+	if (php_cmark_parse_parameters("b", &tight) != SUCCESS) {
+		php_cmark_wrong_parameters("tightness expected");
+		return;
+	}
 
 	cmark_node_set_list_tight(n->node, tight);
 
@@ -138,9 +139,10 @@ PHP_METHOD(OrderedList, setStart)
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 	zend_long start;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_STRICT_INT(start)
-	ZEND_PARSE_PARAMETERS_END();
+	if (php_cmark_parse_parameters("l", &start) != SUCCESS) {
+		php_cmark_wrong_parameters("start expected");
+		return;
+	}
 
 	if (start < 1) {
 		php_cmark_wrong_parameters("start must be a positive integer");

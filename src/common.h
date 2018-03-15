@@ -34,48 +34,25 @@
 #if PHP_VERSION_ID >= 70200
 #	define ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(name, ref, req, type, nullable) \
 		ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, ref, req, type, nullable)
-#	define Z_PARAM_STRICT_STR(dest) \
-		Z_PARAM_PROLOGUE(0, 0); \
-		if (UNEXPECTED(!_arg || Z_TYPE_P(_arg) != IS_STRING)) { \
-			_expected_type = Z_EXPECTED_STRING; \
-			error_code = ZPP_ERROR_WRONG_ARG; \
-			break; \
-		} else zend_parse_arg_str(_arg, &dest, 0);
-#	define Z_PARAM_STRICT_INT(dest) \
-		Z_PARAM_PROLOGUE(0, 0); \
-		if (UNEXPECTED(!_arg || Z_TYPE_P(_arg) != IS_LONG)) { \
-			_expected_type = Z_EXPECTED_LONG; \
-			error_code = ZPP_ERROR_WRONG_ARG; \
-			break; \
-		} else zend_parse_arg_long(_arg, &dest, 0, 0, 0);
 #else
 #	define ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(name, ref, req, type, nullable) \
 		ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, IS_OBJECT, #type, nullable)
-#	define Z_PARAM_STRICT_STR(dest) \
-		Z_PARAM_PROLOGUE(0); \
-		if (UNEXPECTED(!_arg || Z_TYPE_P(_arg) != IS_STRING)) { \
-			_expected_type = Z_EXPECTED_STRING; \
-			error_code = ZPP_ERROR_WRONG_ARG; \
-			break; \
-		} else zend_parse_arg_str(_arg, &dest, 0);
-#	define Z_PARAM_STRICT_INT(dest) \
-		Z_PARAM_PROLOGUE(0); \
-		if (UNEXPECTED(!_arg || Z_TYPE_P(_arg) != IS_LONG)) { \
-			_expected_type = Z_EXPECTED_LONG; \
-			error_code = ZPP_ERROR_WRONG_ARG; \
-			break; \
-		} else zend_parse_arg_long(_arg, &dest, 0, 0, 0);
 #endif
 
+#define php_cmark_parse_parameters(s, ...) \
+	zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS(), s, ##__VA_ARGS__)
 #define php_cmark_throw_ex(e, s, ...) \
 	zend_throw_exception_ex(spl_ce_##e, 0, s, ##__VA_ARGS__)
 #define php_cmark_throw(s, ...) \
 	php_cmark_throw_ex(RuntimeException, s, ##__VA_ARGS__)
 #define php_cmark_wrong_parameters(s, ...) \
 	zend_throw_exception_ex(zend_ce_type_error, 0, s, ##__VA_ARGS__)
-#define php_cmark_no_parameters() \
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 0) \
-	ZEND_PARSE_PARAMETERS_END()
+#define php_cmark_no_parameters() do { \
+	if (php_cmark_parse_parameters("") != SUCCESS) { \
+		php_cmark_wrong_parameters("no parameters expected"); \
+		return; \
+	} \
+} while(0)
 
 #define php_cmark_chain_ex(t) ZVAL_ZVAL(return_value, t, 1, 0)
 #define php_cmark_chain()     php_cmark_chain_ex(getThis())

@@ -1,18 +1,13 @@
 --TEST--
-CommonMark\Render CommonMark Width
+CommonMark\Render CommonMark Error
 --FILE--
 <?php
-$doc = CommonMark\Parse(<<<EOF
-words on new lines
-EOF
-);
-echo CommonMark\Render(
-	$doc, 
-	CommonMark\Render\Normal, 5);
+try {
+	CommonMark\Render([]);
+} catch (TypeError $ex) {
+	echo "OK";
+}
 ?>
 --EXPECT--
-words
-on
-new
-lines
+OK
 
