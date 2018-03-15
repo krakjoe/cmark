@@ -55,8 +55,8 @@ PHP_FUNCTION(CommonMark_Render)
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
 		Z_PARAM_OBJECT_OF_CLASS(z, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_LONG(arg.options)
-		Z_PARAM_STRICT_LONG(arg.width)
+		Z_PARAM_STRICT_INT(arg.options)
+		Z_PARAM_STRICT_INT(arg.width)
 	ZEND_PARSE_PARAMETERS_END();
 
 	php_cmark_render(return_value, 
@@ -73,7 +73,7 @@ PHP_FUNCTION(CommonMark_Render_XML)
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
 		Z_PARAM_OBJECT_OF_CLASS(z, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_LONG(arg.options)
+		Z_PARAM_STRICT_INT(arg.options)
 	ZEND_PARSE_PARAMETERS_END();
 
 	php_cmark_render(return_value, 
@@ -89,7 +89,7 @@ PHP_FUNCTION(CommonMark_Render_HTML)
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
 		Z_PARAM_OBJECT_OF_CLASS(z, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_LONG(arg.options)
+		Z_PARAM_STRICT_INT(arg.options)
 	ZEND_PARSE_PARAMETERS_END();
 
 	php_cmark_render(return_value, 
@@ -105,8 +105,8 @@ PHP_FUNCTION(CommonMark_Render_Man)
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
 		Z_PARAM_OBJECT_OF_CLASS(z, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_LONG(arg.options)
-		Z_PARAM_STRICT_LONG(arg.width)
+		Z_PARAM_STRICT_INT(arg.options)
+		Z_PARAM_STRICT_INT(arg.width)
 	ZEND_PARSE_PARAMETERS_END();
 
 	php_cmark_render(return_value, 
@@ -122,8 +122,8 @@ PHP_FUNCTION(CommonMark_Render_Latex)
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
 		Z_PARAM_OBJECT_OF_CLASS(z, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_STRICT_LONG(arg.options)
-		Z_PARAM_STRICT_LONG(arg.width)
+		Z_PARAM_STRICT_INT(arg.options)
+		Z_PARAM_STRICT_INT(arg.width)
 	ZEND_PARSE_PARAMETERS_END();
 
 	php_cmark_render(return_value, 

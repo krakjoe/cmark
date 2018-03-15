@@ -139,7 +139,7 @@ PHP_METHOD(OrderedList, setStart)
 	zend_long start;
 
 	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
-		Z_PARAM_STRICT_LONG(start)
+		Z_PARAM_STRICT_INT(start)
 	ZEND_PARSE_PARAMETERS_END();
 
 	if (start < 1) {

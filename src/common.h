@@ -41,6 +41,13 @@
 			error_code = ZPP_ERROR_WRONG_ARG; \
 			break; \
 		} else zend_parse_arg_str(_arg, &dest, 0);
+#	define Z_PARAM_STRICT_INT(dest) \
+		Z_PARAM_PROLOGUE(0, 0); \
+		if (UNEXPECTED(!_arg || Z_TYPE_P(_arg) != IS_LONG)) { \
+			_expected_type = Z_EXPECTED_LONG; \
+			error_code = ZPP_ERROR_WRONG_ARG; \
+			break; \
+		} else zend_parse_arg_long(_arg, &dest, 0, 0, 0);
 #else
 #	define ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(name, ref, req, type, nullable) \
 		ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, IS_OBJECT, #type, nullable)
@@ -51,6 +58,13 @@
 			error_code = ZPP_ERROR_WRONG_ARG; \
 			break; \
 		} else zend_parse_arg_str(_arg, &dest, 0);
+#	define Z_PARAM_STRICT_INT(dest) \
+		Z_PARAM_PROLOGUE(0); \
+		if (UNEXPECTED(!_arg || Z_TYPE_P(_arg) != IS_LONG)) { \
+			_expected_type = Z_EXPECTED_LONG; \
+			error_code = ZPP_ERROR_WRONG_ARG; \
+			break; \
+		} else zend_parse_arg_long(_arg, &dest, 0, 0, 0);
 #endif
 
 #define php_cmark_throw_ex(e, s, ...) \
