@@ -39,6 +39,11 @@
 		ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, IS_OBJECT, #type, nullable)
 #endif
 
+#define PHP_OBJ_SAFE_RELEASE(zz) do { \
+	if (IS_OBJ_VALID(EG(objects_store).object_buckets[(zz)->handle])) \
+		OBJ_RELEASE((zz)); \
+} while(0)
+
 #define php_cmark_parse_parameters(s, ...) \
 	zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS(), s, ##__VA_ARGS__)
 #define php_cmark_throw_ex(e, s, ...) \

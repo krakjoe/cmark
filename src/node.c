@@ -371,11 +371,14 @@ static inline void php_cmark_nodes_free(const php_cmark_node_t *n) {
 		cmark_node_set_user_data(u->node, NULL);
 		cmark_node_unlink(u->node);
 
-		OBJ_RELEASE(&u->std);
+		PHP_OBJ_SAFE_RELEASE(&u->std);
 	}
 
 	if ((u = cmark_node_get_user_data(n->node))) {
-		OBJ_RELEASE(&u->std);
+		cmark_node_set_user_data(u->node, NULL);
+		cmark_node_unlink(u->node);
+
+		PHP_OBJ_SAFE_RELEASE(&u->std);
 	}
 
 	cmark_node_free(n->node);
