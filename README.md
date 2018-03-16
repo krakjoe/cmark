@@ -24,7 +24,7 @@ namespace CommonMark\Node {
 	final class Document extends \CommonMark\Node {}
 	final class BlockQuote extends \CommonMark\Node {}
 
-	final class BulletList implements \CommonMark\Interfaces\IList {
+	final class BulletList extends \CommonMark\Node implements \CommonMark\Interfaces\IList {
 		public function setTight(bool $tightness);
 		public function isTight() : bool;
 
@@ -34,7 +34,7 @@ namespace CommonMark\Node {
 		public function hasParenDelim() : bool;
 	}
 
-	final class OrderedList implements  \CommonMark\Interfaces\IList {
+	final class OrderedList extends \CommonMark\Node implements  \CommonMark\Interfaces\IList {
 		public function getStart() : int;
 		public function setStart(int $start);
 
@@ -78,14 +78,14 @@ namespace CommonMark\Node {
 	final class FirstInline extends \CommonMark\Node {}
 	final class LastInline extends \CommonMark\Node {}
 
-	final class Image implements \CommonMark\Interfaces\IMedia {
+	final class Image extends CommonMark\Node implements \CommonMark\Interfaces\IMedia {
 		public function setURL(string $url) : Image;
 		public function getURL() : ?string;
 		public function setTitle(string $title) : Image;
 		public function getTitle() : ?string;
 	}
 
-	final class Link implements \CommonMark\Interfaces\IMedia {
+	final class Link extends CommonMark\Node implements \CommonMark\Interfaces\IMedia {
 		public function setURL(string $url) : Link;
 		public function getURL() : ?string;
 		public function setTitle(string $title) : Link;
