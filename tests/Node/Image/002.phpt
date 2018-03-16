@@ -6,17 +6,13 @@ $md = <<<MD
 ![foo](bar.jpg)
 MD;
 
-$parser = new CommonMark\Parser();
-
-$parser->parse($md);
-
-$doc = $parser->finish();
+$doc = CommonMark\Parse($md);
 
 $root = $doc->getFirstChild();
 
 $img = $root->getFirstChild();
 
-if ($img instanceof CommonMark\Node\Media\Image) {
+if ($img instanceof CommonMark\Node\Image) {
 	echo "OK";
 }
 ?>

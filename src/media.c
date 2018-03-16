@@ -149,13 +149,13 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Media)
 
 	php_cmark_node_media_ce = zend_register_internal_interface(&ce);
 
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node\\Media", "Link", php_cmark_node_link_methods);
+	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "Link", php_cmark_node_link_methods);
 
 	php_cmark_node_link_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
 
 	zend_class_implements(php_cmark_node_link_ce, 1, php_cmark_node_media_ce);
 
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node\\Media", "Image", php_cmark_node_image_methods);
+	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "Image", php_cmark_node_image_methods);
 
 	php_cmark_node_image_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
 

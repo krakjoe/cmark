@@ -1,8 +1,8 @@
 --TEST--
-CommonMark\Node\Media URL Errors
+CommonMark\Node\IMedia URL Errors
 --FILE--
 <?php
-$link = new CommonMark\Node\Media\Link;
+$link = new CommonMark\Node\Link;
 
 if (!$link->getURL()) {
 	echo "OK";

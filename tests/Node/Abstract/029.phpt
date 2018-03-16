@@ -171,7 +171,7 @@ some_code();
       ["children"]=>
       array(3) {
         [0]=>
-        object(CommonMark\Node\Media\Link)#28 (3) {
+        object(CommonMark\Node\Link)#28 (3) {
           ["url"]=>
           string(3) "url"
           ["title"]=>
@@ -189,7 +189,7 @@ some_code();
         object(CommonMark\Node\SoftBreak)#29 (0) {
         }
         [2]=>
-        object(CommonMark\Node\Media\Image)#30 (3) {
+        object(CommonMark\Node\Image)#30 (3) {
           ["url"]=>
           string(3) "url"
           ["title"]=>
@@ -207,4 +207,3 @@ some_code();
     }
   }
 }
-

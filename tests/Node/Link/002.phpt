@@ -6,17 +6,13 @@ $md = <<<MD
 [link](/url "title")
 MD;
 
-$parser = new CommonMark\Parser();
-
-$parser->parse($md);
-
-$doc = $parser->finish();
+$doc = CommonMark\Parse($md);
 
 $root = $doc->getFirstChild();
 
 $img = $root->getFirstChild();
 
-if ($img instanceof CommonMark\Node\Media\Link) {
+if ($img instanceof CommonMark\Node\Link) {
 	echo "OK";
 }
 ?>

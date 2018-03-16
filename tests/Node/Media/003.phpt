@@ -1,8 +1,8 @@
 --TEST--
-CommonMark\Node\Media Title Errors
+CommonMark\Node\IMedia Title Errors
 --FILE--
 <?php
-$link = new CommonMark\Node\Media\Link;
+$link = new CommonMark\Node\Link;
 
 if (!$link->getTitle()) {
 	echo "OK";

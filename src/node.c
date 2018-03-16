@@ -236,7 +236,7 @@ static inline void php_cmark_node_clone_impl(php_cmark_node_t *target, cmark_nod
 				cmark_node_get_title(source));
 		break;
 	}
-	
+
 	if (cmark_node_first_child(source)) {
 		php_cmark_node_clone_children_impl(target, source);
 	}
@@ -297,10 +297,7 @@ static inline void php_cmark_node_debug_impl(HashTable* debug, php_cmark_node_t 
 			break;
 		}
 
-		if (add_next_index_zval(&children, &zv) == SUCCESS) {
-			if (Z_REFCOUNT(zv) == 1)
-				Z_ADDREF(zv);
-		}
+		add_next_index_zval(&children, &zv);
 
 		child = cmark_node_next(child);
 	} while(child);
@@ -350,29 +347,35 @@ php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node) {
 		n->node = node;
 
 		cmark_node_set_user_data(n->node, n);
-		return n;
+	} else {
+		ZVAL_OBJ(return_value, &n->std);
 	}
 
-	ZVAL_OBJ(return_value, &n->std);
 	Z_ADDREF_P(return_value);
 	return n;
 }
 
 static inline void php_cmark_nodes_free(const php_cmark_node_t *n) {
+	php_cmark_node_t *u;
 	cmark_node *last = cmark_node_last_child(n->node);
 
 	while (last) {
-		php_cmark_node_t *u = 
-			(php_cmark_node_t*) cmark_node_get_user_data(last);
+		cmark_node *g = last;
 
-		if (u) {
-			last = cmark_node_previous(last);
-			cmark_node_unlink(u->node);
-			OBJ_RELEASE(&u->std);
+		last = cmark_node_previous(last);
+
+		if (!(u = (php_cmark_node_t*) cmark_node_get_user_data(g))) {
 			continue;
 		}
 
-		break;
+		cmark_node_set_user_data(u->node, NULL);
+		cmark_node_unlink(u->node);
+
+		OBJ_RELEASE(&u->std);
+	}
+
+	if ((u = cmark_node_get_user_data(n->node))) {
+		OBJ_RELEASE(&u->std);
 	}
 
 	cmark_node_free(n->node);
@@ -659,9 +662,7 @@ static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visi
 
 		zend_fcall_info_args_clear(&fci, 1);
 
-		if (Z_REFCOUNT(visiting) > 1) {
-			zval_ptr_dtor(&visiting);
-		}
+		zval_ptr_dtor(&visiting);
 	}
 
 	cmark_iter_free(iterator);
