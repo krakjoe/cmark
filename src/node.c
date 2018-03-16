@@ -612,6 +612,19 @@ PHP_METHOD(Node, replace)
 	php_cmark_chain_ex(target);
 }
 
+PHP_METHOD(Node, unlink)
+{	
+	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
+
+	php_cmark_no_parameters();
+
+	cmark_node_unlink(n->node);
+
+	n->used = 0;
+
+	zval_ptr_dtor(getThis());
+}
+
 static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
 	cmark_event_type event;	
 	cmark_iter *iterator = cmark_iter_new(root->node);
@@ -699,6 +712,7 @@ static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, insertBefore, php_cmark_node_insert, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, insertAfter, php_cmark_node_insert, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, replace, php_cmark_node_replace, ZEND_ACC_PUBLIC)
+	PHP_ME(Node, unlink, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, accept, php_cmark_node_accept, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
