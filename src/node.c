@@ -27,6 +27,7 @@
 
 #include <src/common.h>
 #include <src/node.h>
+#include <src/iterator.h>
 #include <src/document.h>
 #include <src/quote.h>
 #include <src/list.h>
@@ -613,7 +614,7 @@ PHP_METHOD(Node, replace)
 }
 
 PHP_METHOD(Node, unlink)
-{	
+{
 	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
 
 	php_cmark_no_parameters();
@@ -728,6 +729,9 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 
 	php_cmark_node_ce = zend_register_internal_class(&ce);
 	php_cmark_node_ce->create_object = php_cmark_node_create;
+	php_cmark_node_ce->get_iterator = php_cmark_iterator_create;
+
+	zend_class_implements(php_cmark_node_ce, 1, zend_ce_traversable);
 
 	memcpy(&php_cmark_node_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 

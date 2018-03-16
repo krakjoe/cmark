@@ -8,6 +8,6 @@ if (PHP_CMARK != 'no') {
 		EXTENSION('cmark', 'cmark.c', null, 
 			'/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /I' + configure_module_dirname);
 
-		ADD_SOURCES(configure_module_dirname + "/src", "block.c break.c code.c document.c heading.c inline.c item.c list.c media.c node.c paragraph.c parse.c quote.c render.c text.c visitor.c", "cmark");
+		ADD_SOURCES(configure_module_dirname + "/src", "block.c break.c code.c document.c heading.c inline.c item.c list.c media.c node.c paragraph.c parse.c quote.c render.c text.c visitor.c iterator.c", "cmark");
 	}
 }

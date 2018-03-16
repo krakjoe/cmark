@@ -128,7 +128,7 @@ namespace CommonMark\Interfaces {
 
 namespace CommonMark {
 
-	final abstract class Node implements \CommonMark\Interfaces\IVisitable {
+	final abstract class Node implements \CommonMark\Interfaces\IVisitable, \Traversable {
 		public function getNext() : ?Node;
 		public function getPrevious() : ?Node;
 		public function getParent() : ?Node;
@@ -139,6 +139,7 @@ namespace CommonMark {
 		public function insertBefore(Node $sibling) : Node;
 		public function insertAfter(Node $sibling) : Node;
 		public function replace(Node $node) : Node;
+		public function unlink() : void;
 
 		public function accept(\CommonMark\Interfaces\IVisitor $visitor);
 	}
