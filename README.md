@@ -78,14 +78,14 @@ namespace CommonMark\Node {
 	final class FirstInline extends \CommonMark\Node {}
 	final class LastInline extends \CommonMark\Node {}
 
-	final class Image extends CommonMark\Node implements \CommonMark\Interfaces\IMedia {
+	final class Image extends \CommonMark\Node implements \CommonMark\Interfaces\IMedia {
 		public function setURL(string $url) : Image;
 		public function getURL() : ?string;
 		public function setTitle(string $title) : Image;
 		public function getTitle() : ?string;
 	}
 
-	final class Link extends CommonMark\Node implements \CommonMark\Interfaces\IMedia {
+	final class Link extends \CommonMark\Node implements \CommonMark\Interfaces\IMedia {
 		public function setURL(string $url) : Link;
 		public function getURL() : ?string;
 		public function setTitle(string $title) : Link;
