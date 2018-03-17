@@ -18,6 +18,6 @@
 #ifndef HAVE_PHP_CMARK_ITERATOR_H
 #define HAVE_PHP_CMARK_ITERATOR_H
 
-zend_object_iterator* php_cmark_iterator_create(zend_class_entry *ce, zval *object, int by_ref);
+extern zend_object_iterator* php_cmark_iterator_create(zend_class_entry *ce, zval *object, int by_ref);
 
 #endif

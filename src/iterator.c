@@ -25,14 +25,13 @@
 #include <src/common.h>
 #include <src/node.h>
 
-/* {{{ object iterator structure */
 typedef struct _php_cmark_iterator_t {
 	zend_object_iterator zit;
 	zval                 zo;
 	cmark_event_type     ev;
 	cmark_iter          *it;
 	cmark_node          *ro;
-} php_cmark_iterator_t; /* }}} */
+} php_cmark_iterator_t;
 
 static inline void php_cmark_iterator_dtor(php_cmark_iterator_t* iterator) {
 	cmark_iter_free(iterator->it);
