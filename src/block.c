@@ -28,9 +28,6 @@ zend_class_entry *php_cmark_node_code_block_ce;
 zend_class_entry *php_cmark_node_html_block_ce;
 zend_class_entry *php_cmark_node_custom_block_ce;
 
-zend_class_entry *php_cmark_node_first_block_ce;
-zend_class_entry *php_cmark_node_last_block_ce;
-
 PHP_METHOD(CodeBlock, __construct)
 {
 	php_cmark_no_parameters();
@@ -104,30 +101,6 @@ static zend_function_entry php_cmark_node_custom_block_methods[] = {
 	PHP_FE_END
 };
 
-PHP_METHOD(FirstBlock, __construct)
-{
-	php_cmark_no_parameters();
-
-	php_cmark_node_new(getThis(), CMARK_NODE_FIRST_BLOCK);
-}
-
-static zend_function_entry php_cmark_node_first_block_methods[] = {
-	PHP_ME(FirstBlock, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
-
-PHP_METHOD(LastBlock, __construct)
-{
-	php_cmark_no_parameters();
-
-	php_cmark_node_new(getThis(), CMARK_NODE_LAST_BLOCK);
-}
-
-static zend_function_entry php_cmark_node_last_block_methods[] = {
-	PHP_ME(LastBlock, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
-
 PHP_MINIT_FUNCTION(CommonMark_Node_Block) 
 {
 	zend_class_entry ce;
@@ -144,14 +117,6 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Block)
 
 	php_cmark_node_custom_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
 
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "FirstBlock", php_cmark_node_first_block_methods);
-
-	php_cmark_node_first_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
-
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "LastBlock", php_cmark_node_last_block_methods);
-
-	php_cmark_node_last_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
-
 	return SUCCESS;
 }
 
@@ -160,8 +125,6 @@ PHP_RINIT_FUNCTION(CommonMark_Node_Block)
 	php_cmark_node_code_block_ce->ce_flags |= ZEND_ACC_FINAL;
 	php_cmark_node_html_block_ce->ce_flags |= ZEND_ACC_FINAL;
 	php_cmark_node_custom_block_ce->ce_flags |= ZEND_ACC_FINAL;
-	php_cmark_node_first_block_ce->ce_flags |= ZEND_ACC_FINAL;
-	php_cmark_node_last_block_ce->ce_flags |= ZEND_ACC_FINAL;
 
 	return SUCCESS;
 }

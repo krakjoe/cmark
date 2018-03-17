@@ -59,8 +59,11 @@ namespace CommonMark\Node {
 
 	final class Code extends Text {}
 	final class CodeBlock extends Text {}
-	final class HTMLInline extends Text {}
+	final class CustomBlock extends \CommonMark\Node {}
 	final class HTMLBlock extends Text {}
+
+	final class HTMLInline extends Text {}
+	final class CustomInline extends \CommonMark\Node {}
 
 	final class Heading extends \CommonMark\Node {}
 	final class Paragraph extends \CommonMark\Node {}
@@ -69,14 +72,6 @@ namespace CommonMark\Node {
 	final class ThematicBreak extends \CommonMark\Node {}
 	final class SoftBreak extends \CommonMark\Node {}
 	final class LineBreak extends \CommonMark\Node {}
-
-	final class CustomBlock extends \CommonMark\Node {}
-	final class FirstBlock extends \CommonMark\Node {}
-	final class LastBlock extends \CommonMark\Node {}
-
-	final class CustomInline extends \CommonMark\Node {}
-	final class FirstInline extends \CommonMark\Node {}
-	final class LastInline extends \CommonMark\Node {}
 
 	final class Image extends \CommonMark\Node implements \CommonMark\Interfaces\IMedia {
 		public function setURL(string $url) : Image;

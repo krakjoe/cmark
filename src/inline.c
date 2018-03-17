@@ -27,9 +27,6 @@
 zend_class_entry *php_cmark_node_html_inline_ce;
 zend_class_entry *php_cmark_node_custom_inline_ce;
 
-zend_class_entry *php_cmark_node_first_inline_ce;
-zend_class_entry *php_cmark_node_last_inline_ce;
-
 PHP_METHOD(HTMLInline, __construct)
 {
 	php_cmark_no_parameters();
@@ -54,30 +51,6 @@ static zend_function_entry php_cmark_node_custom_inline_methods[] = {
 	PHP_FE_END
 };
 
-PHP_METHOD(FirstInline, __construct)
-{
-	php_cmark_no_parameters();
-
-	php_cmark_node_new(getThis(), CMARK_NODE_FIRST_INLINE);
-}
-
-static zend_function_entry php_cmark_node_first_inline_methods[] = {
-	PHP_ME(FirstInline, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
-
-PHP_METHOD(LastInline, __construct)
-{
-	php_cmark_no_parameters();
-
-	php_cmark_node_new(getThis(), CMARK_NODE_LAST_INLINE);
-}
-
-static zend_function_entry php_cmark_node_last_inline_methods[] = {
-	PHP_ME(LastInline, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
-
 PHP_MINIT_FUNCTION(CommonMark_Node_Inline) 
 {
 	zend_class_entry ce;
@@ -90,14 +63,6 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Inline)
 
 	php_cmark_node_custom_inline_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
 
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "FirstInline", php_cmark_node_first_inline_methods);
-
-	php_cmark_node_first_inline_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
-
-	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "LastInline", php_cmark_node_last_inline_methods);
-
-	php_cmark_node_last_inline_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
-
 	return SUCCESS;
 }
 
@@ -105,8 +70,6 @@ PHP_RINIT_FUNCTION(CommonMark_Node_Inline)
 {
 	php_cmark_node_html_inline_ce->ce_flags |= ZEND_ACC_FINAL;
 	php_cmark_node_custom_inline_ce->ce_flags |= ZEND_ACC_FINAL;
-	php_cmark_node_first_inline_ce->ce_flags |= ZEND_ACC_FINAL;
-	php_cmark_node_last_inline_ce->ce_flags |= ZEND_ACC_FINAL;
 
 	return SUCCESS;
 }
