@@ -236,6 +236,14 @@ static inline void php_cmark_node_clone_impl(php_cmark_node_t *target, cmark_nod
 				target->node,
 				cmark_node_get_title(source));
 		break;
+
+		case CMARK_NODE_CUSTOM_BLOCK:
+		case CMARK_NODE_CUSTOM_INLINE:
+			cmark_node_set_on_enter(target->node,
+				cmark_node_get_on_enter(source));
+			cmark_node_set_on_exit(target->node,
+				cmark_node_get_on_exit(source));
+		break;
 	}
 
 	if (cmark_node_first_child(source)) {
@@ -280,6 +288,20 @@ static inline void php_cmark_node_debug_impl(HashTable* debug, php_cmark_node_t 
 
 			zend_hash_str_update(debug, "url", sizeof("url")-1, &url);
 			zend_hash_str_update(debug, "title", sizeof("title")-1, &title);
+		} break;
+
+		case CMARK_NODE_CUSTOM_BLOCK:
+		case CMARK_NODE_CUSTOM_INLINE: {
+			zval enter;
+			zval leave;
+
+			ZVAL_STRING(&enter,
+				cmark_node_get_on_enter(parent->node));
+			ZVAL_STRING(&leave,	
+				cmark_node_get_on_exit(parent->node));
+
+			zend_hash_str_update(debug, "enter", sizeof("enter")-1, &enter);
+			zend_hash_str_update(debug, "leave", sizeof("leave")-1, &leave);
 		} break;
 	}
 
@@ -707,6 +729,11 @@ static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visi
 		if (Z_TYPE(result) == IS_LONG && Z_LVAL(result) > CMARK_EVENT_NONE) {
 			cmark_iter_reset(iterator, 
 				node->node, (cmark_event_type) Z_LVAL(result));
+		}
+
+		if (Z_TYPE(result) == IS_OBJECT && instanceof_function(Z_OBJCE(result), php_cmark_node_ce)) {
+			cmark_iter_reset(iterator,
+				php_cmark_node_fetch(&result)->node, CMARK_EVENT_ENTER);
 		}
 
 		if (Z_REFCOUNTED(result)) {

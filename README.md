@@ -59,11 +59,21 @@ namespace CommonMark\Node {
 
 	final class Code extends Text {}
 	final class CodeBlock extends Text {}
-	final class CustomBlock extends \CommonMark\Node {}
+	final class CustomBlock extends \CommonMark\Node {
+		public function setOnEnter(string $literal) : Node;
+		public function setOnLeave(string $literal) : Node;
+		public function getOnEnter() : ?string;
+		public function getOnLeave() : ?string;
+	}
 	final class HTMLBlock extends Text {}
 
 	final class HTMLInline extends Text {}
-	final class CustomInline extends \CommonMark\Node {}
+	final class CustomInline extends \CommonMark\Node {
+		public function setOnEnter(string $literal) : Node;
+		public function setOnLeave(string $literal) : Node;
+		public function getOnEnter() : ?string;
+		public function getOnLeave() : ?string;
+	}
 
 	final class Heading extends \CommonMark\Node {}
 	final class Paragraph extends \CommonMark\Node {}
@@ -112,8 +122,8 @@ namespace CommonMark\Interfaces {
 		const Enter;
 		const Leave;
 
-		public function enter(\CommonMark\Node $node) : ?int;
-		public function leave(\CommonMark\Node $node) : ?int;
+		public function enter(\CommonMark\Node $node);
+		public function leave(\CommonMark\Node $node);
 	}
 
 	final interface IVisitable {
@@ -124,15 +134,25 @@ namespace CommonMark\Interfaces {
 namespace CommonMark {
 
 	final abstract class Node implements \CommonMark\Interfaces\IVisitable, \Traversable {
+		public function getStartLine() : int;
+		public function getEndLine() : int;
+
+		public function getStartColumn() : int;
+		public function getEndColumn() : int;
+
 		public function getNext() : ?Node;
 		public function getPrevious() : ?Node;
 		public function getParent() : ?Node;
+
 		public function getFirstChild() : ?Node;
 		public function getLastChild() : ?Node;
+
 		public function appendChild(Node $child) : Node;
 		public function prependChild(Node $child) : Node;
+
 		public function insertBefore(Node $sibling) : Node;
 		public function insertAfter(Node $sibling) : Node;
+
 		public function replace(Node $node) : Node;
 		public function unlink() : void;
 

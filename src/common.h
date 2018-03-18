@@ -69,4 +69,8 @@ ZEND_BEGIN_ARG_INFO_EX(php_cmark_set_string_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, string)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_custom_set, 0, 0, 1)
+	ZEND_ARG_INFO(0, literal)
+ZEND_END_ARG_INFO()
+
 #endif

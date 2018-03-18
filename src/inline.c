@@ -22,6 +22,7 @@
 
 #include <src/common.h>
 #include <src/node.h>
+#include <src/custom.h>
 #include <src/text.h>
 
 zend_class_entry *php_cmark_node_html_inline_ce;
@@ -48,6 +49,10 @@ PHP_METHOD(CustomInline, __construct)
 
 static zend_function_entry php_cmark_node_custom_inline_methods[] = {
 	PHP_ME(CustomInline, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Custom, setOnEnter, php_cmark_node_custom_set, ZEND_ACC_PUBLIC)
+	PHP_ME(Custom, setOnLeave, php_cmark_node_custom_set, ZEND_ACC_PUBLIC)
+	PHP_ME(Custom, getOnEnter, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Custom, getOnLeave, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
