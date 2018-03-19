@@ -21,7 +21,6 @@
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_render_without_width, 0, 0, 1)
 	ZEND_ARG_OBJ_INFO(0, node, CommonMark\\Node, 0)
 	ZEND_ARG_INFO(0, options)
-	ZEND_ARG_INFO(0, width)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_render_with_width, 0, 0, 1)
