@@ -509,10 +509,9 @@ PHP_METHOD(Node, appendChild)
 {
 	zval *child;
 
-	if (php_cmark_parse_parameters("O", &child, php_cmark_node_ce) != SUCCESS) {
-		php_cmark_wrong_parameters("node expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		Z_PARAM_OBJECT_OF_CLASS(child, php_cmark_node_ce)
+	ZEND_PARSE_PARAMETERS_END();
 
 	switch (php_cmark_node_edit(
 			cmark_node_append_child,
@@ -540,10 +539,9 @@ PHP_METHOD(Node, prependChild)
 {
 	zval *child;
 
-	if (php_cmark_parse_parameters("O", &child, php_cmark_node_ce) != SUCCESS) {
-		php_cmark_wrong_parameters("node expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		Z_PARAM_OBJECT_OF_CLASS(child, php_cmark_node_ce)
+	ZEND_PARSE_PARAMETERS_END();
 
 	switch (php_cmark_node_edit(
 			cmark_node_prepend_child, 
@@ -575,10 +573,9 @@ PHP_METHOD(Node, insertBefore)
 {
 	zval *sibling;
 
-	if (php_cmark_parse_parameters("O", &sibling, php_cmark_node_ce) != SUCCESS) {
-		php_cmark_wrong_parameters("node expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		Z_PARAM_OBJECT_OF_CLASS(sibling, php_cmark_node_ce)
+	ZEND_PARSE_PARAMETERS_END();
 
 	switch (php_cmark_node_edit(
 			cmark_node_insert_before, 
@@ -606,10 +603,9 @@ PHP_METHOD(Node, insertAfter)
 {
 	zval *sibling;
 
-	if (php_cmark_parse_parameters("O", &sibling, php_cmark_node_ce) != SUCCESS) {
-		php_cmark_wrong_parameters("node expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		Z_PARAM_OBJECT_OF_CLASS(sibling, php_cmark_node_ce)
+	ZEND_PARSE_PARAMETERS_END();
 
 	switch (php_cmark_node_edit(
 			cmark_node_insert_after, 
@@ -641,10 +637,9 @@ PHP_METHOD(Node, replace)
 {
 	zval *target;
 
-	if (php_cmark_parse_parameters("O", &target, php_cmark_node_ce) != SUCCESS) {
-		php_cmark_wrong_parameters("node expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		Z_PARAM_OBJECT_OF_CLASS(target, php_cmark_node_ce)
+	ZEND_PARSE_PARAMETERS_END();
 
 	switch (php_cmark_node_edit(
 			cmark_node_replace, 
@@ -756,11 +751,9 @@ PHP_METHOD(Node, accept)
 {
 	zval *visitor = NULL;
 
-	if (php_cmark_parse_parameters("O", &visitor, php_cmark_node_visitor_ce) != SUCCESS) {
-		php_cmark_wrong_parameters(
-			"node, with optional options and width expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		Z_PARAM_OBJECT_OF_CLASS(visitor, php_cmark_node_visitor_ce)
+	ZEND_PARSE_PARAMETERS_END();
 
 	php_cmark_node_accept_impl(php_cmark_node_fetch(getThis()), visitor);
 }

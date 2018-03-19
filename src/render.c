@@ -24,113 +24,120 @@
 #include <src/node.h>
 #include <src/visitor.h>
 
-PHP_FUNCTION(CommonMark_Render)
-{
-	zval *z;
-	php_cmark_node_t *n;
-	zend_long options = 0;
-	zend_long width = 0;
-	char *c;
+typedef struct _php_cmark_render_arg_t {
+	zend_long options;
+	zend_long width;
+} php_cmark_render_arg_t;
 
-	if (php_cmark_parse_parameters("O|ll", &z, php_cmark_node_ce, &options, &width) != SUCCESS) {
-		php_cmark_wrong_parameters(
-			"node, with optional options and width expected");
-		return;
-	}
+#define php_cmark_render_arg_empty {0, 0}
 
-	n = php_cmark_node_fetch(z);
+typedef char* (*php_cmark_render_func)(cmark_node *n, int options, int width);
+typedef char* (*php_cmark_render_func_no_width)(cmark_node *n, int options);
+
+static inline void php_cmark_render(zval *retval, php_cmark_node_t *n, php_cmark_render_func func, php_cmark_render_arg_t *arg, zend_bool width) {
+	char *result = 
+		width ? 
+			((php_cmark_render_func)func)
+				(n->node, arg->options, arg->width) :
+			((php_cmark_render_func_no_width)func)
+				(n->node, arg->options);
+
+	ZVAL_STRING(retval, result);
 	
-	ZVAL_STRING(return_value, 
-		(c = cmark_render_commonmark(n->node, options, width)));
-
-	efree(c);
+	efree(result);	
 }
 
+PHP_FUNCTION(CommonMark_Render)
+{
+	zval *node;
+	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
+
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
+		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG(arg.options)
+		Z_PARAM_LONG(arg.width)
+	ZEND_PARSE_PARAMETERS_END();
+
+	php_cmark_render(
+		return_value,
+		php_cmark_node_fetch(node), 
+		(php_cmark_render_func) cmark_render_commonmark,
+		&arg, 1);
+}
 
 PHP_FUNCTION(CommonMark_Render_XML)
 {
-	zval *z;
-	php_cmark_node_t *n;
-	zend_long options = 0;
-	char *c;
+	zval *node;
+	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	if (php_cmark_parse_parameters("O|l", &z, php_cmark_node_ce, &options) != SUCCESS) {
-		php_cmark_wrong_parameters(
-			"node, with optional options");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
+		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG(arg.options)
+	ZEND_PARSE_PARAMETERS_END();
 
-	n = php_cmark_node_fetch(z);
-
-	ZVAL_STRING(return_value, 
-		(c = cmark_render_xml(n->node, options)));
-
-	efree(c);
+	php_cmark_render(
+		return_value,
+		php_cmark_node_fetch(node), 
+		(php_cmark_render_func) cmark_render_xml,
+		&arg, 0);
 }
 
 PHP_FUNCTION(CommonMark_Render_HTML)
 {
-	zval *z;
-	php_cmark_node_t *n;
-	zend_long options = 0;
-	char *c;
+	zval *node;
+	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	if (php_cmark_parse_parameters("O|l", &z, php_cmark_node_ce, &options) != SUCCESS) {
-		php_cmark_wrong_parameters(
-			"node, with optional options");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
+		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG(arg.options)
+	ZEND_PARSE_PARAMETERS_END();
 
-	n = php_cmark_node_fetch(z);
-	
-	ZVAL_STRING(return_value, 
-		(c = cmark_render_html(n->node, options)));
-
-	efree(c);
+	php_cmark_render(
+		return_value,
+		php_cmark_node_fetch(node), 
+		(php_cmark_render_func) cmark_render_html,
+		&arg, 0);
 }
 
 PHP_FUNCTION(CommonMark_Render_Man)
 {
-	zval *z;
-	php_cmark_node_t *n;
-	zend_long options = 0;
-	zend_long width = 0;
-	char *c;
+	zval *node;
+	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	if (php_cmark_parse_parameters("O|ll", &z, php_cmark_node_ce, &options, &width) != SUCCESS) {
-		php_cmark_wrong_parameters(
-			"node, with optional options and width expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
+		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG(arg.options)
+		Z_PARAM_LONG(arg.width)
+	ZEND_PARSE_PARAMETERS_END();
 
-	n = php_cmark_node_fetch(z);
-	
-	ZVAL_STRING(return_value, 
-		(c = cmark_render_man(n->node, options, width)));
-
-	efree(c);
+	php_cmark_render(
+		return_value,
+		php_cmark_node_fetch(node), 
+		(php_cmark_render_func) cmark_render_man,
+		&arg, 1);
 }
 
 PHP_FUNCTION(CommonMark_Render_Latex)
 {
-	zval *z;
-	php_cmark_node_t *n;
-	zend_long options = 0;
-	zend_long width = 0;
-	char *c;
+	zval *node;
+	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	if (php_cmark_parse_parameters("O|ll", &z, php_cmark_node_ce, &options, &width) != SUCCESS) {
-		php_cmark_wrong_parameters(
-			"node, with optional options and width expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
+		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_LONG(arg.options)
+		Z_PARAM_LONG(arg.width)
+	ZEND_PARSE_PARAMETERS_END();
 
-	n = php_cmark_node_fetch(z);
-	
-	ZVAL_STRING(return_value, 
-		(c = cmark_render_latex(n->node, options, width)));
-
-	efree(c);
+	php_cmark_render(
+		return_value,
+		php_cmark_node_fetch(node), 
+		(php_cmark_render_func) cmark_render_latex,
+		&arg, 1);
 }
 
 PHP_MINIT_FUNCTION(CommonMark_Render) 
