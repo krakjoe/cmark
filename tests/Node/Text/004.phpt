@@ -4,7 +4,7 @@ CommonMark\Node\Text Literals Construct
 <?php
 $text = new CommonMark\Node\Text("OK");
 
-echo $text->getLiteral();
+echo $text->literal;
 ?>
 --EXPECT--
 OK

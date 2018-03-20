@@ -2,12 +2,12 @@
 CommonMark\Render HTML
 --FILE--
 <?php
+$text = new CommonMark\Node\Text;
+$text->literal = "Hello World";
 $document = new CommonMark\Node\Document;
 $document->appendChild(
 	(new CommonMark\Node\Paragraph)
-		->appendChild(
-			(new CommonMark\Node\Text)
-				->setLiteral("Hello World")));
+		->appendChild($text));
 echo CommonMark\Render\HTML($document);
 ?>
 --EXPECT--

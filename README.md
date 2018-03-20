@@ -21,101 +21,77 @@ API
 
 ```
 namespace CommonMark\Node {
-	final class Document extends \CommonMark\Node {}
-	final class BlockQuote extends \CommonMark\Node {}
 
-	final class BulletList extends \CommonMark\Node implements \CommonMark\Interfaces\IList {
-		public function setTight(bool $tightness);
-		public function isTight() : bool;
+	final class Document 		extends \CommonMark\Node {}
 
-		public function setDelimitPeriod();
-		public function hasPeriodDelim() : bool;
-		public function setDelimitParen();
-		public function hasParenDelim() : bool;
+	const Lists\Delimit\Period;
+	const Lists\Delimit\Paren;
+
+	final class BulletList 		extends \CommonMark\Node {
+		public $tight;
+		public $delimiter;
 	}
 
-	final class OrderedList extends \CommonMark\Node implements  \CommonMark\Interfaces\IList {
-		public function getStart() : int;
-		public function setStart(int $start);
-
-		public function setTight(bool $tightness);
-		public function isTight() : bool;
-
-		public function setDelimitPeriod();
-		public function hasPeriodDelim() : bool;
-		public function setDelimitParen();
-		public function hasParenDelim() : bool;
+	final class OrderedList		extends \CommonMark\Node {
+		public $tight;
+		public $delimiter;
+		public $start;
 	}
 
-	final class Item extends \CommonMark\Node {}
+	final class Item		extends \CommonMark\Node {}
 
-	final class Text extends \CommonMark\Node {
+	final class Heading		extends \CommonMark\Node {
+		public $level;
+	}
+
+	final class BlockQuote		extends \CommonMark\Node {}
+	final class Paragraph		extends \CommonMark\Node {}
+
+	final class Strong		extends \CommonMark\Node {}
+	final class Emphasis		extends \CommonMark\Node {}
+	final class ThematicBreak	extends \CommonMark\Node {}
+	final class SoftBreak		extends \CommonMark\Node {}
+	final class LineBreak		extends \CommonMark\Node {}
+
+	final class Text 		extends \CommonMark\Node {
+		public $literal;
+
 		public function __construct();
 		public function __construct(string $literal);
-
-		public function setLiteral(string $ltieral) : Text;
-		public function getLiteral() : ?string;
 	}
 
-	final class Code extends Text {}
-	final class CodeBlock extends Text {}
-	final class CustomBlock extends \CommonMark\Node {
-		public function setOnEnter(string $literal) : Node;
-		public function setOnLeave(string $literal) : Node;
-		public function getOnEnter() : ?string;
-		public function getOnLeave() : ?string;
-	}
-	final class HTMLBlock extends Text {}
+	final class Code		extends Text {}
+	final class HTMLBlock		extends Text {}
+	final class HTMLInline		extends Text {}
 
-	final class HTMLInline extends Text {}
-	final class CustomInline extends \CommonMark\Node {
-		public function setOnEnter(string $literal) : Node;
-		public function setOnLeave(string $literal) : Node;
-		public function getOnEnter() : ?string;
-		public function getOnLeave() : ?string;
+	final class CodeBlock		extends Text {
+		public $fence;
+
+		public function __construct(string $fence, string $literal);
 	}
 
-	final class Heading extends \CommonMark\Node {}
-	final class Paragraph extends \CommonMark\Node {}
-	final class Strong extends \CommonMark\Node {}
-	final class Emphasis extends \CommonMark\Node {}
-	final class ThematicBreak extends \CommonMark\Node {}
-	final class SoftBreak extends \CommonMark\Node {}
-	final class LineBreak extends \CommonMark\Node {}
-
-	final class Image extends \CommonMark\Node implements \CommonMark\Interfaces\IMedia {
-		public function setURL(string $url) : Image;
-		public function getURL() : ?string;
-		public function setTitle(string $title) : Image;
-		public function getTitle() : ?string;
+	final class Image		extends \CommonMark\Node {
+		public $url;
+		public $title;
 	}
 
-	final class Link extends \CommonMark\Node implements \CommonMark\Interfaces\IMedia {
-		public function setURL(string $url) : Link;
-		public function getURL() : ?string;
-		public function setTitle(string $title) : Link;
-		public function getTitle() : ?string;
+	final class Link		extends \CommonMark\Node {
+		public $url;
+		public $title;
+	}
+
+	final class CustomBlock		extends \CommonMark\Node {
+		public $onEnter;
+		public $onLeave;
+	}
+
+	final class CustomInline	extends \CommonMark\Node {
+		public $onEnter;
+		public $onLeave;
 	}
 }
 
 namespace CommonMark\Interfaces {
-	
-	final interface IList {
-		public function setTight(bool $tightness);
-		public function isTight() : bool;
-
-		public function setDelimitPeriod();
-		public function hasPeriodDelim() : bool;
-		public function setDelimitParen();
-		public function hasParenDelim() : bool;
-	}
-
-	final interface IMedia {
-		public function setURL(string $url) : \CommonMark\Interfaces\IMedia;
-		public function getURL() : ?string;
-		public function setTitle(string $title) : \CommonMark\Interfaces\IMedia;
-		public function getTitle() : ?string;
-	}
 
 	final interface IVisitor {
 		const Done;
@@ -134,11 +110,16 @@ namespace CommonMark\Interfaces {
 namespace CommonMark {
 
 	final abstract class Node implements \CommonMark\Interfaces\IVisitable, \Traversable {
-		public function getStartLine() : int;
-		public function getEndLine() : int;
+		public $parent;
+		public $previous;
+		public $next;
+		public $firstChild;
+		public $lastChild;
 
-		public function getStartColumn() : int;
-		public function getEndColumn() : int;
+		public $startLine;
+		public $endLine;
+		public $startColumn;
+		public $endColumn;
 
 		public function appendChild(Node $child) : Node;
 		public function prependChild(Node $child) : Node;
@@ -150,12 +131,6 @@ namespace CommonMark {
 		public function unlink() : void;
 
 		public function accept(\CommonMark\Interfaces\IVisitor $visitor);
-
-		public $parent;
-		public $previous;
-		public $next;
-		public $firstChild;
-		public $lastChild;
 	}
 
 	final class Parser {

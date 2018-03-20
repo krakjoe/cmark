@@ -3,9 +3,9 @@ CommonMark\Node\Heading Level
 --FILE--
 <?php
 $heading = new CommonMark\Node\Heading;
-$heading->setHeadingLevel(3);
+$heading->level = 3;
 
-echo $heading->getHeadingLevel();
+echo $heading->level;
 ?>
 --EXPECT--
 3

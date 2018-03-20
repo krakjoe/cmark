@@ -38,6 +38,11 @@ typedef struct _php_cmark_node_t {
 	zval next;
 	zval firstChild;
 	zval lastChild;
+
+	zval startLine;
+	zval endLine;
+	zval startColumn;
+	zval endColumn;
 } php_cmark_node_t;
 
 #define php_cmark_node_from(o) \

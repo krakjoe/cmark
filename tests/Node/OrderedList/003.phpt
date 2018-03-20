@@ -5,7 +5,7 @@ CommonMark\Node\OrderedList Start Errors
 $list = new CommonMark\Node\OrderedList;
 
 try {
-	$list->setStart([]);
+	$list->start = [];
 } catch (TypeError $ex) {
 	echo "OK";
 }

@@ -26,6 +26,7 @@
 #include "php_cmark.h"
 
 #include <src/node.h>
+#include <src/custom.h>
 #include <src/visitor.h>
 #include <src/text.h>
 #include <src/document.h>
@@ -57,6 +58,7 @@ PHP_MINIT_FUNCTION(cmark)
 	php_cmark_mem.free    = php_cmark_free_func;
 
 	PHP_MINIT(CommonMark_Node)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(CommonMark_Node_Custom)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Visitor)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Document)(INIT_FUNC_ARGS_PASSTHRU);
@@ -89,6 +91,7 @@ PHP_RINIT_FUNCTION(cmark)
 #endif
 
 	PHP_RINIT(CommonMark_Node)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_RINIT(CommonMark_Node_Custom)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Visitor)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Node_Document)(INIT_FUNC_ARGS_PASSTHRU);

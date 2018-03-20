@@ -22,6 +22,19 @@ extern HashTable* php_cmark_node_debug(zval *zv, int *tmp);
 extern zend_object* php_cmark_node_clone(zval *zv);
 extern void php_cmark_node_free(zend_object *zo);
 
+typedef int (*cmark_node_read_int) (cmark_node*);
+typedef const char* (*cmark_node_read_str) (cmark_node*);
+
+typedef int (*cmark_node_write_str) (cmark_node*, const char *content);
+typedef int (*cmark_node_write_int) (cmark_node*, int value);
+
+zval* php_cmark_node_read_bool(php_cmark_node_t *n, cmark_node_read_int cmark_node_read, zval *cache);
+zval* php_cmark_node_read_int(php_cmark_node_t *n, cmark_node_read_int cmark_node_read, zval *cache);
+zval* php_cmark_node_read_str(php_cmark_node_t *n, cmark_node_read_str cmark_node_read, zval *cache);
+void php_cmark_node_write_str(php_cmark_node_t *n, cmark_node_write_str cmark_node_write, zval *content, zval *cache);
+void php_cmark_node_write_int(php_cmark_node_t *n, cmark_node_write_int cmark_node_write, zval *value, zval *cache);
+void php_cmark_node_write_bool(php_cmark_node_t *n, cmark_node_write_int cmark_node_write, zval *value, zval *cache);
+
 extern zval* php_cmark_node_read(zval *object, zval *member, int type, void **rtc, zval *rv);
 extern void php_cmark_node_write(zval *object, zval *member, zval *value, void **rtc);
 extern int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **rtc);

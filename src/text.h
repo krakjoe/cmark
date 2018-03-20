@@ -24,4 +24,22 @@ extern zend_class_entry *php_cmark_node_text_strong_ce;
 
 extern PHP_MINIT_FUNCTION(CommonMark_Node_Text);
 extern PHP_RINIT_FUNCTION(CommonMark_Node_Text);
+
+extern zend_object_handlers php_cmark_node_text_handlers;
+
+typedef struct _php_cmark_node_text_t {
+	php_cmark_node_t h;
+	zval literal;
+} php_cmark_node_text_t;
+
+#define php_cmark_node_text_from(o) \
+	((php_cmark_node_text_t*) \
+		((char*) o - XtOffsetOf(php_cmark_node_text_t, h.std)))
+#define php_cmark_node_text_fetch(z) php_cmark_node_text_from(Z_OBJ_P(z))
+
+extern void php_cmark_node_text_free(zend_object *zo);
+extern int php_cmark_node_text_isset(zval *object, zval *member, int has_set_exists, void **rtc);
+extern void php_cmark_node_text_write(zval *object, zval *member, zval *value, void **rtc);
+extern zval* php_cmark_node_text_read(zval *object, zval *member, int type, void **rtc, zval *rv);
+extern void php_cmark_node_text_unset(zval *object, zval *member, void **rtc);
 #endif

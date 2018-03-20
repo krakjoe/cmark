@@ -5,7 +5,7 @@ CommonMark\Node\CustomBlock onLeave Error
 $node = new CommonMark\Node\CustomBlock;
 
 try {
-	$node->setOnLeave([]);
+	$node->onLeave = [];
 } catch (TypeError $ex) {
 	echo "OK";
 }

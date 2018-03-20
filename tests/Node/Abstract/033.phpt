@@ -1,5 +1,5 @@
 --TEST--
-CommonMark\Node getStartLine
+CommonMark\Node startLine
 --FILE--
 <?php
 $doc = CommonMark\Parse(<<<EOD
@@ -8,7 +8,7 @@ Title
 EOD
 );
 
-if ($doc->getStartLine() == 1) {
+if ($doc->startLine == 1) {
 	echo "OK";
 }
 ?>

@@ -3,9 +3,9 @@ CommonMark\Node\IMedia URL
 --FILE--
 <?php
 $link = new CommonMark\Node\Link;
-$link->setURL("OK");
+$link->url = "OK";
 
-echo $link->getURL();
+echo $link->url;
 ?>
 --EXPECT--
 OK

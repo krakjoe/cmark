@@ -5,8 +5,8 @@ CommonMark\Node\CustomBlock clone
 $doc = new CommonMark\Node\Document;
 
 $node = new CommonMark\Node\CustomBlock;
-$node->setOnEnter("ENTER");
-$node->setOnLeave("LEAVE");
+$node->onEnter = "ENTER";
+$node->onLeave = "LEAVE";
 $node->appendChild(
 	new CommonMark\Node\Text("NODE"));
 

@@ -4,7 +4,7 @@ CommonMark\Node\IMedia URL Errors
 <?php
 $link = new CommonMark\Node\Link;
 
-if (!$link->getURL()) {
+if (!$link->url) {
 	echo "OK";
 }
 ?>

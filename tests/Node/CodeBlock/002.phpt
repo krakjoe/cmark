@@ -3,9 +3,9 @@ CommonMark\Node\CodeBlock Fence
 --FILE--
 <?php
 $block = new CommonMark\Node\CodeBlock;
-$block->setFence("OK");
+$block->fence = "OK";
 
-echo $block->getFence();
+echo $block->fence;
 ?>
 --EXPECT--
 OK

@@ -4,7 +4,7 @@ CommonMark\Node\CustomInline onLeave Empty
 <?php
 $node = new CommonMark\Node\CustomInline;
 
-if (!$node->getOnLeave()) {
+if (!$node->onLeave) {
 	echo "OK";
 }
 ?>

@@ -5,7 +5,7 @@ CommonMark\Node\Heading Level Error
 $heading = new CommonMark\Node\Heading;
 
 try {
-	$heading->setHeadingLevel([]);
+	$heading->level = [];
 } catch (TypeError $ex) {
 	echo "OK";
 }

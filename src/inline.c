@@ -49,10 +49,6 @@ PHP_METHOD(CustomInline, __construct)
 
 static zend_function_entry php_cmark_node_custom_inline_methods[] = {
 	PHP_ME(CustomInline, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Custom, setOnEnter, php_cmark_node_custom_set, ZEND_ACC_PUBLIC)
-	PHP_ME(Custom, setOnLeave, php_cmark_node_custom_set, ZEND_ACC_PUBLIC)
-	PHP_ME(Custom, getOnEnter, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Custom, getOnLeave, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
@@ -67,6 +63,14 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Inline)
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "CustomInline", php_cmark_node_custom_inline_methods);
 
 	php_cmark_node_custom_inline_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
+	php_cmark_node_custom_inline_ce->create_object = php_cmark_node_custom_create;
+
+#define php_cmark_node_custom_inline_property(n) \
+	zend_declare_property_null(php_cmark_node_custom_inline_ce, ZEND_STRL(n), ZEND_ACC_PUBLIC)
+
+	php_cmark_node_custom_inline_property("onEnter");
+	php_cmark_node_custom_inline_property("onLeave");
+#undef php_cmark_node_custom_inline_property
 
 	return SUCCESS;
 }

@@ -5,7 +5,7 @@ CommonMark\Node\IMedia URL Errors
 $link = new CommonMark\Node\Link;
 
 try {
-	$link->setURL([]);
+	$link->url = [];
 } catch(TypeError $ex) {
 	echo "OK\n";
 }

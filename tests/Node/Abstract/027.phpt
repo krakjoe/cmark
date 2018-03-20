@@ -12,7 +12,7 @@ $para->appendChild(
 $doc->accept(new class implements CommonMark\Interfaces\IVisitor {
 	public function enter(CommonMark\Node $node) {
 		if ($node instanceof CommonMark\Node\Text) {
-			echo $node->getLiteral();
+			echo $node->literal;
 		}
 	}
 

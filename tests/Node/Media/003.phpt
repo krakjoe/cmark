@@ -4,7 +4,7 @@ CommonMark\Node\IMedia Title Errors
 <?php
 $link = new CommonMark\Node\Link;
 
-if (!$link->getTitle()) {
+if (!$link->title) {
 	echo "OK";
 }
 ?>

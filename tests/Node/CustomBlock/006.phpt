@@ -4,7 +4,7 @@ CommonMark\Node\CustomBlock onEnter Empty
 <?php
 $node = new CommonMark\Node\CustomBlock;
 
-if (!$node->getOnEnter()) {
+if (!$node->onEnter) {
 	echo "OK";
 }
 ?>

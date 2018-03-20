@@ -5,8 +5,8 @@ CommonMark\Node\CustomInline clone
 $para = new CommonMark\Node\Paragraph;
 
 $node = new CommonMark\Node\CustomInline;
-$node->setOnEnter("ENTER");
-$node->setOnLeave("LEAVE");
+$node->onEnter = "ENTER";
+$node->onLeave = "LEAVE";
 $node->appendChild(
 	new CommonMark\Node\Text("NODE"));
 

@@ -5,7 +5,7 @@ CommonMark\Node\CustomInline onLeave Error
 $node = new CommonMark\Node\CustomInline;
 
 try {
-	$node->setOnLeave([]);
+	$node->onLeave = [];
 } catch (TypeError $ex) {
 	echo "OK";
 }

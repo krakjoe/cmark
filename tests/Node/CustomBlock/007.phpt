@@ -4,7 +4,7 @@ CommonMark\Node\CustomBlock onLeave Empty
 <?php
 $node = new CommonMark\Node\CustomBlock;
 
-if (!$node->getOnLeave()) {
+if (!$node->onLeave) {
 	echo "OK";
 }
 ?>

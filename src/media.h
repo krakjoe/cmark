@@ -18,7 +18,6 @@
 #ifndef PHP_CMARK_NODE_MEDIA_H
 #define PHP_CMARK_NODE_MEDIA_H
 
-extern zend_class_entry *php_cmark_node_media_ce;
 extern zend_class_entry *php_cmark_node_link_ce;
 extern zend_class_entry *php_cmark_node_image_ce;
 

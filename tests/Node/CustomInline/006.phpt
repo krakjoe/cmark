@@ -4,7 +4,7 @@ CommonMark\Node\CustomInline onEnter Empty
 <?php
 $node = new CommonMark\Node\CustomInline;
 
-if (!$node->getOnEnter()) {
+if (!$node->onEnter) {
 	echo "OK";
 }
 ?>

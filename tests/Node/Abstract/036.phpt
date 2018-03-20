@@ -1,5 +1,5 @@
 --TEST--
-CommonMark\Node getEndColumn
+CommonMark\Node endColumn
 --FILE--
 <?php
 $doc = CommonMark\Parse(<<<EOD
@@ -8,7 +8,7 @@ Title
 EOD
 );
 
-if ($doc->getEndColumn() == 5) {
+if ($doc->endColumn == 5) {
 	echo "OK";
 }
 ?>

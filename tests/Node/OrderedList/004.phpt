@@ -5,8 +5,8 @@ CommonMark\Node\OrderedList Start Negative
 $list = new CommonMark\Node\OrderedList;
 
 try {
-	$list->setStart(-1);
-} catch (TypeError $ex) {
+	$list->start = -1;
+} catch (RuntimeException $ex) {
 	echo "OK";
 }
 ?>

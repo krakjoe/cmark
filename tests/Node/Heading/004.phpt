@@ -5,7 +5,7 @@ CommonMark\Node\Heading Level Error
 $heading = new CommonMark\Node\Heading;
 
 try {
-	$heading->setHeadingLevel(42);
+	$heading->level = 42;
 } catch (RuntimeException $ex) {
 	echo "OK";
 }

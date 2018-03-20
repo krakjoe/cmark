@@ -5,7 +5,7 @@ CommonMark\Node\IMedia Title Errors
 $link = new CommonMark\Node\Link;
 
 try {
-	$link->setTitle([]);
+	$link->title = [];
 } catch(TypeError $ex) {
 	echo "OK\n";
 }

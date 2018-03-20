@@ -23,7 +23,7 @@ foreach ($doc as $ev => $node) {
 	printf("%s", get_class($node));
 
 	if ($node instanceof CommonMark\Node\Text) {
-		printf(": %s\n", $node->getLiteral());
+		printf(": %s\n", $node->literal);
 	} else printf("\n");
 }
 ?>

@@ -4,9 +4,9 @@ CommonMark\Node\CustomBlock onLeave
 <?php
 $node = new CommonMark\Node\CustomBlock;
 
-$node->setOnLeave("OK");
+$node->onLeave = "OK";
 
-echo $node->getOnLeave();
+echo $node->onLeave;
 ?>
 --EXPECT--
 OK

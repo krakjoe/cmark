@@ -5,7 +5,7 @@ CommonMark\Node\CodeBlock Fence Error
 $block = new CommonMark\Node\CodeBlock;
 
 try {
-	$block->setFence([]);
+	$block->fence = [];
 } catch (TypeError $ex) {
 	echo "OK";
 }

@@ -1,5 +1,5 @@
 --TEST--
-CommonMark\Node getStartColumn
+CommonMark\Node startColumn
 --FILE--
 <?php
 $doc = CommonMark\Parse(<<<EOD
@@ -8,7 +8,7 @@ Title
 EOD
 );
 
-if ($doc->getStartColumn() == 1) {
+if ($doc->startColumn == 1) {
 	echo "OK";
 }
 ?>

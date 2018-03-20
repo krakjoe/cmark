@@ -111,9 +111,7 @@ zend_class_entry* php_cmark_node_class(cmark_node* node) {
 				return php_cmark_node_list_ordered_ce;
 			case CMARK_BULLET_LIST:
 				return php_cmark_node_list_bullet_ce;
-			default:
-				return php_cmark_node_list_ce;
-		}
+		} break;
 		case CMARK_NODE_ITEM:
 			return php_cmark_node_item_ce;
 		case CMARK_NODE_CODE_BLOCK:
@@ -189,42 +187,6 @@ php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node, ze
 	}
 
 	return n;
-}
-
-PHP_METHOD(Node, getStartLine) 
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	RETURN_LONG(cmark_node_get_start_line(n->node));
-}
-
-PHP_METHOD(Node, getEndLine)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	RETURN_LONG(cmark_node_get_end_line(n->node));
-}
-
-PHP_METHOD(Node, getStartColumn)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	RETURN_LONG(cmark_node_get_start_column(n->node));
-}
-
-PHP_METHOD(Node, getEndColumn)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	RETURN_LONG(cmark_node_get_end_column(n->node));
 }
 
 ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_node_add, 0, 1, CommonMark\\Node, 0)
@@ -421,10 +383,6 @@ PHP_METHOD(Node, accept)
 }
 
 static zend_function_entry php_cmark_node_type_methods[] = {
-	PHP_ME(Node, getStartLine, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getStartColumn, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getEndLine, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getEndColumn, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, appendChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, prependChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, insertBefore, php_cmark_node_insert, ZEND_ACC_PUBLIC)
@@ -452,6 +410,11 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 	php_cmark_node_property("next");
 	php_cmark_node_property("lastChild");
 	php_cmark_node_property("firstChild");
+
+	php_cmark_node_property("startLine");
+	php_cmark_node_property("endLine");
+	php_cmark_node_property("startColumn");
+	php_cmark_node_property("endColumn");
 #undef php_cmark_node_property
 
 	zend_class_implements(php_cmark_node_ce, 1, zend_ce_traversable);

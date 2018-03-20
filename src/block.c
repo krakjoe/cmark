@@ -24,57 +24,182 @@
 #include <src/node.h>
 #include <src/custom.h>
 #include <src/text.h>
+#include <src/handlers.h>
 
 zend_class_entry *php_cmark_node_code_block_ce;
 zend_class_entry *php_cmark_node_html_block_ce;
 zend_class_entry *php_cmark_node_custom_block_ce;
 
-PHP_METHOD(CodeBlock, __construct)
-{
-	php_cmark_no_parameters();
+zend_object_handlers php_cmark_node_code_block_handlers;
 
-	php_cmark_node_new(getThis(), CMARK_NODE_CODE_BLOCK);
+typedef struct _php_cmark_node_code_block_t {
+	php_cmark_node_text_t h;
+	zval fence;
+} php_cmark_node_code_block_t;
+
+#define php_cmark_node_code_block_from(o) \
+	((php_cmark_node_code_block_t*) \
+		((char*) o - XtOffsetOf(php_cmark_node_code_block_t, h.h.std)))
+#define php_cmark_node_code_block_fetch(z) php_cmark_node_code_block_from(Z_OBJ_P(z))
+
+zend_object* php_cmark_node_code_block_create(zend_class_entry *ce) {
+	php_cmark_node_code_block_t *n = 
+		(php_cmark_node_code_block_t*) 
+			ecalloc(1, sizeof(php_cmark_node_code_block_t));
+
+	zend_object_std_init(
+		php_cmark_node_zend(&n->h.h), ce);
+
+	n->h.h.std.handlers = &php_cmark_node_code_block_handlers;
+
+	return php_cmark_node_zend(&n->h.h);
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_code_block_set_fence, 0, 0, 1)
-	ZEND_ARG_INFO(0, info)
+zval* php_cmark_node_code_block_read(zval *object, zval *member, int type, void **rtc, zval *rv) {
+	php_cmark_node_code_block_t *n = php_cmark_node_code_block_fetch(object);
+
+	if (Z_TYPE_P(member) != IS_STRING) {
+		goto php_cmark_node_code_block_read_error;
+	}
+
+	if (EXPECTED(rtc)) {
+		if (*rtc == cmark_node_get_fence_info)
+			return php_cmark_node_read_str(&n->h.h, cmark_node_get_fence_info, &n->fence);
+	}
+
+	if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
+		if (rtc) 
+			*rtc = cmark_node_get_fence_info;
+		return php_cmark_node_read_str(&n->h.h, cmark_node_get_fence_info, &n->fence);
+	}
+
+php_cmark_node_code_block_read_error:
+	return php_cmark_node_text_read(object, member, type, rtc, rv);
+}
+
+void php_cmark_node_code_block_write(zval *object, zval *member, zval *value, void **rtc) {
+	php_cmark_node_code_block_t *n = php_cmark_node_code_block_fetch(object);
+
+	if (EXPECTED(rtc)) {
+		if (*rtc == cmark_node_set_fence_info) {
+			php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, value, &n->fence);
+			return;
+		}	
+	}
+
+	if (Z_TYPE_P(member) == IS_STRING) {
+		if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
+			if (rtc)
+				*rtc = cmark_node_set_fence_info;
+			php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, value, &n->fence);
+			return;
+		}
+	}
+
+	php_cmark_node_text_write(object, member, value, rtc);
+}
+
+int php_cmark_node_code_block_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
+	php_cmark_node_code_block_t *n = php_cmark_node_code_block_fetch(object);
+	zval *zv = &EG(uninitialized_zval);
+
+	if (Z_TYPE_P(member) != IS_STRING) {
+		return 0;
+	}
+
+	if (has_set_exists == 2) {
+		if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
+			return 1;
+		}
+	}
+
+	if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
+		zv = php_cmark_node_read_str(&n->h.h, cmark_node_get_fence_info, &n->fence);
+	}
+
+	if (Z_TYPE_P(zv) == IS_STRING) {
+		return 1;
+	}
+
+	return php_cmark_node_text_isset(object, member, has_set_exists, rtc);
+}
+
+void php_cmark_node_code_block_unset(zval *object, zval *member, void **rtc) {
+	php_cmark_node_code_block_t *n = php_cmark_node_code_block_fetch(object);
+
+	if (Z_TYPE_P(member) != IS_STRING) {
+		goto php_cmark_node_code_block_unset_error;
+	}
+
+	if (EXPECTED(rtc)) {
+		if (*rtc == cmark_node_set_fence_info) {
+			php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, NULL, &n->fence);
+			return;
+		}
+	}
+
+	if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
+		if (rtc)	
+			*rtc = cmark_node_set_fence_info;
+		php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, NULL, &n->fence);
+		return;
+	}
+
+php_cmark_node_code_block_unset_error:
+	return php_cmark_node_text_unset(object, member, rtc);
+}
+
+void php_cmark_node_code_block_free(zend_object *zo) {
+	php_cmark_node_code_block_t *n = 
+		php_cmark_node_code_block_from(zo);
+
+	if (!Z_ISUNDEF(n->fence)) {
+		zval_ptr_dtor(&n->fence);
+	}
+
+	php_cmark_node_text_free(zo);
+}
+
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_code_block_construct, 0, 0, 0)
+	ZEND_ARG_INFO(0, fence)
+	ZEND_ARG_INFO(0, literal)
 ZEND_END_ARG_INFO()
 
-PHP_METHOD(CodeBlock, setFence)
+PHP_METHOD(CodeBlock, __construct)
 {
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	zend_string *info;
+	php_cmark_node_code_block_t *n = php_cmark_node_code_block_fetch(getThis());
+	zval *fence = NULL;
+	zval *literal = NULL;
 
-	if (php_cmark_parse_parameters("S", &info) != SUCCESS) {
-		php_cmark_wrong_parameters("info expected");
-		return;
+	if (ZEND_NUM_ARGS() == 1) {
+		if (php_cmark_parse_parameters("z",  &literal) != SUCCESS) {
+			php_cmark_wrong_parameters(
+				"expected literal");
+			return;
+		}
+	} else {
+		if (php_cmark_parse_parameters("|zz", &fence, &literal) != SUCCESS) {
+			php_cmark_wrong_parameters(
+				"expected fence and optional literal");
+			return;
+		}
 	}
 
-	cmark_node_set_fence_info(n->node, ZSTR_VAL(info));
+	php_cmark_node_new(
+		getThis(), CMARK_NODE_CODE_BLOCK);
 
-	php_cmark_chain();
-}
+	switch (ZEND_NUM_ARGS()) {
+		case 2:
+			php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, fence, &n->fence);
 
-PHP_METHOD(CodeBlock, getFence)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-	const char *c;
-
-	php_cmark_no_parameters();
-
-	c = cmark_node_get_fence_info(n->node);
-
-	if (!c || !c[0]) {
-		return;
+		case 1:
+			php_cmark_node_write_str(&n->h.h, cmark_node_set_literal, literal, &n->h.literal);
+		break;
 	}
-
-	RETURN_STRING(c);
 }
 
 static zend_function_entry php_cmark_node_code_block_methods[] = {
-	PHP_ME(CodeBlock, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(CodeBlock, setFence, php_cmark_node_code_block_set_fence, ZEND_ACC_PUBLIC)
-	PHP_ME(CodeBlock, getFence, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(CodeBlock, __construct, php_cmark_node_code_block_construct, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
@@ -99,10 +224,6 @@ PHP_METHOD(CustomBlock, __construct)
 
 static zend_function_entry php_cmark_node_custom_block_methods[] = {
 	PHP_ME(CustomBlock, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Custom, setOnEnter, php_cmark_node_custom_set, ZEND_ACC_PUBLIC)
-	PHP_ME(Custom, setOnLeave, php_cmark_node_custom_set, ZEND_ACC_PUBLIC)
-	PHP_ME(Custom, getOnEnter, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Custom, getOnLeave, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
@@ -113,14 +234,37 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Block)
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "CodeBlock", php_cmark_node_code_block_methods);
 
 	php_cmark_node_code_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_text_ce);
+	php_cmark_node_code_block_ce->create_object = php_cmark_node_code_block_create;
+
+#define php_cmark_node_code_block_property(n) \
+	zend_declare_property_null(php_cmark_node_code_block_ce, ZEND_STRL(n), ZEND_ACC_PUBLIC)
+
+	php_cmark_node_code_block_property("fence");
+#undef php_cmark_node_code_block_property
+
+	memcpy(&php_cmark_node_code_block_handlers, &php_cmark_node_text_handlers, sizeof(zend_object_handlers));
+
+	php_cmark_node_code_block_handlers.free_obj = php_cmark_node_code_block_free;
+	php_cmark_node_code_block_handlers.read_property = php_cmark_node_code_block_read;
+	php_cmark_node_code_block_handlers.write_property = php_cmark_node_code_block_write;
+	php_cmark_node_code_block_handlers.has_property = php_cmark_node_code_block_isset;
+	php_cmark_node_code_block_handlers.unset_property = php_cmark_node_code_block_unset;
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "HTMLBlock", php_cmark_node_html_block_methods);
 
-	php_cmark_node_html_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_text_ce);
+	php_cmark_node_html_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_code_block_ce);
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "CustomBlock", php_cmark_node_custom_block_methods);
 
 	php_cmark_node_custom_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_ce);
+	php_cmark_node_custom_block_ce->create_object = php_cmark_node_custom_create;
+
+#define php_cmark_node_custom_block_property(n) \
+	zend_declare_property_null(php_cmark_node_custom_block_ce, ZEND_STRL(n), ZEND_ACC_PUBLIC)
+
+	php_cmark_node_custom_block_property("onEnter");
+	php_cmark_node_custom_block_property("onLeave");
+#undef php_cmark_node_custom_block_property
 
 	return SUCCESS;
 }

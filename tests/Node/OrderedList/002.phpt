@@ -4,9 +4,9 @@ CommonMark\Node\OrderedList Start
 <?php
 $list = new CommonMark\Node\OrderedList;
 
-$list->setStart(4);
+$list->start = 4;
 
-if ($list->getStart() == 4) {
+if ($list->start == 4) {
 	echo "OK";
 }
 ?>

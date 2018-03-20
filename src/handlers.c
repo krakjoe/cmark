@@ -24,6 +24,83 @@
 
 #include <src/common.h>
 #include <src/node.h>
+#include <src/handlers.h>
+
+zval* php_cmark_node_read_bool(php_cmark_node_t *n, cmark_node_read_int cmark_node_read, zval *cache) {
+	if (cmark_node_read(n->node)) {
+		ZVAL_TRUE(cache);
+	} else ZVAL_FALSE(cache);
+	
+	return cache;
+}
+
+zval* php_cmark_node_read_int(php_cmark_node_t *n, cmark_node_read_int cmark_node_read, zval *cache) {
+	ZVAL_LONG(cache, 
+		cmark_node_read(n->node));
+	
+	return cache;
+}
+
+zval* php_cmark_node_read_str(php_cmark_node_t *n, cmark_node_read_str cmark_node_read, zval *cache) {
+	if (Z_TYPE_P(cache) != IS_STRING) {
+		const char *verified = cmark_node_read(n->node);
+
+		if (verified && *verified) {
+			ZVAL_STRING(cache, verified);
+		}
+	}
+	
+	return Z_TYPE_P(cache) == IS_STRING ? cache : &EG(uninitialized_zval);
+}
+
+void php_cmark_node_write_int(php_cmark_node_t *n, cmark_node_write_int cmark_node_write, zval *value, zval *cache) {
+	if (!value || Z_TYPE_P(value) != IS_LONG) {
+		php_cmark_wrong_parameters("int expected");
+		return;
+	}
+
+	if (!cmark_node_write(n->node, Z_LVAL_P(value))) {
+		php_cmark_throw("write operation failed");
+		return;
+	}
+
+	ZVAL_COPY(cache, value);
+}
+
+void php_cmark_node_write_bool(php_cmark_node_t *n, cmark_node_write_int cmark_node_write, zval *value, zval *cache) {
+	if (!value || (Z_TYPE_P(value) != IS_TRUE && Z_TYPE_P(value) != IS_FALSE)) {
+		php_cmark_wrong_parameters("bool expected");
+		return;
+	}
+
+	if (!cmark_node_write(n->node, zend_is_true(value))) {
+		php_cmark_throw("write operation failed");
+		return;
+	}
+
+	ZVAL_COPY(cache, value);
+}
+
+void php_cmark_node_write_str(php_cmark_node_t *n, cmark_node_write_str cmark_node_write, zval *content, zval *cache) {
+	if (content && Z_TYPE_P(content) != IS_STRING) {
+		php_cmark_wrong_parameters("string expected");
+		return;
+	}
+	
+	if (Z_TYPE_P(cache) == IS_STRING) {
+		zval_ptr_dtor(cache);
+		ZVAL_UNDEF(cache);
+	}
+
+	if (!cmark_node_write(n->node, content ? Z_STRVAL_P(content) : NULL)) {
+		php_cmark_throw("write operation failed");
+		return;
+	}
+
+	if (content) {
+		ZVAL_COPY(cache, content);
+	}
+}
 
 static inline zval* php_cmark_node_read_cached(php_cmark_node_t *n, cmark_node* (*cmark_node_read) (cmark_node*), zval *cache) {
 	cmark_node *verified = cmark_node_read(n->node);
@@ -62,6 +139,14 @@ zval* php_cmark_node_read(zval *object, zval *member, int type, void **rtc, zval
 			return php_cmark_node_read_cached(n, cmark_node_first_child, &n->firstChild);
 		if (*rtc == cmark_node_last_child)
 			return php_cmark_node_read_cached(n, cmark_node_last_child, &n->lastChild);
+		if (*rtc == cmark_node_get_start_line)
+			return php_cmark_node_read_int(n, cmark_node_get_start_line, &n->startLine);
+		if (*rtc == cmark_node_get_end_line)
+			return php_cmark_node_read_int(n, cmark_node_get_end_line, &n->endLine);
+		if (*rtc == cmark_node_get_start_column)
+			return php_cmark_node_read_int(n, cmark_node_get_start_column, &n->startColumn);
+		if (*rtc == cmark_node_get_end_column)
+			return php_cmark_node_read_int(n, cmark_node_get_end_column, &n->endColumn);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "parent")) {
@@ -84,6 +169,22 @@ zval* php_cmark_node_read(zval *object, zval *member, int type, void **rtc, zval
 		if (rtc) 
 			*rtc = cmark_node_last_child;
 		return php_cmark_node_read_cached(n, cmark_node_last_child, &n->lastChild);
+	} else if (zend_string_equals_literal(Z_STR_P(member), "startLine")) {
+		if (rtc)
+			*rtc = cmark_node_get_start_line;
+		return php_cmark_node_read_int(n, cmark_node_get_start_line, &n->startLine);
+	} else if (zend_string_equals_literal(Z_STR_P(member), "endLine")) {
+		if (rtc)
+			*rtc = cmark_node_get_end_line;
+		return php_cmark_node_read_int(n, cmark_node_get_end_line, &n->endLine);
+	} else if (zend_string_equals_literal(Z_STR_P(member), "startColumn")) {
+		if (rtc)
+			*rtc = cmark_node_get_start_column;
+		return php_cmark_node_read_int(n, cmark_node_get_start_column, &n->startColumn);
+	} else if (zend_string_equals_literal(Z_STR_P(member), "endColumn")) {
+		if (rtc)
+			*rtc = cmark_node_get_end_column;
+		return php_cmark_node_read_int(n, cmark_node_get_end_column, &n->endColumn);
 	} else {
 php_cmark_node_read_error:
 		php_cmark_throw(
@@ -115,7 +216,11 @@ int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **
 		    zend_string_equals_literal(Z_STR_P(member), "previous") ||
 		    zend_string_equals_literal(Z_STR_P(member), "next") ||
 		    zend_string_equals_literal(Z_STR_P(member), "lastChild") || 
-		    zend_string_equals_literal(Z_STR_P(member), "firstChild")) {
+		    zend_string_equals_literal(Z_STR_P(member), "firstChild") ||
+		    zend_string_equals_literal(Z_STR_P(member), "startLine") ||
+		    zend_string_equals_literal(Z_STR_P(member), "endLine") ||
+		    zend_string_equals_literal(Z_STR_P(member), "startColumn") ||
+		    zend_string_equals_literal(Z_STR_P(member), "endColumn")) {
 			return 1;
 		}
 	}
@@ -130,9 +235,17 @@ int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **
 		zv = php_cmark_node_read_cached(n, cmark_node_first_child, &n->firstChild);
 	}  else if (zend_string_equals_literal(Z_STR_P(member), "lastChild")) {
 		zv = php_cmark_node_read_cached(n, cmark_node_last_child, &n->lastChild);
+	} else if (zend_string_equals_literal(Z_STR_P(member), "startLine")) {
+		zv = php_cmark_node_read_int(n, cmark_node_get_start_line, &n->startLine);
+	}  else if (zend_string_equals_literal(Z_STR_P(member), "endLine")) {
+		zv = php_cmark_node_read_int(n, cmark_node_get_end_line, &n->endLine);
+	}  else if (zend_string_equals_literal(Z_STR_P(member), "startColumn")) {
+		zv = php_cmark_node_read_int(n, cmark_node_get_start_column, &n->startColumn);
+	}   else if (zend_string_equals_literal(Z_STR_P(member), "endColumn")) {
+		zv = php_cmark_node_read_int(n, cmark_node_get_end_column, &n->endColumn);
 	}
 
-	return Z_TYPE_P(zv) == IS_OBJECT;
+	return Z_TYPE_P(zv) == IS_OBJECT || Z_TYPE_P(zv) == IS_LONG;
 }
 
 void php_cmark_node_unset(zval *object, zval *member, void **rtc) {

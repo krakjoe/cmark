@@ -5,7 +5,7 @@ CommonMark\Node\Text Literals Errors
 $text = new CommonMark\Node\Text;
 
 try {
-	$text->setLiteral([]);
+	$text->literal = [];
 } catch (TypeError $ex) {
 	echo "OK";
 }

@@ -4,9 +4,9 @@ CommonMark\Node\CustomInline onLeave
 <?php
 $node = new CommonMark\Node\CustomInline;
 
-$node->setOnLeave("OK");
+$node->onLeave = "OK";
 
-echo $node->getOnLeave();
+echo $node->onLeave;
 ?>
 --EXPECT--
 OK

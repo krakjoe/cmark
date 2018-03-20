@@ -20,7 +20,6 @@
 
 #include <cmark.h>
 
-extern zend_class_entry *php_cmark_node_list_ce;
 extern zend_class_entry *php_cmark_node_list_ordered_ce;
 extern zend_class_entry *php_cmark_node_list_bullet_ce;
 

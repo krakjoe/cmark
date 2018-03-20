@@ -5,7 +5,7 @@ CommonMark\Node\CustomInline onEnter Error
 $node = new CommonMark\Node\CustomInline;
 
 try {
-	$node->setOnEnter([]);
+	$node->onEnter = [];
 } catch (TypeError $ex) {
 	echo "OK";
 }

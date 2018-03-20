@@ -4,9 +4,9 @@ CommonMark\Node\CustomInline onEnter
 <?php
 $node = new CommonMark\Node\CustomInline;
 
-$node->setOnEnter("OK");
+$node->onEnter = "OK";
 
-echo $node->getOnEnter();
+echo $node->onEnter;
 ?>
 --EXPECT--
 OK

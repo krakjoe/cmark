@@ -4,7 +4,7 @@ CommonMark\Node\CodeBlock Fence None
 <?php
 $block = new CommonMark\Node\CodeBlock;
 
-if (!$block->getFence()) {
+if (!$block->fence) {
 	echo "OK";
 }
 ?>

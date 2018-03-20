@@ -5,7 +5,7 @@ CommonMark\Node\CustomBlock onEnter Error
 $node = new CommonMark\Node\CustomBlock;
 
 try {
-	$node->setOnEnter([]);
+	$node->onEnter = [];
 } catch (TypeError $ex) {
 	echo "OK";
 }

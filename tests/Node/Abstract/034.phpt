@@ -1,5 +1,5 @@
 --TEST--
-CommonMark\Node getEndLine
+CommonMark\Node endLine
 --FILE--
 <?php
 $doc = CommonMark\Parse(<<<EOD
@@ -8,7 +8,7 @@ Title
 EOD
 );
 
-if ($doc->getEndLine() == 2) {
+if ($doc->endLine == 2) {
 	echo "OK";
 }
 ?>
