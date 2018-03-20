@@ -12,7 +12,7 @@ $parser->parse($md);
 
 $doc = $parser->finish();
 
-if ($doc->getFirstChild() instanceof CommonMark\Node\Paragraph) {
+if ($doc->firstChild instanceof CommonMark\Node\Paragraph) {
 	echo "OK";
 }
 ?>

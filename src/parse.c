@@ -83,7 +83,7 @@ PHP_METHOD(Parser, __construct)
 		return;
 	}
 
-	p->parser = cmark_parser_new_with_mem(options, &php_cmark_node_mem);
+	p->parser = cmark_parser_new_with_mem(options, &php_cmark_mem);
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_parser_parse, 0, 0, 1)
@@ -116,7 +116,7 @@ PHP_METHOD(Parser, finish)
 	}
 
 	n = php_cmark_node_shadow(
-		return_value, cmark_parser_finish(p->parser));
+		return_value, cmark_parser_finish(p->parser), 0);
 
 	ZVAL_COPY(&p->root,   return_value);
 }
@@ -139,12 +139,12 @@ PHP_FUNCTION(CommonMark_Parse)
 		return;
 	}
 
-	parser = cmark_parser_new_with_mem(options, &php_cmark_node_mem);
+	parser = cmark_parser_new_with_mem(options, &php_cmark_mem);
 
 	cmark_parser_feed(parser, ZSTR_VAL(content), ZSTR_LEN(content));
 
 	php_cmark_node_shadow(
-		return_value, cmark_parser_finish(parser));
+		return_value, cmark_parser_finish(parser), 0);
 
 	cmark_parser_free(parser);
 }

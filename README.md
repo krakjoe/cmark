@@ -140,13 +140,6 @@ namespace CommonMark {
 		public function getStartColumn() : int;
 		public function getEndColumn() : int;
 
-		public function getNext() : ?Node;
-		public function getPrevious() : ?Node;
-		public function getParent() : ?Node;
-
-		public function getFirstChild() : ?Node;
-		public function getLastChild() : ?Node;
-
 		public function appendChild(Node $child) : Node;
 		public function prependChild(Node $child) : Node;
 
@@ -157,6 +150,12 @@ namespace CommonMark {
 		public function unlink() : void;
 
 		public function accept(\CommonMark\Interfaces\IVisitor $visitor);
+
+		public $parent;
+		public $previous;
+		public $next;
+		public $firstChild;
+		public $lastChild;
 	}
 
 	final class Parser {

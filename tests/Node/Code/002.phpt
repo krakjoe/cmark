@@ -12,9 +12,9 @@ $parser->parse($md);
 
 $doc = $parser->finish();
 
-$para = $doc->getFirstChild();
+$para = $doc->firstChild;
 
-$code = $para->getFirstChild()->getNext();
+$code = $para->firstChild->next;
 
 if ($para instanceof CommonMark\Node\Paragraph &&
     $code instanceof CommonMark\Node\Code) {

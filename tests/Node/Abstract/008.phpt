@@ -7,9 +7,7 @@ $document = new CommonMark\Node\Document;
 $document->appendChild($p[] = new CommonMark\Node\Paragraph);
 $document->appendChild($p[] = new CommonMark\Node\Paragraph);
 
-$first = $document->getFirstChild();
-
-if ($first->getNext() && count($p)==2) {
+if ($document->firstChild->next && count($p)==2) {
 	echo "OK";
 }
 ?>

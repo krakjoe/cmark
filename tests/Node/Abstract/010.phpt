@@ -4,7 +4,7 @@ CommonMark\Node Previous None
 <?php
 $document = new CommonMark\Node\Document;
 
-if (!$document->getPrevious()) {
+if (!$document->previous) {
 	echo "OK";
 }
 ?>

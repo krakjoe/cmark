@@ -50,7 +50,7 @@ static inline zval* php_cmark_iterator_current_data(php_cmark_iterator_t* iterat
 
 	php_cmark_node_shadow(
 		&iterator->zit.data, 
-			cmark_iter_get_node(iterator->it));
+			cmark_iter_get_node(iterator->it), 1);
 
 	return &iterator->zit.data;
 }

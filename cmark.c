@@ -43,9 +43,19 @@
 #include <src/render.h>
 #include <src/parse.h>
 
+cmark_mem php_cmark_mem;
+
+void* php_cmark_calloc_func(size_t n, size_t s) { return ecalloc(n, s); }
+void* php_cmark_realloc_func(void *p, size_t s) { return erealloc(p ,s); }
+void  php_cmark_free_func(void *p)              { efree(p); }
+
 /* {{{ */
 PHP_MINIT_FUNCTION(cmark)
 {
+	php_cmark_mem.calloc  = php_cmark_calloc_func;
+	php_cmark_mem.realloc = php_cmark_realloc_func;
+	php_cmark_mem.free    = php_cmark_free_func;
+
 	PHP_MINIT(CommonMark_Node)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Visitor)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(CommonMark_Node_Text)(INIT_FUNC_ARGS_PASSTHRU);

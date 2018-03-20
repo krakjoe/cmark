@@ -15,14 +15,16 @@
   | Author: krakjoe <krakjoe@php.net>                                    |
   +----------------------------------------------------------------------+
  */
-#ifndef PHP_CMARK_NODE_VISITOR_H
-#define PHP_CMARK_NODE_VISITOR_H
+#ifndef PHP_CMARK_NODE_HANDLERS_H
+#define PHP_CMARK_NODE_HANDLERS_H
 
-extern zend_class_entry *php_cmark_node_visitor_ce;
-extern zend_class_entry *php_cmark_node_visitable_ce;
+extern HashTable* php_cmark_node_debug(zval *zv, int *tmp);
+extern zend_object* php_cmark_node_clone(zval *zv);
+extern void php_cmark_node_free(zend_object *zo);
 
-extern PHP_MINIT_FUNCTION(CommonMark_Node_Visitor);
-extern PHP_RINIT_FUNCTION(CommonMark_Node_Visitor);
+extern zval* php_cmark_node_read(zval *object, zval *member, int type, void **rtc, zval *rv);
+extern void php_cmark_node_write(zval *object, zval *member, zval *value, void **rtc);
+extern int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **rtc);
+extern void php_cmark_node_unset(zval *object, zval *member, void **rtc);
 
-void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor);
 #endif

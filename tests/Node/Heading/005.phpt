@@ -13,7 +13,7 @@ $parser->parse($md);
 
 $doc = $parser->finish();
 
-if ($doc->getFirstChild() instanceof CommonMark\Node\Heading) {
+if ($doc->firstChild instanceof CommonMark\Node\Heading) {
 	echo "OK";
 }
 ?>

@@ -14,7 +14,7 @@ $parser->parse($md);
 
 $doc = $parser->finish();
 
-if ($doc->getFirstChild() instanceof CommonMark\Node\CodeBlock) {
+if ($doc->firstChild instanceof CommonMark\Node\CodeBlock) {
 	echo "OK";
 }
 ?>

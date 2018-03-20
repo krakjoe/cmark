@@ -4,7 +4,7 @@ CommonMark\Node Next
 <?php
 $document = new CommonMark\Node\Document;
 
-if (!$document->getNext()) {
+if (!$document->next) {
 	echo "OK";
 }
 ?>

@@ -27,6 +27,7 @@
 
 #include <src/common.h>
 #include <src/node.h>
+#include <src/handlers.h>
 #include <src/iterator.h>
 #include <src/document.h>
 #include <src/quote.h>
@@ -44,7 +45,6 @@
 
 zend_class_entry*      php_cmark_node_ce;
 zend_object_handlers   php_cmark_node_handlers;
-cmark_mem              php_cmark_node_mem;
 
 typedef enum _php_cmark_node_edit_result {
 	PHP_CMARK_NODE_EDIT_MISSING,
@@ -56,12 +56,6 @@ typedef enum _php_cmark_node_edit_result {
 typedef int (*php_cmark_node_edit_f) (cmark_node*, cmark_node*);
 
 static inline php_cmark_node_edit_result php_cmark_node_edit(php_cmark_node_edit_f handler, php_cmark_node_t *object, php_cmark_node_t *arg) {
-	php_cmark_node_t *n = 
-		(php_cmark_node_t*) cmark_node_get_user_data(arg->node);
-
-	if (!n) {
-		return PHP_CMARK_NODE_EDIT_MISSING;
-	}
 
 	if (arg->used) {
 		return PHP_CMARK_NODE_EDIT_USED;
@@ -71,7 +65,7 @@ static inline php_cmark_node_edit_result php_cmark_node_edit(php_cmark_node_edit
 		return PHP_CMARK_NODE_EDIT_HANDLER;
 	}
 
-	GC_ADDREF(&n->std);
+	GC_ADDREF(php_cmark_node_zend(arg));
 
 	arg->used = 1;
 
@@ -82,7 +76,7 @@ void php_cmark_node_new(zval *object, cmark_node_type type) {
 	php_cmark_node_t *n = php_cmark_node_fetch(object);
 
 	n->node = cmark_node_new_with_mem(
-		type, &php_cmark_node_mem);
+		type, &php_cmark_mem);
 
 	cmark_node_set_user_data(n->node, n);
 }
@@ -91,7 +85,7 @@ void php_cmark_node_list_new(zval *object, cmark_list_type type) {
 	php_cmark_node_t *n = php_cmark_node_fetch(object);
 
 	n->node = cmark_node_new_with_mem(
-		CMARK_NODE_LIST, &php_cmark_node_mem);
+		CMARK_NODE_LIST, &php_cmark_mem);
 
 	cmark_node_set_list_type(n->node, type);
 	cmark_node_set_user_data(n->node, n);
@@ -164,199 +158,15 @@ zend_object* php_cmark_node_create(zend_class_entry *ce) {
 		(php_cmark_node_t*) 
 			ecalloc(1, sizeof(php_cmark_node_t));
 
-	zend_object_std_init(&n->std, ce);
+	zend_object_std_init
+		(php_cmark_node_zend(n), ce);
 
 	n->std.handlers = &php_cmark_node_handlers;
 
-	return &n->std;
+	return php_cmark_node_zend(n);
 }
 
-static inline void php_cmark_node_clone_impl(php_cmark_node_t *target, cmark_node *source);
-
-static inline void php_cmark_node_clone_children_impl(php_cmark_node_t *target, cmark_node *source) {
-	cmark_node *current = cmark_node_first_child(source);
-
-	if (!current) {
-		return;
-	}
-
-	do {
-		zval zv;
-
-		object_init_ex(&zv, 
-			php_cmark_node_class(current));
-
-		php_cmark_node_clone_impl(
-			php_cmark_node_fetch(&zv), current);
-
-		cmark_node_append_child(target->node, 
-			php_cmark_node_fetch(&zv)->node);
-
-		current = cmark_node_next(current);
-	} while (current);
-}
-
-static inline void php_cmark_node_clone_impl(php_cmark_node_t *target, cmark_node *source) {
-	cmark_node_type type = cmark_node_get_type(source);
-
-	target->node = cmark_node_new_with_mem(type, &php_cmark_node_mem);
-
-	switch (type) {
-		case CMARK_NODE_LIST:
-			cmark_node_set_list_type(
-				target->node, 
-				cmark_node_get_list_type(source));
-			cmark_node_set_list_tight(
-				target->node, 
-				cmark_node_get_list_tight(source));
-			cmark_node_set_list_delim(
-				target->node, 
-				cmark_node_get_list_delim(source));
-		break;
-
-		case CMARK_NODE_CODE_BLOCK:
-			cmark_node_set_fence_info(target->node,
-				cmark_node_get_fence_info(source));
-
-		case CMARK_NODE_TEXT:
-		case CMARK_NODE_HTML_INLINE:
-		case CMARK_NODE_CODE:
-		case CMARK_NODE_HTML_BLOCK:
-			cmark_node_set_literal(
-				target->node, 
-				cmark_node_get_literal(source));
-		break;
-
-		case CMARK_NODE_LINK:
-		case CMARK_NODE_IMAGE:
-			cmark_node_set_url(
-				target->node, 
-				cmark_node_get_url(source));
-			cmark_node_set_title(
-				target->node,
-				cmark_node_get_title(source));
-		break;
-
-		case CMARK_NODE_CUSTOM_BLOCK:
-		case CMARK_NODE_CUSTOM_INLINE:
-			cmark_node_set_on_enter(target->node,
-				cmark_node_get_on_enter(source));
-			cmark_node_set_on_exit(target->node,
-				cmark_node_get_on_exit(source));
-		break;
-	}
-
-	if (cmark_node_first_child(source)) {
-		php_cmark_node_clone_children_impl(target, source);
-	}
-
-	cmark_node_set_user_data(target->node, target);
-}
-
-static inline void php_cmark_node_debug_impl(HashTable* debug, php_cmark_node_t *parent) {
-	zval children;
-	cmark_node *child;
-
-	switch (cmark_node_get_type(parent->node)) {
-		case CMARK_NODE_CODE_BLOCK: {
-			zval fence;
-
-			ZVAL_STRING(&fence,
-				cmark_node_get_fence_info(parent->node));
-			zend_hash_str_update(debug, "fence", sizeof("fence")-1, &fence);
-		}
-
-		case CMARK_NODE_TEXT:
-		case CMARK_NODE_HTML_INLINE:
-		case CMARK_NODE_HTML_BLOCK:
-		case CMARK_NODE_CODE: {
-			zval literal;
-			ZVAL_STRING(&literal,
-				cmark_node_get_literal(parent->node));
-			zend_hash_str_update(debug, "literal", sizeof("literal")-1, &literal);
-		} break;
-
-		case CMARK_NODE_IMAGE:
-		case CMARK_NODE_LINK: {
-			zval url;
-			zval title;
-
-			ZVAL_STRING(&url,
-				cmark_node_get_url(parent->node));
-			ZVAL_STRING(&title,	
-				cmark_node_get_title(parent->node));
-
-			zend_hash_str_update(debug, "url", sizeof("url")-1, &url);
-			zend_hash_str_update(debug, "title", sizeof("title")-1, &title);
-		} break;
-
-		case CMARK_NODE_CUSTOM_BLOCK:
-		case CMARK_NODE_CUSTOM_INLINE: {
-			zval enter;
-			zval leave;
-
-			ZVAL_STRING(&enter,
-				cmark_node_get_on_enter(parent->node));
-			ZVAL_STRING(&leave,	
-				cmark_node_get_on_exit(parent->node));
-
-			zend_hash_str_update(debug, "enter", sizeof("enter")-1, &enter);
-			zend_hash_str_update(debug, "leave", sizeof("leave")-1, &leave);
-		} break;
-	}
-
-	child = cmark_node_first_child(parent->node);
-
-	if (!child) {
-		return;
-	}
-
-	array_init(&children);
-
-	do {
-		zval zv;
-
-		if (!php_cmark_node_shadow(&zv, child)) {
-			break;
-		}
-
-		add_next_index_zval(&children, &zv);
-
-		child = cmark_node_next(child);
-	} while(child);
-
-	zend_hash_str_update(debug, "children", sizeof("children")-1, &children);
-}
-
-HashTable* php_cmark_node_debug(zval *zv, int *tmp) {
-	HashTable *debug;
-
-	ALLOC_HASHTABLE(debug);
-	zend_hash_init(debug, 8, NULL, ZVAL_PTR_DTOR, 0);
-
-	php_cmark_node_debug_impl(debug, php_cmark_node_fetch(zv));
-
-	*tmp = 1;
-
-	return debug;
-}
-
-zend_object* php_cmark_node_clone(zval *zv) {
-	php_cmark_node_t *zo = php_cmark_node_fetch(zv);
-	php_cmark_node_t *co = 
-		(php_cmark_node_t*) 
-			ecalloc(1, sizeof(php_cmark_node_t));
-
-	zend_object_std_init(&co->std, zo->std.ce);
-
-	php_cmark_node_clone_impl(co, zo->node);
-	
-	co->std.handlers = &php_cmark_node_handlers;
-	
-	return &co->std;
-}
-
-php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node) {
+php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node, zend_bool addref) {
 	php_cmark_node_t *n;
 
 	if (!node) {
@@ -371,50 +181,14 @@ php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node) {
 
 		cmark_node_set_user_data(n->node, n);
 	} else {
-		ZVAL_OBJ(return_value, &n->std);
+		ZVAL_OBJ(return_value, php_cmark_node_zend(n));
 	}
 
-	Z_ADDREF_P(return_value);
+	if (addref) {
+		Z_ADDREF_P(return_value);
+	}
+
 	return n;
-}
-
-static inline void php_cmark_nodes_free(const php_cmark_node_t *n) {
-	php_cmark_node_t *u;
-	cmark_node *last = cmark_node_last_child(n->node);
-
-	while (last) {
-		cmark_node *g = last;
-
-		last = cmark_node_previous(last);
-
-		if (!(u = (php_cmark_node_t*) cmark_node_get_user_data(g))) {
-			continue;
-		}
-
-		cmark_node_set_user_data(u->node, NULL);
-		cmark_node_unlink(u->node);
-
-		PHP_OBJ_SAFE_RELEASE(&u->std);
-	}
-
-	if ((u = cmark_node_get_user_data(n->node))) {
-		cmark_node_set_user_data(u->node, NULL);
-		cmark_node_unlink(u->node);
-
-		PHP_OBJ_SAFE_RELEASE(&u->std);
-	}
-
-	cmark_node_free(n->node);
-}
-
-void php_cmark_node_free(zend_object *zo) {
-	php_cmark_node_t *n = php_cmark_node_from(zo);
-
-	if (n->node) {
-		php_cmark_nodes_free(n);
-	}
-
-	zend_object_std_dtor(&n->std);
 }
 
 PHP_METHOD(Node, getStartLine) 
@@ -451,54 +225,6 @@ PHP_METHOD(Node, getEndColumn)
 	php_cmark_no_parameters();
 
 	RETURN_LONG(cmark_node_get_end_column(n->node));
-}
-
-ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_node_or_null_return, 0, 0, CommonMark\\Node, 1)
-ZEND_END_ARG_INFO()
-
-PHP_METHOD(Node, getNext)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	php_cmark_node_shadow(return_value, cmark_node_next(n->node));
-}
-
-PHP_METHOD(Node, getPrevious)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	php_cmark_node_shadow(return_value, cmark_node_previous(n->node));
-}
-
-PHP_METHOD(Node, getParent)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	php_cmark_node_shadow(return_value, cmark_node_parent(n->node));
-}
-
-PHP_METHOD(Node, getFirstChild)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	php_cmark_node_shadow(return_value, cmark_node_first_child(n->node));
-}
-
-PHP_METHOD(Node, getLastChild)
-{
-	php_cmark_node_t *n = php_cmark_node_fetch(getThis());
-
-	php_cmark_no_parameters();
-
-	php_cmark_node_shadow(return_value, cmark_node_last_child(n->node));
 }
 
 ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_node_add, 0, 1, CommonMark\\Node, 0)
@@ -679,70 +405,6 @@ PHP_METHOD(Node, unlink)
 	zval_ptr_dtor(getThis());
 }
 
-static inline void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
-	cmark_event_type event;	
-	cmark_iter *iterator = cmark_iter_new(root->node);
-
-	while ((event = cmark_iter_next(iterator)) != CMARK_EVENT_DONE) {
-		zval visiting;
-		zval arg;
-		zval result;
-		zend_fcall_info fci = empty_fcall_info;
-		zend_fcall_info_cache fcc = empty_fcall_info_cache;
-
-		php_cmark_node_t *node = 
-			php_cmark_node_shadow(
-				&visiting, cmark_iter_get_node(iterator));
-
-		ZVAL_NULL(&result);
-
-		fci.size = sizeof(zend_fcall_info);
-		fci.retval = &result;
-		fci.object = Z_OBJ_P(visitor);
-
-#if PHP_VERSION_ID < 70300
-		fcc.initialized = 1;
-#endif
-		fcc.object = fci.object;
-
-		zend_fcall_info_argn(&fci, 1, &visiting);
-
-		switch (event) {
-			case CMARK_EVENT_ENTER:
-				fcc.function_handler = zend_hash_str_find_ptr(
-					&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("enter"));
-			break;
-
-			case CMARK_EVENT_EXIT:
-				fcc.function_handler = zend_hash_str_find_ptr(
-					&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("leave"));
-			break;
-		}
-
-		zend_call_function(&fci, &fcc);
-
-		if (Z_TYPE(result) == IS_LONG && Z_LVAL(result) > CMARK_EVENT_NONE) {
-			cmark_iter_reset(iterator, 
-				node->node, (cmark_event_type) Z_LVAL(result));
-		}
-
-		if (Z_TYPE(result) == IS_OBJECT && instanceof_function(Z_OBJCE(result), php_cmark_node_ce)) {
-			cmark_iter_reset(iterator,
-				php_cmark_node_fetch(&result)->node, CMARK_EVENT_ENTER);
-		}
-
-		if (Z_REFCOUNTED(result)) {
-			zval_ptr_dtor(&result);
-		}
-
-		zend_fcall_info_args_clear(&fci, 1);
-
-		zval_ptr_dtor(&visiting);
-	}
-
-	cmark_iter_free(iterator);
-}
-
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_accept, 0, 0, 1)
 	ZEND_ARG_OBJ_INFO(0, visitor, CommonMark\\Interfaces\\IVisitor, 0)
 ZEND_END_ARG_INFO()
@@ -763,11 +425,6 @@ static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, getStartColumn, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, getEndLine, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, getEndColumn, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getNext, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getPrevious, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getParent, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getFirstChild, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
-	PHP_ME(Node, getLastChild, php_cmark_node_or_null_return, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, appendChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, prependChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, insertBefore, php_cmark_node_insert, ZEND_ACC_PUBLIC)
@@ -778,10 +435,6 @@ static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_FE_END
 };
 
-void* php_cmark_node_calloc_func(size_t n, size_t s) { return ecalloc(n, s); }
-void* php_cmark_node_realloc_func(void *p, size_t s) { return erealloc(p ,s); }
-void  php_cmark_node_free_func(void *p)              { efree(p); }
-
 PHP_MINIT_FUNCTION(CommonMark_Node) {
 	zend_class_entry ce;
 
@@ -791,6 +444,16 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 	php_cmark_node_ce->create_object = php_cmark_node_create;
 	php_cmark_node_ce->get_iterator = php_cmark_iterator_create;
 
+#define php_cmark_node_property(n) \
+	zend_declare_property_null(php_cmark_node_ce, ZEND_STRL(n), ZEND_ACC_PUBLIC)
+
+	php_cmark_node_property("parent");
+	php_cmark_node_property("previous");
+	php_cmark_node_property("next");
+	php_cmark_node_property("lastChild");
+	php_cmark_node_property("firstChild");
+#undef php_cmark_node_property
+
 	zend_class_implements(php_cmark_node_ce, 1, zend_ce_traversable);
 
 	memcpy(&php_cmark_node_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
@@ -798,11 +461,12 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 	php_cmark_node_handlers.get_debug_info = php_cmark_node_debug;
 	php_cmark_node_handlers.clone_obj = php_cmark_node_clone;
 	php_cmark_node_handlers.free_obj = php_cmark_node_free;
-	php_cmark_node_handlers.offset = XtOffsetOf(php_cmark_node_t, std);
+	php_cmark_node_handlers.read_property = php_cmark_node_read;
+	php_cmark_node_handlers.write_property = php_cmark_node_write;
+	php_cmark_node_handlers.has_property = php_cmark_node_isset;
+	php_cmark_node_handlers.unset_property = php_cmark_node_unset;
 
-	php_cmark_node_mem.calloc = php_cmark_node_calloc_func;
-	php_cmark_node_mem.realloc = php_cmark_node_realloc_func;
-	php_cmark_node_mem.free = php_cmark_node_free_func;
+	php_cmark_node_handlers.offset = XtOffsetOf(php_cmark_node_t, std);
 
 	return SUCCESS;
 }

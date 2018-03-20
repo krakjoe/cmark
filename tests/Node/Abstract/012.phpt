@@ -7,7 +7,7 @@ $paragraph = new CommonMark\Node\Paragraph;
 
 $document->appendChild($paragraph);
 
-if ($paragraph->getParent()) {
+if ($paragraph->parent) {
 	echo "OK";
 }
 ?>

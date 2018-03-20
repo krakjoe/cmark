@@ -4,10 +4,10 @@ CommonMark\Node Traversable
 <?php
 $doc = new CommonMark\Node\Document;
 $doc->appendChild(new CommonMark\Node\Paragraph);
-$para = $doc->getFirstChild();
+$para = $doc->firstChild;
 $para->appendChild(new CommonMark\Node\Text("Hello"));
 $doc->appendChild(new CommonMark\Node\BulletList);
-$list = $doc->getLastChild();
+$list = $doc->lastChild;
 $list->appendChild(new CommonMark\Node\Item);
 
 foreach ($doc as $ev => $node) {

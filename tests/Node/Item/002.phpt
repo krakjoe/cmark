@@ -13,9 +13,9 @@ $parser->parse($md);
 
 $doc = $parser->finish();
 
-$list = $doc->getFirstChild();
+$list = $doc->firstChild;
 
-$item = $list->getFirstChild();
+$item = $list->firstChild;
 
 if ($list instanceof CommonMark\Node\BulletList &&
     $item instanceof CommonMark\Node\Item) {

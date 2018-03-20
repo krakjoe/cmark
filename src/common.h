@@ -41,7 +41,7 @@
 
 #define PHP_OBJ_SAFE_RELEASE(zz) do { \
 	if (IS_OBJ_VALID(EG(objects_store).object_buckets[(zz)->handle])) \
-		OBJ_RELEASE((zz)); \
+		OBJ_RELEASE((zend_object*) (zz)); \
 } while(0)
 
 #define php_cmark_parse_parameters(s, ...) \
@@ -72,5 +72,7 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_custom_set, 0, 0, 1)
 	ZEND_ARG_INFO(0, literal)
 ZEND_END_ARG_INFO()
+
+extern cmark_mem php_cmark_mem;
 
 #endif

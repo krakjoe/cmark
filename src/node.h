@@ -21,18 +21,30 @@
 #include <cmark.h>
 
 extern zend_class_entry *php_cmark_node_ce;
-extern cmark_mem         php_cmark_node_mem;
+extern zend_object_handlers   php_cmark_node_handlers;
 
 typedef struct _php_cmark_node_t {
 	cmark_node* node;
 	zend_bool used;
-	zend_object std;
+	struct {
+		zend_refcounted_h gc;
+		uint32_t handle;
+		zend_class_entry *ce;
+		const zend_object_handlers *handlers;
+		HashTable *properties;
+	} std;
+	zval parent;
+	zval previous;
+	zval next;
+	zval firstChild;
+	zval lastChild;
 } php_cmark_node_t;
 
 #define php_cmark_node_from(o) \
 	((php_cmark_node_t*) \
 		((char*) o - XtOffsetOf(php_cmark_node_t, std)))
 #define php_cmark_node_fetch(z) php_cmark_node_from(Z_OBJ_P(z))
+#define php_cmark_node_zend(z) ((zend_object*) &(z)->std)
 
 extern PHP_MINIT_FUNCTION(CommonMark_Node);
 extern PHP_RINIT_FUNCTION(CommonMark_Node);
@@ -40,6 +52,6 @@ extern PHP_RINIT_FUNCTION(CommonMark_Node);
 extern void php_cmark_node_new(zval *object, cmark_node_type type);
 extern void php_cmark_node_list_new(zval *object, cmark_list_type type);
 extern void php_cmark_node_text_new(zval *object, cmark_node_type type, zend_string *literal);
-extern php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node);
+extern php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node, zend_bool addref);
 extern zend_class_entry* php_cmark_node_class(cmark_node* node);
 #endif

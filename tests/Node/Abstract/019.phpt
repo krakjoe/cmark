@@ -10,7 +10,7 @@ $doc->appendChild($para);
 $list = $para->replace(new CommonMark\Node\BulletList);
 
 if ($list instanceof CommonMark\Node\BulletList &&
-    $doc->getFirstChild() instanceof CommonMark\Node\BulletList) {
+    $doc->firstChild instanceof CommonMark\Node\BulletList) {
 	echo "OK";
 }
 ?>

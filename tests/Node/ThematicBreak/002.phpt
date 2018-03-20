@@ -12,7 +12,7 @@ $parser->parse($md);
 
 $doc = $parser->finish();
 
-if ($doc->getFirstChild() instanceof CommonMark\Node\ThematicBreak) {
+if ($doc->firstChild instanceof CommonMark\Node\ThematicBreak) {
 	echo "OK";
 }
 ?>

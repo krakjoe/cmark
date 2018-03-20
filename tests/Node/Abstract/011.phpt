@@ -4,7 +4,7 @@ CommonMark\Node Parent None
 <?php
 $document = new CommonMark\Node\Document;
 
-if (!$document->getParent()) {
+if (!$document->parent) {
 	echo "OK";
 }
 ?>

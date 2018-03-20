@@ -8,9 +8,9 @@ MD;
 
 $doc = CommonMark\Parse($md);
 
-$root = $doc->getFirstChild();
+$root = $doc->lastChild;
 
-$img = $root->getFirstChild();
+$img = $root->firstChild;
 
 if ($img instanceof CommonMark\Node\Image) {
 	echo "OK";

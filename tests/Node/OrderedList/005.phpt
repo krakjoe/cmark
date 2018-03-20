@@ -13,7 +13,7 @@ $parser->parse($md);
 
 $doc = $parser->finish();
 
-if ($doc->getFirstChild() instanceof CommonMark\Node\OrderedList) {
+if ($doc->firstChild instanceof CommonMark\Node\OrderedList) {
 	echo "OK";
 }
 ?>

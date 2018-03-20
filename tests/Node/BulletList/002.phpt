@@ -12,7 +12,7 @@ $parser->parse($md);
 
 $doc = $parser->finish();
 
-if ($doc->getFirstChild() instanceof CommonMark\Node\BulletList) {
+if ($doc->firstChild instanceof CommonMark\Node\BulletList) {
 	echo "OK";
 }
 ?>
