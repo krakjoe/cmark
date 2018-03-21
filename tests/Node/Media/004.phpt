@@ -1,5 +1,5 @@
 --TEST--
-CommonMark\Node\IMedia URL
+CommonMark\Node\Media URL
 --FILE--
 <?php
 $link = new CommonMark\Node\Link;

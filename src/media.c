@@ -188,6 +188,24 @@ void php_cmark_node_media_free(zend_object *zo) {
 	php_cmark_node_free(zo);
 }
 
+static inline void php_cmark_node_media_construct_impl(zval *object, cmark_node_type type, zval *url, zval *title) {
+	php_cmark_node_media_t *n = php_cmark_node_media_fetch(object);
+
+	php_cmark_node_new(object, type);
+
+	if (url) {
+		php_cmark_node_write_str(&n->h, 
+			(cmark_node_write_str) cmark_node_set_url, 
+				url, &n->url);
+	}
+
+	if (title) {
+		php_cmark_node_write_str(&n->h, 
+			(cmark_node_write_str) cmark_node_set_title, 
+				title, &n->title);
+	}
+}
+
 static zend_function_entry php_cmark_node_media_methods[] = {
 	PHP_FE_END
 };
@@ -198,8 +216,7 @@ ZEND_BEGIN_ARG_INFO_EX(php_cmark_media_construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Link, __construct)
-{	
-	php_cmark_node_media_t *n = php_cmark_node_media_fetch(getThis());
+{
 	zval *url = NULL;
 	zval *title = NULL;
 
@@ -210,19 +227,7 @@ PHP_METHOD(Link, __construct)
 		return;
 	}
 
-	php_cmark_node_new(getThis(), CMARK_NODE_LINK);
-
-	if (url) {
-		php_cmark_node_write_str(&n->h, 
-			(cmark_node_write_str) cmark_node_set_url, 
-			url, &n->url);
-	}
-
-	if (title) {
-		php_cmark_node_write_str(&n->h, 
-			(cmark_node_write_str) cmark_node_set_title, 
-			title, &n->title);
-	}
+	php_cmark_node_media_construct_impl(getThis(), CMARK_NODE_LINK, url, title);
 }
 
 static zend_function_entry php_cmark_node_link_methods[] = {
@@ -232,7 +237,6 @@ static zend_function_entry php_cmark_node_link_methods[] = {
 
 PHP_METHOD(Image, __construct)
 {
-	php_cmark_node_media_t *n = php_cmark_node_media_fetch(getThis());
 	zval *url = NULL;
 	zval *title = NULL;
 
@@ -243,19 +247,7 @@ PHP_METHOD(Image, __construct)
 		return;
 	}
 
-	php_cmark_node_new(getThis(), CMARK_NODE_IMAGE);
-
-	if (url) {
-		php_cmark_node_write_str(&n->h, 
-			(cmark_node_write_str) cmark_node_set_url, 
-			url, &n->url);
-	}
-
-	if (title) {
-		php_cmark_node_write_str(&n->h, 
-			(cmark_node_write_str) cmark_node_set_title, 
-			title, &n->title);
-	}
+	php_cmark_node_media_construct_impl(getThis(), CMARK_NODE_IMAGE, url, title);
 }
 
 static zend_function_entry php_cmark_node_image_methods[] = {

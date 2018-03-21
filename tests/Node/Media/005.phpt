@@ -1,5 +1,5 @@
 --TEST--
-CommonMark\Node\IMedia URL Errors
+CommonMark\Node\Media URL Errors
 --FILE--
 <?php
 $link = new CommonMark\Node\Link;

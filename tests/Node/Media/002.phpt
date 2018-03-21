@@ -1,5 +1,5 @@
 --TEST--
-CommonMark\Node\IMedia Title Errors
+CommonMark\Node\Media Title Errors
 --FILE--
 <?php
 $link = new CommonMark\Node\Link;
