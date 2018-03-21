@@ -84,20 +84,30 @@ void php_cmark_node_media_write(zval *object, zval *member, zval *value, void **
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_url)) {
-			php_cmark_node_write_str(&n->h, cmark_node_set_url, value, &n->url);
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"url expected to be string");
+			php_cmark_node_write_str(&n->h, 
+				cmark_node_set_url, value, &n->url);
 			return;
 		} else if (RTC(rtc, cmark_node_set_title)) {
-			php_cmark_node_write_str(&n->h, cmark_node_set_title, value, &n->title);
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"title expected to be string");
+			php_cmark_node_write_str(&n->h, 
+				cmark_node_set_title, value, &n->title);
 			return;
 		}
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "url")) {
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"url expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				RTS(rtc, cmark_node_set_url), value, &n->url);
 			return;
 		} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"title expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				RTS(rtc, cmark_node_set_title), value, &n->title);
 			return;
@@ -236,12 +246,14 @@ PHP_METHOD(Link, __construct)
 	zval *url = NULL;
 	zval *title = NULL;
 
-	if (php_cmark_parse_parameters("|zz", &url, &title) != SUCCESS ||
-	    (url && Z_TYPE_P(url) != IS_STRING) ||
-	    (title && Z_TYPE_P(title) != IS_STRING)) {
-		php_cmark_wrong_parameters("url and or title expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ZVAL(url)
+		Z_PARAM_ZVAL(title)
+	ZEND_PARSE_PARAMETERS_END();
+
+	php_cmark_assert_type(url, IS_STRING, 1, "url expected to be string");
+	php_cmark_assert_type(title, IS_STRING, 1, "title expected to be string");
 
 	php_cmark_node_media_construct_impl(getThis(), CMARK_NODE_LINK, url, title);
 }
@@ -256,12 +268,14 @@ PHP_METHOD(Image, __construct)
 	zval *url = NULL;
 	zval *title = NULL;
 
-	if (php_cmark_parse_parameters("|zz", &url, &title) != SUCCESS ||
-	    (url && Z_TYPE_P(url) != IS_STRING) ||
-	    (title && Z_TYPE_P(title) != IS_STRING)) {
-		php_cmark_wrong_parameters("url and or title expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ZVAL(url)
+		Z_PARAM_ZVAL(title)
+	ZEND_PARSE_PARAMETERS_END();
+
+	php_cmark_assert_type(url, IS_STRING, 1, "url expected to be string");
+	php_cmark_assert_type(title, IS_STRING, 1, "title expected to be string");
 
 	php_cmark_node_media_construct_impl(getThis(), CMARK_NODE_IMAGE, url, title);
 }

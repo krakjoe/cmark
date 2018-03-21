@@ -94,10 +94,14 @@ void php_cmark_node_list_write(zval *object, zval *member, zval *value, void **r
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_list_tight)) {
+			php_cmark_assert_type(
+				value, _IS_BOOL, 0, "tight expected to be bool");
 			php_cmark_node_write_bool(&n->h, 
 				(cmark_node_write_int) cmark_node_set_list_tight, value, &n->tight);
 			return;
 		} else if (RTC(rtc, cmark_node_set_list_delim)) {
+			php_cmark_assert_type(
+				value, IS_LONG, 0, "delimiter expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				(cmark_node_write_int) cmark_node_set_list_delim, value, &n->delimiter);
 			return;
@@ -106,10 +110,14 @@ void php_cmark_node_list_write(zval *object, zval *member, zval *value, void **r
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "tight")) {
+			php_cmark_assert_type(
+				value, _IS_BOOL, 0, "tight expected to be bool");
 			php_cmark_node_write_bool(&n->h, 
 				(cmark_node_write_int) RTS(rtc, cmark_node_set_list_tight), value, &n->tight);
 			return;
 		} else if (zend_string_equals_literal(Z_STR_P(member), "delimiter")) {
+			php_cmark_assert_type(
+				value, IS_LONG, 0, "delimiter expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				(cmark_node_write_int) RTS(rtc, cmark_node_set_list_delim), value, &n->delimiter);
 			return;
@@ -224,6 +232,8 @@ void php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, 
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_list_start)) {
+			php_cmark_assert_type(
+				value, IS_LONG, 0, "start expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				(cmark_node_write_int) cmark_node_set_list_start, value, &n->start);
 			return;
@@ -232,6 +242,8 @@ void php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, 
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "start")) {
+			php_cmark_assert_type(
+				value, IS_LONG, 0, "start expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				(cmark_node_write_int) RTS(rtc, cmark_node_set_list_start), value, &n->tight);
 			return;
@@ -294,13 +306,16 @@ PHP_METHOD(OrderedList, __construct)
 	zval *delimiter = NULL;
 	zval *start = NULL;
 
-	if (php_cmark_parse_parameters("|zzz", &tight, &delimiter, &start) != SUCCESS ||
-	    (tight && (Z_TYPE_P(tight) != IS_TRUE && Z_TYPE_P(tight) != IS_FALSE)) ||
-	    (delimiter && Z_TYPE_P(delimiter) != IS_LONG) ||
-	    (start && Z_TYPE_P(start) != IS_LONG)) {
-		php_cmark_wrong_parameters("tight, delimiter, and start expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 3)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ZVAL(tight)
+		Z_PARAM_ZVAL(delimiter)
+		Z_PARAM_ZVAL(start)
+	ZEND_PARSE_PARAMETERS_END();
+
+	php_cmark_assert_type(tight, _IS_BOOL, 1, "tight expected to be bool");
+	php_cmark_assert_type(delimiter, IS_LONG, 1, "delimiter expected to be int");
+	php_cmark_assert_type(start, IS_LONG, 1, "start expected to be int");
 
 	php_cmark_node_list_new(getThis(), CMARK_ORDERED_LIST);
 
@@ -339,12 +354,14 @@ PHP_METHOD(BulletList, __construct)
 	zval *tight = NULL;
 	zval *delimiter = NULL;
 
-	if (php_cmark_parse_parameters("|zz", &tight, &delimiter) != SUCCESS ||
-	    (tight && (Z_TYPE_P(tight) != IS_TRUE && Z_TYPE_P(tight) != IS_FALSE)) ||
-	    (delimiter && Z_TYPE_P(delimiter) != IS_LONG)) {
-		php_cmark_wrong_parameters("tight and delimiter expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ZVAL(tight)
+		Z_PARAM_ZVAL(delimiter)
+	ZEND_PARSE_PARAMETERS_END();
+
+	php_cmark_assert_type(tight, _IS_BOOL, 1, "tight expected to be bool");
+	php_cmark_assert_type(delimiter, IS_LONG, 1, "delimiter expected to be int");
 
 	php_cmark_node_list_new(getThis(), CMARK_BULLET_LIST);
 

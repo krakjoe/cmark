@@ -78,6 +78,8 @@ void php_cmark_node_heading_write(zval *object, zval *member, zval *value, void 
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_heading_level)) {
+			php_cmark_assert_type(
+				value, IS_LONG, 0, "level expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				cmark_node_set_heading_level, value, &n->level);
 			return;
@@ -86,6 +88,8 @@ void php_cmark_node_heading_write(zval *object, zval *member, zval *value, void 
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "level")) {
+			php_cmark_assert_type(
+				value, IS_LONG, 0, "level expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				RTS(rtc, cmark_node_set_heading_level), value, &n->level);
 			return;
@@ -145,11 +149,13 @@ PHP_METHOD(Heading, __construct)
 	php_cmark_node_heading_t *n = php_cmark_node_heading_fetch(getThis());
 	zval *level = NULL;
 
-	if (php_cmark_parse_parameters("|z", &level) != SUCCESS ||
-	    (level && Z_TYPE_P(level) != IS_LONG)) {
-		php_cmark_wrong_parameters("level expected");
-		return;
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ZVAL(level)
+	ZEND_PARSE_PARAMETERS_END();
+
+	php_cmark_assert_type(
+		level, IS_LONG, 1, "level expected to be int");
 
 	php_cmark_node_new(getThis(), CMARK_NODE_HEADING);
 

@@ -75,10 +75,14 @@ void php_cmark_node_custom_write(zval *object, zval *member, zval *value, void *
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_on_enter)) {
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"onEnter expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				cmark_node_set_on_enter, value, &n->onEnter);
 			return;
 		} else if (RTC(rtc, cmark_node_set_on_exit)) {
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"onLeave expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				cmark_node_set_on_exit, value, &n->onLeave);
 			return;
@@ -87,10 +91,14 @@ void php_cmark_node_custom_write(zval *object, zval *member, zval *value, void *
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "onEnter")) {
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"onEnter expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				RTS(rtc, cmark_node_set_on_enter), value, &n->onEnter);
 			return;
 		} else if (zend_string_equals_literal(Z_STR_P(member), "onLeave")) {
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"onLeave expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				RTS(rtc, cmark_node_set_on_exit), value, &n->onLeave);
 			return;

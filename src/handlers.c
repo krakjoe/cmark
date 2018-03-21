@@ -56,11 +56,6 @@ zval* php_cmark_node_read_str(php_cmark_node_t *n, cmark_node_read_str cmark_nod
 }
 
 void php_cmark_node_write_int(php_cmark_node_t *n, cmark_node_write_int cmark_node_write, zval *value, zval *cache) {
-	if (!value || Z_TYPE_P(value) != IS_LONG) {
-		php_cmark_wrong_parameters("int expected");
-		return;
-	}
-
 	if (!cmark_node_write(n->node, Z_LVAL_P(value))) {
 		php_cmark_throw("write operation failed");
 		return;
@@ -70,11 +65,6 @@ void php_cmark_node_write_int(php_cmark_node_t *n, cmark_node_write_int cmark_no
 }
 
 void php_cmark_node_write_bool(php_cmark_node_t *n, cmark_node_write_int cmark_node_write, zval *value, zval *cache) {
-	if (!value || (Z_TYPE_P(value) != IS_TRUE && Z_TYPE_P(value) != IS_FALSE)) {
-		php_cmark_wrong_parameters("bool expected");
-		return;
-	}
-
 	if (!cmark_node_write(n->node, zend_is_true(value))) {
 		php_cmark_throw("write operation failed");
 		return;
@@ -84,12 +74,7 @@ void php_cmark_node_write_bool(php_cmark_node_t *n, cmark_node_write_int cmark_n
 }
 
 void php_cmark_node_write_str(php_cmark_node_t *n, cmark_node_write_str cmark_node_write, zval *content, zval *cache) {
-	if (content && Z_TYPE_P(content) != IS_STRING) {
-		php_cmark_wrong_parameters("string expected");
-		return;
-	}
-	
-	if (Z_TYPE_P(cache) == IS_STRING) {
+	if (Z_TYPE_P(cache) == IS_STRING || !content) {
 		zval_ptr_dtor(cache);
 		ZVAL_UNDEF(cache);
 	}

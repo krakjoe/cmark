@@ -44,8 +44,6 @@
 		OBJ_RELEASE((zend_object*) (zz)); \
 } while(0)
 
-#define php_cmark_parse_parameters(s, ...) \
-	zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS(), s, ##__VA_ARGS__)
 #define php_cmark_throw_ex(e, s, ...) \
 	zend_throw_exception_ex(spl_ce_##e, 0, s, ##__VA_ARGS__)
 #define php_cmark_throw(s, ...) \
@@ -53,10 +51,18 @@
 #define php_cmark_wrong_parameters(s, ...) \
 	zend_throw_exception_ex(zend_ce_type_error, 0, s, ##__VA_ARGS__)
 #define php_cmark_no_parameters() do { \
-	if (php_cmark_parse_parameters("") != SUCCESS) { \
+	if (ZEND_NUM_ARGS()) { \
 		php_cmark_wrong_parameters("no parameters expected"); \
 		return; \
 	} \
+} while(0)
+
+#define php_cmark_assert_type(v, e, n, s, ...) do { \
+	if ((!(v) && (n)) || ((v) && ZEND_SAME_FAKE_TYPE((e), Z_TYPE_P(v)))) \
+		break; \
+	\
+	zend_throw_exception_ex(zend_ce_type_error, 0, (s), ##__VA_ARGS__); \
+	return; \
 } while(0)
 
 #define php_cmark_chain_ex(t) ZVAL_ZVAL(return_value, t, 1, 0)

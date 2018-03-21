@@ -79,6 +79,9 @@ void php_cmark_node_text_write(zval *object, zval *member, zval *value, void **r
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_literal)) {
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"literal expected to be string");
+
 			php_cmark_node_write_str(&n->h, cmark_node_set_literal, value, &n->literal);
 			return;
 		}	
@@ -86,6 +89,9 @@ void php_cmark_node_text_write(zval *object, zval *member, zval *value, void **r
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
+			php_cmark_assert_type(value, IS_STRING, 0, 
+				"literal expected to be string");
+
 			php_cmark_node_write_str(&n->h, 
 				RTS(rtc, cmark_node_set_literal), value, &n->literal);
 			return;
@@ -179,10 +185,12 @@ PHP_METHOD(Text, __construct)
 	php_cmark_node_text_t *n = php_cmark_node_text_fetch(getThis());
 	zval *literal = NULL;
 
-	if (php_cmark_parse_parameters("|z", &literal) != SUCCESS ||
-	    (literal && Z_TYPE_P(literal) != IS_STRING)) {
-		php_cmark_wrong_parameters("literal expected");
-	}
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ZVAL(literal)
+	ZEND_PARSE_PARAMETERS_END();
+
+	php_cmark_assert_type(literal, IS_STRING, 1, "literal expected to be string");
 
 	php_cmark_node_new(getThis(), CMARK_NODE_TEXT);
 
