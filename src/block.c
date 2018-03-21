@@ -172,13 +172,16 @@ PHP_METHOD(CodeBlock, __construct)
 	zval *literal = NULL;
 
 	if (ZEND_NUM_ARGS() == 1) {
-		if (php_cmark_parse_parameters("z",  &literal) != SUCCESS) {
+		if (php_cmark_parse_parameters("z",  &literal) != SUCCESS || 
+		    (literal && Z_TYPE_P(literal) != IS_STRING)) {
 			php_cmark_wrong_parameters(
 				"expected literal");
 			return;
 		}
 	} else {
-		if (php_cmark_parse_parameters("|zz", &fence, &literal) != SUCCESS) {
+		if (php_cmark_parse_parameters("|zz", &fence, &literal) != SUCCESS || 
+		    (fence && Z_TYPE_P(fence) != IS_STRING) || 
+		    (literal && Z_TYPE_P(literal) != IS_STRING)) {
 			php_cmark_wrong_parameters(
 				"expected fence and optional literal");
 			return;

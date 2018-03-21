@@ -113,7 +113,7 @@ int php_cmark_node_heading_isset(zval *object, zval *member, int has_set_exists,
 		zv = php_cmark_node_read_int(&n->h, cmark_node_get_heading_level, &n->level);
 	}
 
-	if (Z_TYPE_P(zv) == IS_STRING) {
+	if (Z_TYPE_P(zv) == IS_LONG) {
 		return 1;
 	}
 

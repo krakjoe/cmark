@@ -296,6 +296,15 @@ static inline void php_cmark_node_clone_impl(php_cmark_node_t *target, cmark_nod
 			cmark_node_set_list_delim(
 				target->node, 
 				cmark_node_get_list_delim(source));
+			if (cmark_node_get_list_type(source) == CMARK_ORDERED_LIST) {
+				cmark_node_set_list_start(target->node,
+					cmark_node_get_list_start(source));
+			}
+		break;
+
+		case CMARK_NODE_HEADING:
+			cmark_node_set_heading_level(target->node,
+				cmark_node_get_heading_level(source));
 		break;
 
 		case CMARK_NODE_CODE_BLOCK:
