@@ -161,8 +161,8 @@ typedef struct _php_cmark_node_ordered_list_t {
 #define php_cmark_node_ordered_list_fetch(z) php_cmark_node_ordered_list_from(Z_OBJ_P(z))
 
 zend_object* php_cmark_node_ordered_list_create(zend_class_entry *ce) {
-	php_cmark_node_list_t *n = 
-		(php_cmark_node_list_t*) 
+	php_cmark_node_ordered_list_t *n = 
+		(php_cmark_node_ordered_list_t*) 
 			ecalloc(1, sizeof(php_cmark_node_ordered_list_t));
 
 	zend_object_std_init(
@@ -242,23 +242,84 @@ int php_cmark_node_ordered_list_isset(zval *object, zval *member, int has_set_ex
 	return php_cmark_node_list_isset(object, member, has_set_exists, rtc);
 }
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_ordered_list_construct, 0, 0, 0)
+	ZEND_ARG_INFO(0, tight)
+	ZEND_ARG_INFO(0, delimiter)
+	ZEND_ARG_INFO(0, start)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(OrderedList, __construct)
 {
-	php_cmark_no_parameters();
+	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_fetch(getThis());
+	zval *tight = NULL;
+	zval *delimiter = NULL;
+	zval *start = NULL;
+
+	if (php_cmark_parse_parameters("|zzz", &tight, &delimiter, &start) != SUCCESS ||
+	    (tight && (Z_TYPE_P(tight) != IS_TRUE && Z_TYPE_P(tight) != IS_FALSE)) ||
+	    (delimiter && Z_TYPE_P(delimiter) != IS_LONG) ||
+	    (start && Z_TYPE_P(start) != IS_LONG)) {
+		php_cmark_wrong_parameters("tight, delimiter, and start expected");
+		return;
+	}
 
 	php_cmark_node_list_new(getThis(), CMARK_ORDERED_LIST);
+
+	if (tight) {
+		php_cmark_node_write_bool(&n->h, 
+			(cmark_node_write_int) cmark_node_set_list_tight, 
+			tight, &n->tight);
+	}
+
+	if (delimiter) {
+		php_cmark_node_write_int(&n->h, 
+			(cmark_node_write_int) cmark_node_set_list_delim, 
+			delimiter, &n->delimiter);
+	}
+
+	if (start) {
+		php_cmark_node_write_int(&n->h, 
+			(cmark_node_write_int) cmark_node_set_list_start, 
+			start, &n->start);
+	}
 }
 
 static zend_function_entry php_cmark_node_list_ordered_methods[] = {
-	PHP_ME(OrderedList, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(OrderedList, __construct, php_cmark_node_ordered_list_construct, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_bullet_list_construct, 0, 0, 0)
+	ZEND_ARG_INFO(0, tight)
+	ZEND_ARG_INFO(0, delimiter)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(BulletList, __construct)
 {
-	php_cmark_no_parameters();
+	php_cmark_node_list_t *n = php_cmark_node_list_fetch(getThis());
+	zval *tight = NULL;
+	zval *delimiter = NULL;
+
+	if (php_cmark_parse_parameters("|zz", &tight, &delimiter) != SUCCESS ||
+	    (tight && (Z_TYPE_P(tight) != IS_TRUE && Z_TYPE_P(tight) != IS_FALSE)) ||
+	    (delimiter && Z_TYPE_P(delimiter) != IS_LONG)) {
+		php_cmark_wrong_parameters("tight and delimiter expected");
+		return;
+	}
 
 	php_cmark_node_list_new(getThis(), CMARK_BULLET_LIST);
+
+	if (tight) {
+		php_cmark_node_write_bool(&n->h, 
+			(cmark_node_write_int) cmark_node_set_list_tight, 
+			tight, &n->tight);
+	}
+
+	if (delimiter) {
+		php_cmark_node_write_int(&n->h, 
+			(cmark_node_write_int) cmark_node_set_list_delim, 
+			delimiter, &n->delimiter);
+	}
 }
 
 static zend_function_entry php_cmark_node_list_bullet_methods[] = {

@@ -193,13 +193,36 @@ static zend_function_entry php_cmark_node_media_methods[] = {
 };
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_media_construct, 0, 0, 0)
+	ZEND_ARG_INFO(0, url)
+	ZEND_ARG_INFO(0, title)
 ZEND_END_ARG_INFO()
 
 PHP_METHOD(Link, __construct)
-{
-	php_cmark_no_parameters();
+{	
+	php_cmark_node_media_t *n = php_cmark_node_media_fetch(getThis());
+	zval *url = NULL;
+	zval *title = NULL;
+
+	if (php_cmark_parse_parameters("|zz", &url, &title) != SUCCESS ||
+	    (url && Z_TYPE_P(url) != IS_STRING) ||
+	    (title && Z_TYPE_P(title) != IS_STRING)) {
+		php_cmark_wrong_parameters("url and or title expected");
+		return;
+	}
 
 	php_cmark_node_new(getThis(), CMARK_NODE_LINK);
+
+	if (url) {
+		php_cmark_node_write_str(&n->h, 
+			(cmark_node_write_str) cmark_node_set_url, 
+			url, &n->url);
+	}
+
+	if (title) {
+		php_cmark_node_write_str(&n->h, 
+			(cmark_node_write_str) cmark_node_set_title, 
+			title, &n->title);
+	}
 }
 
 static zend_function_entry php_cmark_node_link_methods[] = {
@@ -209,9 +232,30 @@ static zend_function_entry php_cmark_node_link_methods[] = {
 
 PHP_METHOD(Image, __construct)
 {
-	php_cmark_no_parameters();
+	php_cmark_node_media_t *n = php_cmark_node_media_fetch(getThis());
+	zval *url = NULL;
+	zval *title = NULL;
+
+	if (php_cmark_parse_parameters("|zz", &url, &title) != SUCCESS ||
+	    (url && Z_TYPE_P(url) != IS_STRING) ||
+	    (title && Z_TYPE_P(title) != IS_STRING)) {
+		php_cmark_wrong_parameters("url and or title expected");
+		return;
+	}
 
 	php_cmark_node_new(getThis(), CMARK_NODE_IMAGE);
+
+	if (url) {
+		php_cmark_node_write_str(&n->h, 
+			(cmark_node_write_str) cmark_node_set_url, 
+			url, &n->url);
+	}
+
+	if (title) {
+		php_cmark_node_write_str(&n->h, 
+			(cmark_node_write_str) cmark_node_set_title, 
+			title, &n->title);
+	}
 }
 
 static zend_function_entry php_cmark_node_image_methods[] = {

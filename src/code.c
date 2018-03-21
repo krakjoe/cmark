@@ -23,18 +23,35 @@
 #include <src/common.h>
 #include <src/node.h>
 #include <src/text.h>
+#include <src/handlers.h>
 
 zend_class_entry *php_cmark_node_code_ce;
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_code_construct, 0, 0, 0)
+	ZEND_ARG_INFO(0, literal)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(Code, __construct)
 {
-	php_cmark_no_parameters();
+	php_cmark_node_text_t *n = php_cmark_node_text_fetch(getThis());
+	zval *literal = NULL;
+
+	if (php_cmark_parse_parameters("|z", &literal) != SUCCESS ||
+	    (literal && Z_TYPE_P(literal) != IS_STRING)) {
+		php_cmark_wrong_parameters("literal expected");
+	}
 
 	php_cmark_node_new(getThis(), CMARK_NODE_CODE);
+
+	if (literal) {
+		php_cmark_node_write_str(&n->h, 
+			(cmark_node_write_str) cmark_node_set_literal, 
+			literal, &n->literal);
+	}
 }
 
 static zend_function_entry php_cmark_node_code_methods[] = {
-	PHP_ME(Code, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Code, __construct, php_cmark_node_code_construct, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 

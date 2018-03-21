@@ -120,11 +120,27 @@ int php_cmark_node_heading_isset(zval *object, zval *member, int has_set_exists,
 	return php_cmark_node_isset(object, member, has_set_exists, rtc);
 }
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_heading_construct, 0, 0, 0)
+	ZEND_ARG_INFO(0, level)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(Heading, __construct)
 {
-	php_cmark_no_parameters();
+	php_cmark_node_heading_t *n = php_cmark_node_heading_fetch(getThis());
+	zval *level = NULL;
+
+	if (php_cmark_parse_parameters("|z", &level) != SUCCESS ||
+	    (level && Z_TYPE_P(level) != IS_LONG)) {
+		php_cmark_wrong_parameters("level expected");
+		return;
+	}
 
 	php_cmark_node_new(getThis(), CMARK_NODE_HEADING);
+
+	if (level) {
+		php_cmark_node_write_int(&n->h, 
+			cmark_node_set_heading_level, level, &n->level);
+	}
 }
 
 static zend_function_entry php_cmark_node_heading_methods[] = {

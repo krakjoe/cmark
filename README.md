@@ -22,7 +22,9 @@ API
 ```
 namespace CommonMark\Node {
 
-	final class Document 		extends \CommonMark\Node {}
+	final class Document 		extends \CommonMark\Node {
+		public function __construct();
+	}
 
 	const Lists\Delimit\Period;
 	const Lists\Delimit\Paren;
@@ -30,28 +32,58 @@ namespace CommonMark\Node {
 	final class BulletList 		extends \CommonMark\Node {
 		public $tight;
 		public $delimiter;
+
+		public function __construct();
+		public function __construct(bool $tight);
+		public function __construct(bool $tight, int $delimiter);
 	}
 
 	final class OrderedList		extends \CommonMark\Node {
 		public $tight;
 		public $delimiter;
 		public $start;
+
+		public function __construct();
+		public function __construct(bool $tight);
+		public function __construct(bool $tight, int $delimiter);
+		public function __construct(bool $tight, int $delimiter, int $start);
 	}
 
-	final class Item		extends \CommonMark\Node {}
+	final class Item		extends \CommonMark\Node {
+		public function __construct();
+	}
 
 	final class Heading		extends \CommonMark\Node {
 		public $level;
+
+		public function __construct();
+		public function __construct(int $level);
 	}
 
-	final class BlockQuote		extends \CommonMark\Node {}
-	final class Paragraph		extends \CommonMark\Node {}
+	final class BlockQuote		extends \CommonMark\Node {
+		public function __construct();
+	}
 
-	final class Strong		extends \CommonMark\Node {}
-	final class Emphasis		extends \CommonMark\Node {}
-	final class ThematicBreak	extends \CommonMark\Node {}
-	final class SoftBreak		extends \CommonMark\Node {}
-	final class LineBreak		extends \CommonMark\Node {}
+	final class Paragraph		extends \CommonMark\Node {
+		public function __construct();
+	}
+
+	final class Strong		extends \CommonMark\Node {
+		public function __construct();
+	}
+
+	final class Emphasis		extends \CommonMark\Node {
+		public function __construct();
+	}
+	final class ThematicBreak	extends \CommonMark\Node {
+		public function __construct();
+	}
+	final class SoftBreak		extends \CommonMark\Node {
+		public function __construct();
+	}
+	final class LineBreak		extends \CommonMark\Node {
+		public function __construct();
+	}
 
 	final class Text 		extends \CommonMark\Node {
 		public $literal;
@@ -73,21 +105,33 @@ namespace CommonMark\Node {
 	final class Image		extends \CommonMark\Node {
 		public $url;
 		public $title;
+
+		public function __construct();
+		public function __construct(string $url);
+		public function __construct(string $url, string $title);
 	}
 
 	final class Link		extends \CommonMark\Node {
 		public $url;
 		public $title;
+
+		public function __construct();
+		public function __construct(string $url);
+		public function __construct(string $url, string $title);
 	}
 
 	final class CustomBlock		extends \CommonMark\Node {
 		public $onEnter;
 		public $onLeave;
+
+		public function __construct();
 	}
 
 	final class CustomInline	extends \CommonMark\Node {
 		public $onEnter;
 		public $onLeave;
+
+		public function __construct();
 	}
 }
 
