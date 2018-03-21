@@ -129,62 +129,62 @@ zval* php_cmark_node_read(zval *object, zval *member, int type, void **rtc, zval
 	}
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_parent)
-			return php_cmark_node_read_cached(n, cmark_node_parent, &n->parent);
-		if (*rtc == cmark_node_previous)
-			return php_cmark_node_read_cached(n, cmark_node_previous, &n->previous);
-		if (*rtc == cmark_node_next)
-			return php_cmark_node_read_cached(n, cmark_node_next, &n->next);
-		if (*rtc == cmark_node_first_child)
-			return php_cmark_node_read_cached(n, cmark_node_first_child, &n->firstChild);
-		if (*rtc == cmark_node_last_child)
-			return php_cmark_node_read_cached(n, cmark_node_last_child, &n->lastChild);
-		if (*rtc == cmark_node_get_start_line)
-			return php_cmark_node_read_int(n, cmark_node_get_start_line, &n->startLine);
-		if (*rtc == cmark_node_get_end_line)
-			return php_cmark_node_read_int(n, cmark_node_get_end_line, &n->endLine);
-		if (*rtc == cmark_node_get_start_column)
-			return php_cmark_node_read_int(n, cmark_node_get_start_column, &n->startColumn);
-		if (*rtc == cmark_node_get_end_column)
-			return php_cmark_node_read_int(n, cmark_node_get_end_column, &n->endColumn);
+		if (RTC(rtc, cmark_node_parent))
+			return php_cmark_node_read_cached(n, 
+				cmark_node_parent, &n->parent);
+		if (RTC(rtc, cmark_node_previous))
+			return php_cmark_node_read_cached(n, 
+				cmark_node_previous, &n->previous);
+		if (RTC(rtc, cmark_node_next))
+			return php_cmark_node_read_cached(n, 
+				cmark_node_next, &n->next);
+		if (RTC(rtc, cmark_node_first_child))
+			return php_cmark_node_read_cached(n, 
+				cmark_node_first_child, &n->firstChild);
+		if (RTC(rtc, cmark_node_last_child))
+			return php_cmark_node_read_cached(n, 
+				cmark_node_last_child, &n->lastChild);
+		if (RTC(rtc, cmark_node_get_start_line))
+			return php_cmark_node_read_int(n, 
+				cmark_node_get_start_line, &n->startLine);
+		if (RTC(rtc, cmark_node_get_end_line))
+			return php_cmark_node_read_int(n, 
+				cmark_node_get_end_line, &n->endLine);
+		if (RTC(rtc, cmark_node_get_start_column))
+			return php_cmark_node_read_int(n, 
+				cmark_node_get_start_column, &n->startColumn);
+		if (RTC(rtc, cmark_node_get_end_column))
+			return php_cmark_node_read_int(n, 
+				cmark_node_get_end_column, &n->endColumn);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "parent")) {
-		if (rtc) 
-			*rtc = cmark_node_parent;
-		return php_cmark_node_read_cached(n, cmark_node_parent, &n->parent);
+		return php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_parent), &n->parent);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "previous")) {
-		if (rtc) 
-			*rtc = cmark_node_previous;
-		return php_cmark_node_read_cached(n, cmark_node_previous, &n->previous);
+		return php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_previous), &n->previous);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "next")) {
-		if (rtc) 
-			*rtc = cmark_node_next;
-		return php_cmark_node_read_cached(n, cmark_node_next, &n->next);
+		return php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_next), &n->next);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "firstChild")) {
-		if (rtc) 
-			*rtc = cmark_node_first_child;
-		return php_cmark_node_read_cached(n, cmark_node_first_child, &n->firstChild);
+		return php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_first_child), &n->firstChild);
 	}  else if (zend_string_equals_literal(Z_STR_P(member), "lastChild")) {
-		if (rtc) 
-			*rtc = cmark_node_last_child;
-		return php_cmark_node_read_cached(n, cmark_node_last_child, &n->lastChild);
+		return php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_last_child), &n->lastChild);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "startLine")) {
-		if (rtc)
-			*rtc = cmark_node_get_start_line;
-		return php_cmark_node_read_int(n, cmark_node_get_start_line, &n->startLine);
+		return php_cmark_node_read_int(n, 
+			RTS(rtc, cmark_node_get_start_line), &n->startLine);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "endLine")) {
-		if (rtc)
-			*rtc = cmark_node_get_end_line;
-		return php_cmark_node_read_int(n, cmark_node_get_end_line, &n->endLine);
+		return php_cmark_node_read_int(n, 
+			RTS(rtc, cmark_node_get_end_line), &n->endLine);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "startColumn")) {
-		if (rtc)
-			*rtc = cmark_node_get_start_column;
-		return php_cmark_node_read_int(n, cmark_node_get_start_column, &n->startColumn);
+		return php_cmark_node_read_int(n, 
+			RTS(rtc, cmark_node_get_start_column), &n->startColumn);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "endColumn")) {
-		if (rtc)
-			*rtc = cmark_node_get_end_column;
-		return php_cmark_node_read_int(n, cmark_node_get_end_column, &n->endColumn);
+		return php_cmark_node_read_int(n, 
+			RTS(rtc, cmark_node_get_end_column), &n->endColumn);
 	} else {
 php_cmark_node_read_error:
 		php_cmark_throw(
@@ -212,39 +212,111 @@ int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **
 	}
 
 	if (has_set_exists == 2) {
-		if (zend_string_equals_literal(Z_STR_P(member), "parent") ||
-		    zend_string_equals_literal(Z_STR_P(member), "previous") ||
-		    zend_string_equals_literal(Z_STR_P(member), "next") ||
-		    zend_string_equals_literal(Z_STR_P(member), "lastChild") || 
-		    zend_string_equals_literal(Z_STR_P(member), "firstChild") ||
-		    zend_string_equals_literal(Z_STR_P(member), "startLine") ||
-		    zend_string_equals_literal(Z_STR_P(member), "endLine") ||
-		    zend_string_equals_literal(Z_STR_P(member), "startColumn") ||
-		    zend_string_equals_literal(Z_STR_P(member), "endColumn")) {
-			return 1;
+		if (EXPECTED(rtc)) {
+			if (RTC(rtc, cmark_node_parent) ||
+			    RTC(rtc, cmark_node_previous) ||
+			    RTC(rtc, cmark_node_next) ||
+			    RTC(rtc, cmark_node_previous) ||
+			    RTC(rtc, cmark_node_last_child) ||
+			    RTC(rtc, cmark_node_first_child) ||
+			    RTC(rtc, cmark_node_get_start_line) ||
+			    RTC(rtc, cmark_node_get_end_line) ||
+			    RTC(rtc, cmark_node_get_start_column) ||
+			    RTC(rtc, cmark_node_get_end_column)) {
+				return 1;
+			}
+		}
+
+		if (zend_string_equals_literal(Z_STR_P(member), "parent")) {
+			return RTS(rtc, cmark_node_parent) != NULL;
+		} else if (zend_string_equals_literal(Z_STR_P(member), "previous")) {
+			return RTS(rtc, cmark_node_previous) != NULL;
+		} else if (zend_string_equals_literal(Z_STR_P(member), "next")) {
+			return RTS(rtc, cmark_node_next) != NULL;
+		} else if (zend_string_equals_literal(Z_STR_P(member), "firstChild")) {
+			return RTS(rtc, cmark_node_first_child) != NULL;
+		} else if (zend_string_equals_literal(Z_STR_P(member), "lastChild")) {
+			return RTS(rtc, cmark_node_last_child) != NULL;
+		} else if (zend_string_equals_literal(Z_STR_P(member), "startLine")) {
+			return RTS(rtc, cmark_node_get_start_line) != NULL;
+		} else if (zend_string_equals_literal(Z_STR_P(member), "endLine")) {
+			return RTS(rtc, cmark_node_get_end_line) != NULL;
+		} else if (zend_string_equals_literal(Z_STR_P(member), "startColumn")) {
+			return RTS(rtc, cmark_node_get_start_column) != NULL;
+		} else if (zend_string_equals_literal(Z_STR_P(member), "endColumn")) {
+			return RTS(rtc, cmark_node_get_end_column) != NULL;
+		}
+	}
+
+	if (EXPECTED(rtc)) {
+		if (RTC(rtc, cmark_node_parent)) {
+			zv = php_cmark_node_read_cached(n, 
+				RTS(rtc, cmark_node_parent), &n->parent);
+			goto php_cmark_node_handlers_isset_result;
+		} else if (RTC(rtc, cmark_node_previous)) {
+			zv = php_cmark_node_read_cached(n, 
+				RTS(rtc, cmark_node_previous), &n->previous);
+			goto php_cmark_node_handlers_isset_result;
+		}  else if (RTC(rtc, cmark_node_next)) {
+			zv = php_cmark_node_read_cached(n, 
+				RTS(rtc, cmark_node_next), &n->next);
+			goto php_cmark_node_handlers_isset_result;
+		} else if (RTC(rtc, cmark_node_first_child)) {
+			zv = php_cmark_node_read_cached(n, 
+				RTS(rtc, cmark_node_first_child), &n->firstChild);
+			goto php_cmark_node_handlers_isset_result;
+		} else if (RTC(rtc, cmark_node_last_child)) {
+			zv = php_cmark_node_read_cached(n, 
+				RTS(rtc, cmark_node_last_child), &n->lastChild);
+			goto php_cmark_node_handlers_isset_result;
+		} else if (RTC(rtc, cmark_node_get_start_line)) {
+			zv = php_cmark_node_read_int(n, 
+				RTS(rtc, cmark_node_get_start_line), &n->startLine);
+			goto php_cmark_node_handlers_isset_result;
+		} else if (RTC(rtc, cmark_node_get_end_line)) {
+			zv = php_cmark_node_read_int(n, 
+				RTS(rtc, cmark_node_get_end_line), &n->endLine);
+			goto php_cmark_node_handlers_isset_result;
+		} else if (RTC(rtc, cmark_node_get_start_column)) {
+			zv = php_cmark_node_read_int(n, 
+				RTS(rtc, cmark_node_get_start_column), &n->startColumn);
+			goto php_cmark_node_handlers_isset_result;
+		} else if (RTC(rtc, cmark_node_get_end_column)) {
+			zv = php_cmark_node_read_int(n, 
+				RTS(rtc, cmark_node_get_end_column), &n->endColumn);
+			goto php_cmark_node_handlers_isset_result;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "parent")) {
-		zv = php_cmark_node_read_cached(n, cmark_node_parent, &n->parent);
+		zv = php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_parent), &n->parent);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "previous")) {
-		zv = php_cmark_node_read_cached(n, cmark_node_previous, &n->previous);
+		zv = php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_previous), &n->previous);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "next")) {
-		zv = php_cmark_node_read_cached(n, cmark_node_next, &n->next);
+		zv = php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_next), &n->next);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "firstChild")) {
-		zv = php_cmark_node_read_cached(n, cmark_node_first_child, &n->firstChild);
+		zv = php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_first_child), &n->firstChild);
 	}  else if (zend_string_equals_literal(Z_STR_P(member), "lastChild")) {
-		zv = php_cmark_node_read_cached(n, cmark_node_last_child, &n->lastChild);
+		zv = php_cmark_node_read_cached(n, 
+			RTS(rtc, cmark_node_last_child), &n->lastChild);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "startLine")) {
-		zv = php_cmark_node_read_int(n, cmark_node_get_start_line, &n->startLine);
+		zv = php_cmark_node_read_int(n, 
+			RTS(rtc, cmark_node_get_start_line), &n->startLine);
 	}  else if (zend_string_equals_literal(Z_STR_P(member), "endLine")) {
-		zv = php_cmark_node_read_int(n, cmark_node_get_end_line, &n->endLine);
+		zv = php_cmark_node_read_int(n, 
+			RTS(rtc, cmark_node_get_end_line), &n->endLine);
 	}  else if (zend_string_equals_literal(Z_STR_P(member), "startColumn")) {
-		zv = php_cmark_node_read_int(n, cmark_node_get_start_column, &n->startColumn);
+		zv = php_cmark_node_read_int(n, 
+			RTS(rtc, cmark_node_get_start_column), &n->startColumn);
 	}   else if (zend_string_equals_literal(Z_STR_P(member), "endColumn")) {
-		zv = php_cmark_node_read_int(n, cmark_node_get_end_column, &n->endColumn);
+		zv = php_cmark_node_read_int(n, 
+			RTS(rtc, cmark_node_get_end_column), &n->endColumn);
 	}
-
+php_cmark_node_handlers_isset_result:
 	return Z_TYPE_P(zv) == IS_OBJECT || Z_TYPE_P(zv) == IS_LONG;
 }
 

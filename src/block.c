@@ -63,14 +63,14 @@ zval* php_cmark_node_code_block_read(zval *object, zval *member, int type, void 
 	}
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_get_fence_info)
-			return php_cmark_node_read_str(&n->h.h, cmark_node_get_fence_info, &n->fence);
+		if (RTC(rtc, cmark_node_get_fence_info))
+			return php_cmark_node_read_str(&n->h.h, 
+				cmark_node_get_fence_info, &n->fence);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
-		if (rtc) 
-			*rtc = cmark_node_get_fence_info;
-		return php_cmark_node_read_str(&n->h.h, cmark_node_get_fence_info, &n->fence);
+		return php_cmark_node_read_str(&n->h.h, 
+			RTS(rtc, cmark_node_get_fence_info), &n->fence);
 	}
 
 php_cmark_node_code_block_read_error:
@@ -81,17 +81,17 @@ void php_cmark_node_code_block_write(zval *object, zval *member, zval *value, vo
 	php_cmark_node_code_block_t *n = php_cmark_node_code_block_fetch(object);
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_set_fence_info) {
-			php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, value, &n->fence);
+		if (RTC(rtc, cmark_node_set_fence_info)) {
+			php_cmark_node_write_str(&n->h.h, 
+				cmark_node_set_fence_info, value, &n->fence);
 			return;
 		}	
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
-			if (rtc)
-				*rtc = cmark_node_set_fence_info;
-			php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, value, &n->fence);
+			php_cmark_node_write_str(&n->h.h, 
+				RTS(rtc, cmark_node_set_fence_info), value, &n->fence);
 			return;
 		}
 	}
@@ -108,15 +108,31 @@ int php_cmark_node_code_block_isset(zval *object, zval *member, int has_set_exis
 	}
 
 	if (has_set_exists == 2) {
+		if (EXPECTED(rtc)) {
+			if (RTC(rtc, cmark_node_get_fence_info)) {
+				return 1;
+			}
+		}
+
 		if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
-			return 1;
+			return RTS(rtc, cmark_node_get_fence_info) != NULL;
+		}
+	}
+
+	if (EXPECTED(rtc)) {
+		if (RTC(rtc, cmark_node_get_fence_info)) {
+			zv = php_cmark_node_read_str(&n->h.h, 
+				cmark_node_get_fence_info, &n->fence);
+			goto php_cmark_node_code_block_isset_result;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
-		zv = php_cmark_node_read_str(&n->h.h, cmark_node_get_fence_info, &n->fence);
+		zv = php_cmark_node_read_str(&n->h.h, 
+			RTS(rtc, cmark_node_get_fence_info), &n->fence);
 	}
 
+php_cmark_node_code_block_isset_result:
 	if (Z_TYPE_P(zv) == IS_STRING) {
 		return 1;
 	}
@@ -132,16 +148,16 @@ void php_cmark_node_code_block_unset(zval *object, zval *member, void **rtc) {
 	}
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_set_fence_info) {
-			php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, NULL, &n->fence);
+		if (RTC(rtc, cmark_node_set_fence_info)) {
+			php_cmark_node_write_str(&n->h.h, 
+				cmark_node_set_fence_info, NULL, &n->fence);
 			return;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
-		if (rtc)	
-			*rtc = cmark_node_set_fence_info;
-		php_cmark_node_write_str(&n->h.h, cmark_node_set_fence_info, NULL, &n->fence);
+		php_cmark_node_write_str(&n->h.h, 
+			RTS(rtc, cmark_node_set_fence_info), NULL, &n->fence);
 		return;
 	}
 

@@ -59,14 +59,14 @@ zval* php_cmark_node_heading_read(zval *object, zval *member, int type, void **r
 	}
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_get_heading_level)
-			return php_cmark_node_read_int(&n->h, cmark_node_get_heading_level, &n->level);
+		if (RTC(rtc, cmark_node_get_heading_level))
+			return php_cmark_node_read_int(&n->h, 
+				cmark_node_get_heading_level, &n->level);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "level")) {
-		if (rtc) 
-			*rtc = cmark_node_get_heading_level;
-		return php_cmark_node_read_int(&n->h, cmark_node_get_heading_level, &n->level);
+		return php_cmark_node_read_int(&n->h, 
+			RTS(rtc, cmark_node_get_heading_level), &n->level);
 	}
 
 php_cmark_node_heading_read_error:
@@ -77,17 +77,17 @@ void php_cmark_node_heading_write(zval *object, zval *member, zval *value, void 
 	php_cmark_node_heading_t *n = php_cmark_node_heading_fetch(object);
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_set_heading_level) {
-			php_cmark_node_write_int(&n->h, cmark_node_set_heading_level, value, &n->level);
+		if (RTC(rtc, cmark_node_set_heading_level)) {
+			php_cmark_node_write_int(&n->h, 
+				cmark_node_set_heading_level, value, &n->level);
 			return;
 		}	
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "level")) {
-			if (rtc)
-				*rtc = cmark_node_set_heading_level;
-			php_cmark_node_write_int(&n->h, cmark_node_set_heading_level, value, &n->level);
+			php_cmark_node_write_int(&n->h, 
+				RTS(rtc, cmark_node_set_heading_level), value, &n->level);
 			return;
 		}
 	}
@@ -104,15 +104,31 @@ int php_cmark_node_heading_isset(zval *object, zval *member, int has_set_exists,
 	}
 
 	if (has_set_exists == 2) {
+		if (EXPECTED(rtc)) {
+			if (RTC(rtc, cmark_node_get_heading_level)) {
+				return 1;
+			}
+		}
+
 		if (zend_string_equals_literal(Z_STR_P(member), "level")) {
-			return 1;
+			return RTS(rtc, cmark_node_get_heading_level) != NULL;
+		}
+	}
+
+	if (EXPECTED(rtc)) {
+		if (RTC(rtc, cmark_node_get_heading_level)) {
+			zv = php_cmark_node_read_int(&n->h, 
+				RTS(rtc, cmark_node_get_heading_level), &n->level);
+			goto php_cmark_node_heading_isset_result;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "level")) {
-		zv = php_cmark_node_read_int(&n->h, cmark_node_get_heading_level, &n->level);
+		zv = php_cmark_node_read_int(&n->h, 
+			RTS(rtc, cmark_node_get_heading_level), &n->level);
 	}
 
+php_cmark_node_heading_isset_result:
 	if (Z_TYPE_P(zv) == IS_LONG) {
 		return 1;
 	}

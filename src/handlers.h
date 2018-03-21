@@ -40,4 +40,7 @@ extern void php_cmark_node_write(zval *object, zval *member, zval *value, void *
 extern int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **rtc);
 extern void php_cmark_node_unset(zval *object, zval *member, void **rtc);
 
+#define RTS(c, f) ((c) ? (*c) = (f) : (f))
+#define RTC(c, f) ((*c) == (f))
+
 #endif

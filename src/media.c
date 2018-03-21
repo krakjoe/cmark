@@ -61,20 +61,18 @@ zval* php_cmark_node_media_read(zval *object, zval *member, int type, void **rtc
 	}
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_get_url)
+		if (RTC(rtc, cmark_node_get_url))
 			return php_cmark_node_read_str(&n->h, cmark_node_get_url, &n->url);
-		if (*rtc == cmark_node_get_title)
+		if (RTC(rtc, cmark_node_get_title))
 			return php_cmark_node_read_str(&n->h, cmark_node_get_title, &n->title);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "url")) {
-		if (rtc) 
-			*rtc = cmark_node_get_url;
-		return php_cmark_node_read_str(&n->h, cmark_node_get_url, &n->url);
+		return php_cmark_node_read_str(&n->h, 
+			RTS(rtc, cmark_node_get_url), &n->url);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
-		if (rtc) 
-			*rtc = cmark_node_get_title;
-		return php_cmark_node_read_str(&n->h, cmark_node_get_title, &n->title);
+		return php_cmark_node_read_str(&n->h, 
+			RTS(rtc, cmark_node_get_title), &n->title);
 	}
 
 php_cmark_node_media_read_error:
@@ -85,25 +83,23 @@ void php_cmark_node_media_write(zval *object, zval *member, zval *value, void **
 	php_cmark_node_media_t *n = php_cmark_node_media_fetch(object);
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_set_url) {
+		if (RTC(rtc, cmark_node_set_url)) {
 			php_cmark_node_write_str(&n->h, cmark_node_set_url, value, &n->url);
 			return;
-		} else if (*rtc == cmark_node_set_title) {
+		} else if (RTC(rtc, cmark_node_set_title)) {
 			php_cmark_node_write_str(&n->h, cmark_node_set_title, value, &n->title);
 			return;
-		}	
+		}
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "url")) {
-			if (rtc)
-				*rtc = cmark_node_set_url;
-			php_cmark_node_write_str(&n->h, cmark_node_set_url, value, &n->url);
+			php_cmark_node_write_str(&n->h, 
+				RTS(rtc, cmark_node_set_url), value, &n->url);
 			return;
 		} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
-			if (rtc)
-				*rtc = cmark_node_set_title;
-			php_cmark_node_write_str(&n->h, cmark_node_set_title, value, &n->title);
+			php_cmark_node_write_str(&n->h, 
+				RTS(rtc, cmark_node_set_title), value, &n->title);
 			return;
 		}
 	}
@@ -120,19 +116,41 @@ int php_cmark_node_media_isset(zval *object, zval *member, int has_set_exists, v
 	}
 
 	if (has_set_exists == 2) {
+		if (EXPECTED(rtc)) {
+			if (RTC(rtc, cmark_node_get_url) ||
+			    RTC(rtc, cmark_node_get_title)) {
+				return 1;
+			}	
+		}
+
 		if (zend_string_equals_literal(Z_STR_P(member), "url")) {
-			return 1;
+			return RTS(rtc, cmark_node_get_url) != NULL;
 		} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
-			return 1;
+			return RTS(rtc, cmark_node_get_title) != NULL;
+		}
+	}
+
+	if (EXPECTED(rtc)) {
+		if (RTC(rtc, cmark_node_get_url)) {
+			zv = php_cmark_node_read_str(&n->h, 
+				cmark_node_get_url, &n->url);
+			goto php_cmark_node_media_isset_result;
+		} else if (RTC(rtc, cmark_node_get_title)) {
+			zv = php_cmark_node_read_str(&n->h, 
+				cmark_node_get_title, &n->title);
+			goto php_cmark_node_media_isset_result;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "url")) {
-		zv = php_cmark_node_read_str(&n->h, cmark_node_get_url, &n->url);
+		zv = php_cmark_node_read_str(&n->h, 
+			RTS(rtc, cmark_node_get_url), &n->url);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
-		zv = php_cmark_node_read_str(&n->h, cmark_node_get_title, &n->title);
+		zv = php_cmark_node_read_str(&n->h, 
+			RTS(rtc, cmark_node_get_title), &n->title);
 	}
 
+php_cmark_node_media_isset_result:
 	if (Z_TYPE_P(zv) == IS_STRING) {
 		return 1;
 	}
@@ -148,24 +166,22 @@ void php_cmark_node_media_unset(zval *object, zval *member, void **rtc) {
 	}
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_set_title) {
+		if (RTC(rtc, cmark_node_set_title)) {
 			php_cmark_node_write_str(&n->h, cmark_node_set_title, NULL, &n->title);
 			return;
-		} else if (*rtc == cmark_node_set_url) {
+		} else if (RTC(rtc, cmark_node_set_url)) {
 			php_cmark_node_write_str(&n->h, cmark_node_set_url, NULL, &n->url);
 			return;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "title")) {
-		if (rtc)	
-			*rtc = cmark_node_set_title;
-		php_cmark_node_write_str(&n->h, cmark_node_set_title, NULL, &n->title);
+		php_cmark_node_write_str(&n->h, 
+			RTS(rtc, cmark_node_set_title), NULL, &n->title);
 		return;
 	} else if (zend_string_equals_literal(Z_STR_P(member), "url")) {
-		if (rtc)	
-			*rtc = cmark_node_set_url;
-		php_cmark_node_write_str(&n->h, cmark_node_set_url, NULL, &n->url);
+		php_cmark_node_write_str(&n->h, 
+			RTS(rtc, cmark_node_set_url), NULL, &n->url);
 		return;
 	}
 

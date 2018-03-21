@@ -61,14 +61,13 @@ zval* php_cmark_node_text_read(zval *object, zval *member, int type, void **rtc,
 	}
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_get_literal)
+		if (RTC(rtc, cmark_node_get_literal))
 			return php_cmark_node_read_str(&n->h, cmark_node_get_literal, &n->literal);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
-		if (rtc) 
-			*rtc = cmark_node_get_literal;
-		return php_cmark_node_read_str(&n->h, cmark_node_get_literal, &n->literal);
+		return php_cmark_node_read_str(&n->h, 
+			RTS(rtc, cmark_node_get_literal), &n->literal);
 	}
 
 php_cmark_node_text_read_error:
@@ -79,7 +78,7 @@ void php_cmark_node_text_write(zval *object, zval *member, zval *value, void **r
 	php_cmark_node_text_t *n = php_cmark_node_text_fetch(object);
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_set_literal) {
+		if (RTC(rtc, cmark_node_set_literal)) {
 			php_cmark_node_write_str(&n->h, cmark_node_set_literal, value, &n->literal);
 			return;
 		}	
@@ -87,9 +86,8 @@ void php_cmark_node_text_write(zval *object, zval *member, zval *value, void **r
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
-			if (rtc)
-				*rtc = cmark_node_set_literal;
-			php_cmark_node_write_str(&n->h, cmark_node_set_literal, value, &n->literal);
+			php_cmark_node_write_str(&n->h, 
+				RTS(rtc, cmark_node_set_literal), value, &n->literal);
 			return;
 		}
 	}
@@ -106,15 +104,30 @@ int php_cmark_node_text_isset(zval *object, zval *member, int has_set_exists, vo
 	}
 
 	if (has_set_exists == 2) {
+		if (EXPECTED(rtc)) {
+			if (RTC(rtc, cmark_node_get_literal))
+				return 1;
+		}
+
 		if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
-			return 1;
+			return RTS(rtc, cmark_node_get_literal) != NULL;
+		}
+	}
+
+	if (EXPECTED(rtc)) {
+		if (RTC(rtc, cmark_node_get_literal)) {
+			zv = php_cmark_node_read_str(&n->h, 
+				RTS(rtc, cmark_node_get_literal), &n->literal);
+			goto php_cmark_node_text_isset_result;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
-		zv = php_cmark_node_read_str(&n->h, cmark_node_get_literal, &n->literal);
+		zv = php_cmark_node_read_str(&n->h, 
+			RTS(rtc, cmark_node_get_literal), &n->literal);
 	}
 
+php_cmark_node_text_isset_result:
 	if (Z_TYPE_P(zv) == IS_STRING) {
 		return 1;
 	}
@@ -130,16 +143,15 @@ void php_cmark_node_text_unset(zval *object, zval *member, void **rtc) {
 	}
 
 	if (EXPECTED(rtc)) {
-		if (*rtc == cmark_node_set_literal) {
+		if (RTC(rtc, cmark_node_set_literal)) {
 			php_cmark_node_write_str(&n->h, cmark_node_set_literal, NULL, &n->literal);
 			return;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
-		if (rtc)	
-			*rtc = cmark_node_set_literal;
-		php_cmark_node_write_str(&n->h, cmark_node_set_literal, NULL, &n->literal);
+		php_cmark_node_write_str(&n->h, 
+			RTS(rtc, cmark_node_set_literal), NULL, &n->literal);
 		return;
 	}
 
