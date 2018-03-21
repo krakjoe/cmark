@@ -118,7 +118,7 @@ int php_cmark_node_heading_isset(zval *object, zval *member, int has_set_exists,
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_heading_level)) {
 			zv = php_cmark_node_read_int(&n->h, 
-				RTS(rtc, cmark_node_get_heading_level), &n->level);
+				cmark_node_get_heading_level, &n->level);
 			goto php_cmark_node_heading_isset_result;
 		}
 	}

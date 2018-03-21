@@ -145,11 +145,11 @@ int php_cmark_node_list_isset(zval *object, zval *member, int has_set_exists, vo
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_list_tight)) {
 			zv = php_cmark_node_read_bool(&n->h, 
-				(cmark_node_read_int) RTS(rtc, cmark_node_get_list_tight), &n->tight);
+				(cmark_node_read_int) cmark_node_get_list_tight, &n->tight);
 			goto php_cmark_node_list_isset_result;
 		} else if (RTC(rtc, cmark_node_get_list_delim)) {
 			zv = php_cmark_node_read_int(&n->h, 
-				(cmark_node_read_int) RTS(rtc, cmark_node_get_list_delim), &n->delimiter);
+				(cmark_node_read_int) cmark_node_get_list_delim, &n->delimiter);
 			goto php_cmark_node_list_isset_result;
 		}
 	}
