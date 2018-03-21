@@ -1,5 +1,5 @@
 --TEST--
-CommonMark\Node\OrderedList Delimiter Paren
+CommonMark\Node\BulletList Delimiter Paren
 --FILE--
 <?php
 $list = new CommonMark\Node\BulletList;

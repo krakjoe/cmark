@@ -141,7 +141,9 @@ int php_cmark_node_list_isset(zval *object, zval *member, int has_set_exists, vo
 		zv = php_cmark_node_read_int(&n->h, (cmark_node_read_int) cmark_node_get_list_delim, &n->delimiter);
 	}
 
-	if (Z_TYPE_P(zv) == IS_STRING) {
+	if (Z_TYPE_P(zv) == IS_TRUE || 
+	    Z_TYPE_P(zv) == IS_FALSE ||
+	    Z_TYPE_P(zv) == IS_LONG) {
 		return 1;
 	}
 
@@ -235,7 +237,7 @@ int php_cmark_node_ordered_list_isset(zval *object, zval *member, int has_set_ex
 		zv = php_cmark_node_read_int(&n->h, (cmark_node_read_int) cmark_node_get_list_start, &n->start);
 	}
 
-	if (Z_TYPE_P(zv) == IS_STRING) {
+	if (Z_TYPE_P(zv) == IS_LONG) {
 		return 1;
 	}
 
