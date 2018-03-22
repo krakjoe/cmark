@@ -194,15 +194,15 @@ PHP_METHOD(CodeBlock, __construct)
 	zval *literal = NULL;
 
 	if (ZEND_NUM_ARGS() == 1) {
-		ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+		ZEND_BEGIN_PARAMS(1, 1)
 			Z_PARAM_ZVAL(literal)
-		ZEND_PARSE_PARAMETERS_END();
+		ZEND_END_PARAMS();
 	} else {
-		ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
+		ZEND_BEGIN_PARAMS(0, 2)
 			Z_PARAM_OPTIONAL
 			Z_PARAM_ZVAL(fence)
 			Z_PARAM_ZVAL(literal)
-		ZEND_PARSE_PARAMETERS_END();
+		ZEND_END_PARAMS();
 	}
 
 	php_cmark_assert_type(fence, IS_STRING, 1, "fence expected to be string");
@@ -235,10 +235,10 @@ PHP_METHOD(HTMLBlock, __construct)
 	php_cmark_node_text_t *n = php_cmark_node_text_fetch(getThis());
 	zval *literal = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
+	ZEND_BEGIN_PARAMS(0, 1)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(literal)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(
 		literal, IS_STRING, 1, "literal expected to be string");

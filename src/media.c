@@ -246,11 +246,11 @@ PHP_METHOD(Link, __construct)
 	zval *url = NULL;
 	zval *title = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
+	ZEND_BEGIN_PARAMS(0, 2)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(url)
 		Z_PARAM_ZVAL(title)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(url, IS_STRING, 1, "url expected to be string");
 	php_cmark_assert_type(title, IS_STRING, 1, "title expected to be string");
@@ -268,11 +268,11 @@ PHP_METHOD(Image, __construct)
 	zval *url = NULL;
 	zval *title = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
+	ZEND_BEGIN_PARAMS(0, 2)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(url)
 		Z_PARAM_ZVAL(title)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(url, IS_STRING, 1, "url expected to be string");
 	php_cmark_assert_type(title, IS_STRING, 1, "title expected to be string");

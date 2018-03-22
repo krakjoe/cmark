@@ -149,10 +149,10 @@ PHP_METHOD(Heading, __construct)
 	php_cmark_node_heading_t *n = php_cmark_node_heading_fetch(getThis());
 	zval *level = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
+	ZEND_BEGIN_PARAMS(0, 1)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(level)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(
 		level, IS_LONG, 1, "level expected to be int");

@@ -78,10 +78,10 @@ PHP_METHOD(Parser, __construct)
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
 	zval *options = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 1)
+	ZEND_BEGIN_PARAMS(0, 1)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(options)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(options, IS_LONG, 1, "options expected to be int");
 
@@ -98,9 +98,9 @@ PHP_METHOD(Parser, parse)
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
 	zval *buffer = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+	ZEND_BEGIN_PARAMS(1, 1)
 		Z_PARAM_ZVAL(buffer)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(buffer, IS_STRING, 1, "buffer expected to be string");
 
@@ -138,11 +138,11 @@ PHP_FUNCTION(CommonMark_Parse)
 	zval *options = NULL;
 	cmark_parser *parser;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 1)
+	ZEND_BEGIN_PARAMS(1, 1)
 		Z_PARAM_ZVAL(content)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(options)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(content, IS_STRING, 0, "content expected to be string");
 	php_cmark_assert_type(options, IS_LONG, 1, "options expected to be int");

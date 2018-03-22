@@ -52,12 +52,12 @@ PHP_FUNCTION(CommonMark_Render)
 	zval *node;
 	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
+	ZEND_BEGIN_PARAMS(1, 3)
 		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_LONG(arg.options)
 		Z_PARAM_LONG(arg.width)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_render(
 		return_value,
@@ -71,11 +71,11 @@ PHP_FUNCTION(CommonMark_Render_XML)
 	zval *node;
 	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
+	ZEND_BEGIN_PARAMS(1, 2)
 		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_LONG(arg.options)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_render(
 		return_value,
@@ -89,11 +89,11 @@ PHP_FUNCTION(CommonMark_Render_HTML)
 	zval *node;
 	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 2)
+	ZEND_BEGIN_PARAMS(1, 2)
 		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_LONG(arg.options)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_render(
 		return_value,
@@ -107,12 +107,12 @@ PHP_FUNCTION(CommonMark_Render_Man)
 	zval *node;
 	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
+	ZEND_BEGIN_PARAMS(1, 3)
 		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_LONG(arg.options)
 		Z_PARAM_LONG(arg.width)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_render(
 		return_value,
@@ -126,12 +126,12 @@ PHP_FUNCTION(CommonMark_Render_Latex)
 	zval *node;
 	php_cmark_render_arg_t arg = php_cmark_render_arg_empty;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 1, 3)
+	ZEND_BEGIN_PARAMS(1, 3)
 		Z_PARAM_OBJECT_OF_CLASS(node, php_cmark_node_ce)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_LONG(arg.options)
 		Z_PARAM_LONG(arg.width)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_render(
 		return_value,

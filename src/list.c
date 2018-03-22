@@ -306,12 +306,12 @@ PHP_METHOD(OrderedList, __construct)
 	zval *delimiter = NULL;
 	zval *start = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 3)
+	ZEND_BEGIN_PARAMS(0, 3)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(tight)
 		Z_PARAM_ZVAL(delimiter)
 		Z_PARAM_ZVAL(start)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(tight, _IS_BOOL, 1, "tight expected to be bool");
 	php_cmark_assert_type(delimiter, IS_LONG, 1, "delimiter expected to be int");
@@ -354,11 +354,11 @@ PHP_METHOD(BulletList, __construct)
 	zval *tight = NULL;
 	zval *delimiter = NULL;
 
-	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, 0, 2)
+	ZEND_BEGIN_PARAMS(0, 2)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(tight)
 		Z_PARAM_ZVAL(delimiter)
-	ZEND_PARSE_PARAMETERS_END();
+	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(tight, _IS_BOOL, 1, "tight expected to be bool");
 	php_cmark_assert_type(delimiter, IS_LONG, 1, "delimiter expected to be int");

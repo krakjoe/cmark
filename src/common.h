@@ -39,6 +39,20 @@
 		ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, IS_OBJECT, #type, nullable)
 #endif
 
+#if PHP_VERSION_ID < 70200
+#define ZEND_BEGIN_PARAMS(min, max) \
+	if (ZEND_NUM_ARGS() < min || ZEND_NUM_ARGS() > max) { \
+		zend_throw_exception_ex(zend_ce_type_error, 0, "wrong argument count"); \
+		return; \
+	} \
+	\
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, min, max)
+#else
+#define ZEND_BEGIN_PARAMS(min, max) \
+	ZEND_PARSE_PARAMETERS_START_EX(ZEND_PARSE_PARAMS_THROW, min, max)
+#endif
+#define ZEND_END_PARAMS ZEND_PARSE_PARAMETERS_END
+
 #define PHP_OBJ_SAFE_RELEASE(zz) do { \
 	if (IS_OBJ_VALID(EG(objects_store).object_buckets[(zz)->handle])) \
 		OBJ_RELEASE((zend_object*) (zz)); \
