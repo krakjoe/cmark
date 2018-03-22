@@ -125,21 +125,6 @@ int php_cmark_node_media_isset(zval *object, zval *member, int has_set_exists, v
 		return 0;
 	}
 
-	if (has_set_exists == 2) {
-		if (EXPECTED(rtc)) {
-			if (RTC(rtc, cmark_node_get_url) ||
-			    RTC(rtc, cmark_node_get_title)) {
-				return 1;
-			}	
-		}
-
-		if (zend_string_equals_literal(Z_STR_P(member), "url")) {
-			return RTS(rtc, cmark_node_get_url) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
-			return RTS(rtc, cmark_node_get_title) != NULL;
-		}
-	}
-
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_url)) {
 			zv = php_cmark_node_read_str(&n->h, 

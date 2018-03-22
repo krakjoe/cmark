@@ -200,43 +200,6 @@ int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **
 		return 0;
 	}
 
-	if (has_set_exists == 2) {
-		if (EXPECTED(rtc)) {
-			if (RTC(rtc, cmark_node_parent) ||
-			    RTC(rtc, cmark_node_previous) ||
-			    RTC(rtc, cmark_node_next) ||
-			    RTC(rtc, cmark_node_previous) ||
-			    RTC(rtc, cmark_node_last_child) ||
-			    RTC(rtc, cmark_node_first_child) ||
-			    RTC(rtc, cmark_node_get_start_line) ||
-			    RTC(rtc, cmark_node_get_end_line) ||
-			    RTC(rtc, cmark_node_get_start_column) ||
-			    RTC(rtc, cmark_node_get_end_column)) {
-				return 1;
-			}
-		}
-
-		if (zend_string_equals_literal(Z_STR_P(member), "parent")) {
-			return RTS(rtc, cmark_node_parent) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "previous")) {
-			return RTS(rtc, cmark_node_previous) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "next")) {
-			return RTS(rtc, cmark_node_next) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "firstChild")) {
-			return RTS(rtc, cmark_node_first_child) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "lastChild")) {
-			return RTS(rtc, cmark_node_last_child) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "startLine")) {
-			return RTS(rtc, cmark_node_get_start_line) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "endLine")) {
-			return RTS(rtc, cmark_node_get_end_line) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "startColumn")) {
-			return RTS(rtc, cmark_node_get_start_column) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "endColumn")) {
-			return RTS(rtc, cmark_node_get_end_column) != NULL;
-		}
-	}
-
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_parent)) {
 			zv = php_cmark_node_read_object(n, 

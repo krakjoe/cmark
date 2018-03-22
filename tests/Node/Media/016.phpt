@@ -4,11 +4,15 @@ CommonMark\Node\Media isset title
 <?php
 $link = new CommonMark\Node\Link;
 
-var_dump(isset($link->title));
+$f = function() use($link) {
+	return isset($link->title);
+};
+
+var_dump($f());
 
 $link->title = "something";
 
-var_dump(isset($link->title));
+var_dump($f());
 ?>
 --EXPECT--
 bool(false)

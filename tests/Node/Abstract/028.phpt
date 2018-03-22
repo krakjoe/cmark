@@ -14,6 +14,10 @@ Paragraph:
 **strong**
 *emphasis*
 
+Ordered:
+  1) item
+  2) item
+
 some inline <html>html</html> is here
 
 ```somecode

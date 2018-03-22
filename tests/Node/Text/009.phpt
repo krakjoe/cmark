@@ -4,11 +4,15 @@ CommonMark\Node\Text isset
 <?php
 $text = new CommonMark\Node\Text();
 
-var_dump(isset($text->literal));
+$f  = function() use($text) {
+	return isset($text->literal);
+};
+
+var_dump($f());
 
 $text->literal = "OK";
 
-var_dump(isset($text->literal));
+var_dump($f());
 ?>
 --EXPECT--
 bool(false)

@@ -107,18 +107,6 @@ int php_cmark_node_heading_isset(zval *object, zval *member, int has_set_exists,
 		return 0;
 	}
 
-	if (has_set_exists == 2) {
-		if (EXPECTED(rtc)) {
-			if (RTC(rtc, cmark_node_get_heading_level)) {
-				return 1;
-			}
-		}
-
-		if (zend_string_equals_literal(Z_STR_P(member), "level")) {
-			return RTS(rtc, cmark_node_get_heading_level) != NULL;
-		}
-	}
-
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_heading_level)) {
 			zv = php_cmark_node_read_int(&n->h, 

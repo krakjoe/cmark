@@ -135,21 +135,6 @@ int php_cmark_node_list_isset(zval *object, zval *member, int has_set_exists, vo
 		return 0;
 	}
 
-	if (has_set_exists == 2) {
-		if (EXPECTED(rtc)) {
-			if (RTC(rtc, cmark_node_get_list_tight) ||
-			    RTC(rtc, cmark_node_get_list_delim)) {
-				return 1;
-			}
-		}
-
-		if (zend_string_equals_literal(Z_STR_P(member), "tight")) {
-			return RTS(rtc, cmark_node_get_list_tight) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "delimiter")) {
-			return RTS(rtc, cmark_node_get_list_delim) != NULL;
-		}
-	}
-
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_list_tight)) {
 			zv = php_cmark_node_read_bool(&n->h, 
@@ -173,7 +158,7 @@ int php_cmark_node_list_isset(zval *object, zval *member, int has_set_exists, vo
 php_cmark_node_list_isset_result:
 	if (Z_TYPE_P(zv) == IS_TRUE || 
 	    Z_TYPE_P(zv) == IS_FALSE ||
-	    Z_TYPE_P(zv) == IS_LONG) {
+	    (Z_TYPE_P(zv) == IS_LONG && Z_LVAL_P(zv))) {
 		return 1;
 	}
 
@@ -261,17 +246,6 @@ int php_cmark_node_ordered_list_isset(zval *object, zval *member, int has_set_ex
 		return 0;
 	}
 
-	if (has_set_exists == 2) {
-		if (EXPECTED(rtc)) {
-			if (RTC(rtc, cmark_node_get_list_start))
-				return 1;
-		}
-
-		if (zend_string_equals_literal(Z_STR_P(member), "start")) {
-			return RTS(rtc, cmark_node_get_list_start) != NULL;
-		}
-	}
-
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_list_start)) {
 			zv = php_cmark_node_read_int(&n->h, 
@@ -286,7 +260,7 @@ int php_cmark_node_ordered_list_isset(zval *object, zval *member, int has_set_ex
 	}
 
 php_cmark_node_ordered_list_isset_result:
-	if (Z_TYPE_P(zv) == IS_LONG) {
+	if (Z_TYPE_P(zv) == IS_LONG && Z_LVAL_P(zv)) {
 		return 1;
 	}
 

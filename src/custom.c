@@ -116,21 +116,6 @@ int php_cmark_node_custom_isset(zval *object, zval *member, int has_set_exists, 
 		return 0;
 	}
 
-	if (has_set_exists == 2) {
-		if (EXPECTED(rtc)) {
-			if (RTC(rtc, cmark_node_get_on_enter) ||
-			    RTC(rtc, cmark_node_get_on_exit)) {
-				return 1;
-			}
-		}
-
-		if (zend_string_equals_literal(Z_STR_P(member), "onEnter")) {
-			return RTS(rtc, cmark_node_get_on_enter) != NULL;
-		} else if (zend_string_equals_literal(Z_STR_P(member), "onLeave")) {
-			return RTS(rtc, cmark_node_get_on_exit) != NULL;
-		}
-	}
-
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_on_enter)) {
 			zv = php_cmark_node_read_str(&n->h, 

@@ -109,17 +109,6 @@ int php_cmark_node_text_isset(zval *object, zval *member, int has_set_exists, vo
 		return 0;
 	}
 
-	if (has_set_exists == 2) {
-		if (EXPECTED(rtc)) {
-			if (RTC(rtc, cmark_node_get_literal))
-				return 1;
-		}
-
-		if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
-			return RTS(rtc, cmark_node_get_literal) != NULL;
-		}
-	}
-
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_literal)) {
 			zv = php_cmark_node_read_str(&n->h, 

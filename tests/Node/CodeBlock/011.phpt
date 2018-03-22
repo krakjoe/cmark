@@ -8,11 +8,15 @@ $zero = 0;
 
 var_dump(isset($block->$zero));
 
-var_dump(isset($block->fence));
+$f = function() use($block) {
+	return isset($block->fence);
+};
+
+var_dump($f());
 
 $block->fence = "OK";
 
-var_dump(isset($block->fence));
+var_dump($f());
 ?>
 --EXPECT--
 bool(false)

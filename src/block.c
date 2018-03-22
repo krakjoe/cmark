@@ -113,18 +113,6 @@ int php_cmark_node_code_block_isset(zval *object, zval *member, int has_set_exis
 		return 0;
 	}
 
-	if (has_set_exists == 2) {
-		if (EXPECTED(rtc)) {
-			if (RTC(rtc, cmark_node_get_fence_info)) {
-				return 1;
-			}
-		}
-
-		if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
-			return RTS(rtc, cmark_node_get_fence_info) != NULL;
-		}
-	}
-
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_fence_info)) {
 			zv = php_cmark_node_read_str(&n->h.h, 

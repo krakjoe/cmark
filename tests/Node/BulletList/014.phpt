@@ -4,13 +4,17 @@ CommonMark\Node\BulletList isset tight
 <?php
 $list = new CommonMark\Node\BulletList;
 
+$f = function() use($list) {
+	return isset($list->tight);
+};
+
 var_dump($list->tight);
-var_dump(isset($list->tight));
+var_dump($f());
 
 $list->tight = true;
 
 var_dump($list->tight);
-var_dump(isset($list->tight));
+var_dump($f());
 ?>
 --EXPECT--
 bool(false)
