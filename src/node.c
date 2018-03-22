@@ -419,6 +419,7 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 	php_cmark_node_handlers.write_property = php_cmark_node_write;
 	php_cmark_node_handlers.has_property = php_cmark_node_isset;
 	php_cmark_node_handlers.unset_property = php_cmark_node_unset;
+	php_cmark_node_handlers.get_property_ptr_ptr = NULL;
 
 	php_cmark_node_handlers.offset = XtOffsetOf(php_cmark_node_t, std);
 

@@ -74,8 +74,10 @@ void php_cmark_node_write_bool(php_cmark_node_t *n, cmark_node_write_int cmark_n
 }
 
 void php_cmark_node_write_str(php_cmark_node_t *n, cmark_node_write_str cmark_node_write, zval *content, zval *cache) {
-	if (Z_TYPE_P(cache) == IS_STRING || !content) {
-		zval_ptr_dtor(cache);
+	if (!content) {
+		if (!Z_ISUNDEF_P(cache)) {
+			zval_ptr_dtor(cache);
+		}
 		ZVAL_UNDEF(cache);
 	}
 
