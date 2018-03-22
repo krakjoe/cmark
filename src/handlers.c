@@ -99,7 +99,6 @@ static inline zval* php_cmark_node_read_object(php_cmark_node_t *n, cmark_node_r
 			return cache;
 		}
 
-		zval_ptr_dtor(cache);
 		ZVAL_UNDEF(cache);
 	}
 
