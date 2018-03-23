@@ -408,7 +408,7 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 	php_cmark_node_property("endColumn");
 #undef php_cmark_node_property
 
-	zend_class_implements(php_cmark_node_ce, 1, zend_ce_traversable);
+	zend_class_implements(php_cmark_node_ce, 2, php_cmark_node_visitable_ce, zend_ce_traversable);
 
 	memcpy(&php_cmark_node_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
@@ -428,8 +428,6 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 
 PHP_RINIT_FUNCTION(CommonMark_Node)
 {
-	zend_class_implements(php_cmark_node_ce, 1, php_cmark_node_visitable_ce);
-
 	php_cmark_node_ce->ce_flags |= ZEND_ACC_FINAL|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
 	return SUCCESS;

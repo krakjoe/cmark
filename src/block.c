@@ -282,7 +282,7 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Block)
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "HTMLBlock", php_cmark_node_html_block_methods);
 
-	php_cmark_node_html_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_code_block_ce);
+	php_cmark_node_html_block_ce = zend_register_internal_class_ex(&ce, php_cmark_node_text_ce);
 
 	INIT_NS_CLASS_ENTRY(ce, "CommonMark\\Node", "CustomBlock", php_cmark_node_custom_block_methods);
 
