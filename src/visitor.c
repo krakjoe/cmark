@@ -73,7 +73,7 @@ void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
 				node->node, (cmark_event_type) Z_LVAL(result));
 		}
 
-		if (Z_TYPE(result) == IS_OBJECT && instanceof_function(Z_OBJCE(result), php_cmark_node_ce)) {
+		if (Z_TYPE(result) == IS_OBJECT && instanceof_function(Z_OBJCE(result), php_cmark_node_visitable_ce)) {
 			cmark_iter_reset(iterator,
 				php_cmark_node_fetch(&result)->node, event);
 		}
@@ -89,7 +89,7 @@ void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_visitor_arginfo, 0, 0, 1)
-	ZEND_ARG_OBJ_INFO(0, node, CommonMark\\Node, 0)
+	ZEND_ARG_OBJ_INFO(0, node, CommonMark\\Interfaces\\IVisitable, 0)
 ZEND_END_ARG_INFO()
 
 static zend_function_entry php_cmark_node_visitor_methods[] = {

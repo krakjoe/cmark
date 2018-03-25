@@ -142,8 +142,8 @@ namespace CommonMark\Interfaces {
 		const Enter;
 		const Leave;
 
-		public function enter(\CommonMark\Node $node);
-		public function leave(\CommonMark\Node $node);
+		public function enter(\CommonMark\Interfaces\IVisitable $node);
+		public function leave(\CommonMark\Interfaces\IVisitable $node);
 	}
 
 	final interface IVisitable {

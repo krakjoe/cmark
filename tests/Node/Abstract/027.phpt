@@ -10,13 +10,13 @@ $para->appendChild(
 	new CommonMark\Node\Text("OK"));
 
 $doc->accept(new class implements CommonMark\Interfaces\IVisitor {
-	public function enter(CommonMark\Node $node) {
+	public function enter(CommonMark\Interfaces\IVisitable $node) {
 		if ($node instanceof CommonMark\Node\Text) {
 			echo $node->literal;
 		}
 	}
 
-	public function leave(CommonMark\Node $node) {}
+	public function leave(CommonMark\Interfaces\IVisitable $node) {}
 });
 ?>
 --EXPECT--
