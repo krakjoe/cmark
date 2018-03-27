@@ -77,8 +77,8 @@ if test "$PHP_CMARK" != "no"; then
 
   PHP_SUBST(CMARK_SHARED_LIBADD)
 
-  PHP_ADD_BUILD_DIR($ext_builddir/src)
-  PHP_ADD_INCLUDE($ext_builddir)
+  PHP_ADD_BUILD_DIR($abs_builddir/src)
+  PHP_ADD_INCLUDE($ext_srcdir)
 
   AC_DEFINE(HAVE_CMARK, 1, [ Have cmark support ])
 
