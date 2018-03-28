@@ -17,13 +17,13 @@ if test "$PHP_CMARK" != "no"; then
     AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
     AC_MSG_CHECKING(for libcmark)
     if test -x "$PKG_CONFIG" && $PKG_CONFIG --exists libcmark; then
-      if $PKG_CONFIG libcmark --atleast-version 0; then
+      if $PKG_CONFIG libcmark --atleast-version 0.28; then
         LIBCMARK_CFLAGS=`$PKG_CONFIG libcmark --cflags`
         LIBCMARK_LIBDIR=`$PKG_CONFIG libcmark --libs`
         LIBCMARK_VERSON=`$PKG_CONFIG libcmark --modversion`
         AC_MSG_RESULT(from pkgconfig: version $LIBCMARK_VERSON)
       else
-        AC_MSG_ERROR(system libcmark is too old: version 0 required)
+        AC_MSG_ERROR(system libcmark is too old: version 0.28 required)
       fi
     fi
     PHP_EVAL_LIBLINE($LIBCMARK_LIBDIR, CMARK_SHARED_LIBADD)
