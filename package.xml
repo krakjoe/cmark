@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package
+  packagerversion="1.10"
+  version="2.0"
+  xmlns="http://pear.php.net/dtd/package-2.0"
+  xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd"
+ >
+ <name>cmark</name>
+ <channel>pecl.php.net</channel>
+ <summary>CommonMark extension</summary>
+ <description>This extension provides access to the reference implementation of CommonMark, 
+  a rationalized version of Markdown syntax with a specification.</description>
+ <lead>
+  <name>Joe Watkins</name>
+  <user>krakjoe</user>
+  <email>krakjoe@php.net</email>
+  <active>yes</active>
+ </lead>
+ <lead>
+  <name>Remi Collet</name>
+  <user>remi</user>
+  <email>remi@php.net</email>
+  <active>yes</active>
+ </lead>
+ <date>2018-03-28</date>
+ <version>
+  <release>1.0.0dev</release>
+  <api>1.0.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP License</license>
+ <notes>
+- initial pecl release
+ </notes>
+ <contents>
+  <dir name="/">
+   <file name="LICENSE" role="doc" />
+   <file name="cmark.c" role="src" />
+   <file name="config.m4" role="src" />
+   <file name="config.w32" role="src" />
+   <file name="php_cmark.h" role="src" />
+   <dir name="src">
+    <file name="block.c" role="src" />
+    <file name="block.h" role="src" />
+    <file name="break.c" role="src" />
+    <file name="break.h" role="src" />
+    <file name="code.c" role="src" />
+    <file name="code.h" role="src" />
+    <file name="common.h" role="src" />
+    <file name="custom.c" role="src" />
+    <file name="custom.h" role="src" />
+    <file name="document.c" role="src" />
+    <file name="document.h" role="src" />
+    <file name="handlers.c" role="src" />
+    <file name="handlers.h" role="src" />
+    <file name="heading.c" role="src" />
+    <file name="heading.h" role="src" />
+    <file name="inline.c" role="src" />
+    <file name="inline.h" role="src" />
+    <file name="item.c" role="src" />
+    <file name="item.h" role="src" />
+    <file name="iterator.c" role="src" />
+    <file name="iterator.h" role="src" />
+    <file name="list.c" role="src" />
+    <file name="list.h" role="src" />
+    <file name="media.c" role="src" />
+    <file name="media.h" role="src" />
+    <file name="node.c" role="src" />
+    <file name="node.h" role="src" />
+    <file name="paragraph.c" role="src" />
+    <file name="paragraph.h" role="src" />
+    <file name="parse.c" role="src" />
+    <file name="parse.h" role="src" />
+    <file name="quote.c" role="src" />
+    <file name="quote.h" role="src" />
+    <file name="render.c" role="src" />
+    <file name="render.h" role="src" />
+    <file name="text.c" role="src" />
+    <file name="text.h" role="src" />
+    <file name="visitor.c" role="src" />
+    <file name="visitor.h" role="src" />
+   </dir> <!-- src -->
+   <dir name="tests">
+      <file name="Node/Heading/013.phpt" role="test" />
+      <file name="Node/Heading/010.phpt" role="test" />
+      <file name="Node/Heading/001.phpt" role="test" />
+      <file name="Node/Heading/014.phpt" role="test" />
+      <file name="Node/Heading/005.phpt" role="test" />
+      <file name="Node/Heading/011.phpt" role="test" />
+      <file name="Node/Heading/009.phpt" role="test" />
+      <file name="Node/Heading/003.phpt" role="test" />
+      <file name="Node/Heading/006.phpt" role="test" />
+      <file name="Node/Heading/007.phpt" role="test" />
+      <file name="Node/Heading/008.phpt" role="test" />
+      <file name="Node/Heading/002.phpt" role="test" />
+      <file name="Node/Heading/004.phpt" role="test" />
+      <file name="Node/Heading/012.phpt" role="test" />
+      <file name="Node/Document/001.phpt" role="test" />
+      <file name="Node/BulletList/013.phpt" role="test" />
+      <file name="Node/BulletList/010.phpt" role="test" />
+      <file name="Node/BulletList/001.phpt" role="test" />
+      <file name="Node/BulletList/016.phpt" role="test" />
+      <file name="Node/BulletList/014.phpt" role="test" />
+      <file name="Node/BulletList/005.phpt" role="test" />
+      <file name="Node/BulletList/011.phpt" role="test" />
+      <file name="Node/BulletList/009.phpt" role="test" />
+      <file name="Node/BulletList/003.phpt" role="test" />
+      <file name="Node/BulletList/006.phpt" role="test" />
+      <file name="Node/BulletList/007.phpt" role="test" />
+      <file name="Node/BulletList/008.phpt" role="test" />
+      <file name="Node/BulletList/002.phpt" role="test" />
+      <file name="Node/BulletList/015.phpt" role="test" />
+      <file name="Node/BulletList/004.phpt" role="test" />
+      <file name="Node/BulletList/012.phpt" role="test" />
+      <file name="Node/SoftBreak/001.phpt" role="test" />
+      <file name="Node/Item/001.phpt" role="test" />
+      <file name="Node/Item/002.phpt" role="test" />
+      <file name="Node/Media/013.phpt" role="test" />
+      <file name="Node/Media/010.phpt" role="test" />
+      <file name="Node/Media/001.phpt" role="test" />
+      <file name="Node/Media/016.phpt" role="test" />
+      <file name="Node/Media/021.phpt" role="test" />
+      <file name="Node/Media/014.phpt" role="test" />
+      <file name="Node/Media/005.phpt" role="test" />
+      <file name="Node/Media/011.phpt" role="test" />
+      <file name="Node/Media/009.phpt" role="test" />
+      <file name="Node/Media/003.phpt" role="test" />
+      <file name="Node/Media/006.phpt" role="test" />
+      <file name="Node/Media/018.phpt" role="test" />
+      <file name="Node/Media/007.phpt" role="test" />
+      <file name="Node/Media/022.phpt" role="test" />
+      <file name="Node/Media/008.phpt" role="test" />
+      <file name="Node/Media/019.phpt" role="test" />
+      <file name="Node/Media/020.phpt" role="test" />
+      <file name="Node/Media/002.phpt" role="test" />
+      <file name="Node/Media/015.phpt" role="test" />
+      <file name="Node/Media/023.phpt" role="test" />
+      <file name="Node/Media/004.phpt" role="test" />
+      <file name="Node/Media/017.phpt" role="test" />
+      <file name="Node/Media/012.phpt" role="test" />
+      <file name="Node/CustomInline/001.phpt" role="test" />
+      <file name="Node/CustomInline/005.phpt" role="test" />
+      <file name="Node/CustomInline/003.phpt" role="test" />
+      <file name="Node/CustomInline/006.phpt" role="test" />
+      <file name="Node/CustomInline/007.phpt" role="test" />
+      <file name="Node/CustomInline/008.phpt" role="test" />
+      <file name="Node/CustomInline/002.phpt" role="test" />
+      <file name="Node/CustomInline/004.phpt" role="test" />
+      <file name="Node/HTMLInline/001.phpt" role="test" />
+      <file name="Node/HTMLInline/003.phpt" role="test" />
+      <file name="Node/HTMLInline/002.phpt" role="test" />
+      <file name="Node/OrderedList/010.phpt" role="test" />
+      <file name="Node/OrderedList/001.phpt" role="test" />
+      <file name="Node/OrderedList/005.phpt" role="test" />
+      <file name="Node/OrderedList/009.phpt" role="test" />
+      <file name="Node/OrderedList/003.phpt" role="test" />
+      <file name="Node/OrderedList/006.phpt" role="test" />
+      <file name="Node/OrderedList/007.phpt" role="test" />
+      <file name="Node/OrderedList/008.phpt" role="test" />
+      <file name="Node/OrderedList/002.phpt" role="test" />
+      <file name="Node/OrderedList/004.phpt" role="test" />
+      <file name="Node/CustomBlock/001.phpt" role="test" />
+      <file name="Node/CustomBlock/005.phpt" role="test" />
+      <file name="Node/CustomBlock/003.phpt" role="test" />
+      <file name="Node/CustomBlock/006.phpt" role="test" />
+      <file name="Node/CustomBlock/007.phpt" role="test" />
+      <file name="Node/CustomBlock/008.phpt" role="test" />
+      <file name="Node/CustomBlock/002.phpt" role="test" />
+      <file name="Node/CustomBlock/004.phpt" role="test" />
+      <file name="Node/Code/001.phpt" role="test" />
+      <file name="Node/Code/003.phpt" role="test" />
+      <file name="Node/Code/002.phpt" role="test" />
+      <file name="Node/Code/004.phpt" role="test" />
+      <file name="Node/Image/001.phpt" role="test" />
+      <file name="Node/Image/003.phpt" role="test" />
+      <file name="Node/Image/002.phpt" role="test" />
+      <file name="Node/LineBreak/001.phpt" role="test" />
+      <file name="Node/ThematicBreak/001.phpt" role="test" />
+      <file name="Node/ThematicBreak/002.phpt" role="test" />
+      <file name="Node/Link/001.phpt" role="test" />
+      <file name="Node/Link/002.phpt" role="test" />
+      <file name="Node/HTMLBlock/001.phpt" role="test" />
+      <file name="Node/HTMLBlock/003.phpt" role="test" />
+      <file name="Node/HTMLBlock/002.phpt" role="test" />
+      <file name="Node/BlockQuote/001.phpt" role="test" />
+      <file name="Node/BlockQuote/002.phpt" role="test" />
+      <file name="Node/Paragraph/001.phpt" role="test" />
+      <file name="Node/Paragraph/002.phpt" role="test" />
+      <file name="Node/Custom/013.phpt" role="test" />
+      <file name="Node/Custom/010.phpt" role="test" />
+      <file name="Node/Custom/001.phpt" role="test" />
+      <file name="Node/Custom/016.phpt" role="test" />
+      <file name="Node/Custom/014.phpt" role="test" />
+      <file name="Node/Custom/005.phpt" role="test" />
+      <file name="Node/Custom/011.phpt" role="test" />
+      <file name="Node/Custom/009.phpt" role="test" />
+      <file name="Node/Custom/003.phpt" role="test" />
+      <file name="Node/Custom/006.phpt" role="test" />
+      <file name="Node/Custom/007.phpt" role="test" />
+      <file name="Node/Custom/008.phpt" role="test" />
+      <file name="Node/Custom/002.phpt" role="test" />
+      <file name="Node/Custom/015.phpt" role="test" />
+      <file name="Node/Custom/004.phpt" role="test" />
+      <file name="Node/Custom/012.phpt" role="test" />
+      <file name="Node/CodeBlock/013.phpt" role="test" />
+      <file name="Node/CodeBlock/010.phpt" role="test" />
+      <file name="Node/CodeBlock/001.phpt" role="test" />
+      <file name="Node/CodeBlock/016.phpt" role="test" />
+      <file name="Node/CodeBlock/014.phpt" role="test" />
+      <file name="Node/CodeBlock/005.phpt" role="test" />
+      <file name="Node/CodeBlock/011.phpt" role="test" />
+      <file name="Node/CodeBlock/009.phpt" role="test" />
+      <file name="Node/CodeBlock/003.phpt" role="test" />
+      <file name="Node/CodeBlock/006.phpt" role="test" />
+      <file name="Node/CodeBlock/007.phpt" role="test" />
+      <file name="Node/CodeBlock/008.phpt" role="test" />
+      <file name="Node/CodeBlock/002.phpt" role="test" />
+      <file name="Node/CodeBlock/015.phpt" role="test" />
+      <file name="Node/CodeBlock/004.phpt" role="test" />
+      <file name="Node/CodeBlock/012.phpt" role="test" />
+      <file name="Node/Abstract/013.phpt" role="test" />
+      <file name="Node/Abstract/038.phpt" role="test" />
+      <file name="Node/Abstract/010.phpt" role="test" />
+      <file name="Node/Abstract/001.phpt" role="test" />
+      <file name="Node/Abstract/046.phpt" role="test" />
+      <file name="Node/Abstract/039.phpt" role="test" />
+      <file name="Node/Abstract/016.phpt" role="test" />
+      <file name="Node/Abstract/053.phpt" role="test" />
+      <file name="Node/Abstract/021.phpt" role="test" />
+      <file name="Node/Abstract/014.phpt" role="test" />
+      <file name="Node/Abstract/032.phpt" role="test" />
+      <file name="Node/Abstract/054.phpt" role="test" />
+      <file name="Node/Abstract/056.phpt" role="test" />
+      <file name="Node/Abstract/045.phpt" role="test" />
+      <file name="Node/Abstract/005.phpt" role="test" />
+      <file name="Node/Abstract/057.phpt" role="test" />
+      <file name="Node/Abstract/011.phpt" role="test" />
+      <file name="Node/Abstract/042.phpt" role="test" />
+      <file name="Node/Abstract/009.phpt" role="test" />
+      <file name="Node/Abstract/003.phpt" role="test" />
+      <file name="Node/Abstract/006.phpt" role="test" />
+      <file name="Node/Abstract/028.phpt" role="test" />
+      <file name="Node/Abstract/018.phpt" role="test" />
+      <file name="Node/Abstract/007.phpt" role="test" />
+      <file name="Node/Abstract/036.phpt" role="test" />
+      <file name="Node/Abstract/034.phpt" role="test" />
+      <file name="Node/Abstract/022.phpt" role="test" />
+      <file name="Node/Abstract/055.phpt" role="test" />
+      <file name="Node/Abstract/008.phpt" role="test" />
+      <file name="Node/Abstract/024.phpt" role="test" />
+      <file name="Node/Abstract/033.phpt" role="test" />
+      <file name="Node/Abstract/019.phpt" role="test" />
+      <file name="Node/Abstract/043.phpt" role="test" />
+      <file name="Node/Abstract/020.phpt" role="test" />
+      <file name="Node/Abstract/050.phpt" role="test" />
+      <file name="Node/Abstract/002.phpt" role="test" />
+      <file name="Node/Abstract/052.phpt" role="test" />
+      <file name="Node/Abstract/015.phpt" role="test" />
+      <file name="Node/Abstract/029.phpt" role="test" />
+      <file name="Node/Abstract/031.phpt" role="test" />
+      <file name="Node/Abstract/027.phpt" role="test" />
+      <file name="Node/Abstract/023.phpt" role="test" />
+      <file name="Node/Abstract/037.phpt" role="test" />
+      <file name="Node/Abstract/025.phpt" role="test" />
+      <file name="Node/Abstract/044.phpt" role="test" />
+      <file name="Node/Abstract/040.phpt" role="test" />
+      <file name="Node/Abstract/026.phpt" role="test" />
+      <file name="Node/Abstract/004.phpt" role="test" />
+      <file name="Node/Abstract/051.phpt" role="test" />
+      <file name="Node/Abstract/017.phpt" role="test" />
+      <file name="Node/Abstract/048.phpt" role="test" />
+      <file name="Node/Abstract/041.phpt" role="test" />
+      <file name="Node/Abstract/012.phpt" role="test" />
+      <file name="Node/Abstract/030.phpt" role="test" />
+      <file name="Node/Abstract/049.phpt" role="test" />
+      <file name="Node/Abstract/035.phpt" role="test" />
+      <file name="Node/Abstract/047.phpt" role="test" />
+      <file name="Node/Text/010.phpt" role="test" />
+      <file name="Node/Text/001.phpt" role="test" />
+      <file name="Node/Text/005.phpt" role="test" />
+      <file name="Node/Text/009.phpt" role="test" />
+      <file name="Node/Text/003.phpt" role="test" />
+      <file name="Node/Text/006.phpt" role="test" />
+      <file name="Node/Text/007.phpt" role="test" />
+      <file name="Node/Text/Strong/001.phpt" role="test" />
+      <file name="Node/Text/Strong/002.phpt" role="test" />
+      <file name="Node/Text/Emphasis/001.phpt" role="test" />
+      <file name="Node/Text/Emphasis/002.phpt" role="test" />
+      <file name="Node/Text/008.phpt" role="test" />
+      <file name="Node/Text/002.phpt" role="test" />
+      <file name="Node/Text/004.phpt" role="test" />
+      <file name="Parser/001.phpt" role="test" />
+      <file name="Parser/005.phpt" role="test" />
+      <file name="Parser/003.phpt" role="test" />
+      <file name="Parser/006.phpt" role="test" />
+      <file name="Parser/007.phpt" role="test" />
+      <file name="Parser/002.phpt" role="test" />
+      <file name="Parser/004.phpt" role="test" />
+      <file name="Render/CommonMark/001.phpt" role="test" />
+      <file name="Render/CommonMark/003.phpt" role="test" />
+      <file name="Render/CommonMark/002.phpt" role="test" />
+      <file name="Render/HTML/001.phpt" role="test" />
+      <file name="Render/HTML/002.phpt" role="test" />
+      <file name="Render/Man/001.phpt" role="test" />
+      <file name="Render/Man/003.phpt" role="test" />
+      <file name="Render/Man/002.phpt" role="test" />
+      <file name="Render/XML/001.phpt" role="test" />
+      <file name="Render/XML/002.phpt" role="test" />
+      <file name="Render/Latex/001.phpt" role="test" />
+      <file name="Render/Latex/003.phpt" role="test" />
+      <file name="Render/Latex/002.phpt" role="test" />   </dir> <!-- tests -->
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>7.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.10</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>cmark</providesextension>
+ <extsrcrelease />
+ <changelog>
+  <release>
+   <date>2018-03-28</date>
+   <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+- initial pecl release
+   </notes>
+  </release>
+ </changelog>
+</package>
