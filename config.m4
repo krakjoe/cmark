@@ -3,9 +3,12 @@ dnl config.m4 for extension cmark
 
 PHP_ARG_WITH(cmark, whether to enable cmark support,
 dnl Make sure that the comment is aligned:
-[  --with-cmark          Enable cmark support], no)
+[  --with-cmark            Enable cmark support], no)
 PHP_ARG_WITH(cmark-coverage,      whether to enable cmark coverage support,
-[  --with-cmark-coverage          Enable cmark coverage support], no, no)
+[  --with-cmark-coverage   Enable cmark coverage support], no, no)
+
+LIBCMARK_MIN_MAJOR=0
+LIBCMARK_MIN_MINOR=28
 
 if test "$PHP_CMARK" != "no"; then
   LIBCMARK_VERSON=""
@@ -17,13 +20,13 @@ if test "$PHP_CMARK" != "no"; then
     AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
     AC_MSG_CHECKING(for libcmark)
     if test -x "$PKG_CONFIG" && $PKG_CONFIG --exists libcmark; then
-      if $PKG_CONFIG libcmark --atleast-version 0.28; then
+      if $PKG_CONFIG libcmark --atleast-version $LIBCMARK_MIN_MAJOR.$LIBCMARK_MIN_MINOR; then
         LIBCMARK_CFLAGS=`$PKG_CONFIG libcmark --cflags`
         LIBCMARK_LIBDIR=`$PKG_CONFIG libcmark --libs`
         LIBCMARK_VERSON=`$PKG_CONFIG libcmark --modversion`
         AC_MSG_RESULT(from pkgconfig: version $LIBCMARK_VERSON)
       else
-        AC_MSG_ERROR(system libcmark is too old: version 0.28 required)
+        AC_MSG_ERROR(system libcmark is too old: version $LIBCMARK_MIN_MAJOR.$LIBCMARK_MIN_MINOR required)
       fi
     fi
     PHP_EVAL_LIBLINE($LIBCMARK_LIBDIR, CMARK_SHARED_LIBADD)
@@ -73,6 +76,21 @@ if test "$PHP_CMARK" != "no"; then
     ],[
       -L$CMARK_DIR/$PHP_LIBDIR -lm
     ])
+
+    AC_MSG_CHECKING([for cmark minimal version])
+    old_CFLAGS=$CFLAGS
+    CFLAGS="-I$CMARK_DIR/include"
+    AC_TRY_RUN([
+#include <cmark.h>
+int main() {
+  return (CMARK_VERSION < (($LIBCMARK_MIN_MAJOR << 16) | ($LIBCMARK_MIN_MINOR << 8)) ? 1 : 0);
+}
+    ], [
+      AC_MSG_RESULT([ok])
+    ], [
+      AC_MSG_ERROR(system libcmark is too old: version 0.28 required)
+    ])
+    CFLAGS=$old_CFLAGS
   fi
 
   PHP_SUBST(CMARK_SHARED_LIBADD)
