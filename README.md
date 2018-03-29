@@ -28,11 +28,13 @@ Use `release` branch for stable version or `develop` branch.
 
 ```
 phpize
-./configure --with-cmark
+./configure --with-cmark[=DIR] [ --with-cmark-coverage ]
 make
 make test
 
 ```
+
+**Notice**: without the DIR argument, the `configure` script rely on `pkg-config` output  to locate the libcmark library.
 
 ## Binary packages
 
