@@ -24,9 +24,9 @@
   <email>remi@php.net</email>
   <active>yes</active>
  </lead>
- <date>2018-03-28</date>
+ <date>2018-03-29</date>
  <version>
-  <release>1.0.0dev</release>
+  <release>1.0.0</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -313,7 +313,8 @@
       <file name="Render/XML/002.phpt" role="test" />
       <file name="Render/Latex/001.phpt" role="test" />
       <file name="Render/Latex/003.phpt" role="test" />
-      <file name="Render/Latex/002.phpt" role="test" />   </dir> <!-- tests -->
+      <file name="Render/Latex/002.phpt" role="test" />
+   </dir> <!-- tests -->
   </dir>
  </contents>
  <dependencies>
@@ -330,7 +331,7 @@
  <extsrcrelease />
  <changelog>
   <release>
-   <date>2018-03-28</date>
+   <date>2018-03-29</date>
    <version>
     <release>1.0.0</release>
     <api>1.0.0</api>
