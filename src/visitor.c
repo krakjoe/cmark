@@ -32,7 +32,6 @@ void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
 
 	while ((event = cmark_iter_next(iterator)) != CMARK_EVENT_DONE) {
 		zval visiting;
-		zval arg;
 		zval result;
 		zend_fcall_info fci = empty_fcall_info;
 		zend_fcall_info_cache fcc = empty_fcall_info_cache;

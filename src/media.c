@@ -217,10 +217,6 @@ static inline void php_cmark_node_media_construct_impl(zval *object, cmark_node_
 	}
 }
 
-static zend_function_entry php_cmark_node_media_methods[] = {
-	PHP_FE_END
-};
-
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_media_construct, 0, 0, 0)
 	ZEND_ARG_INFO(0, url)
 	ZEND_ARG_INFO(0, title)

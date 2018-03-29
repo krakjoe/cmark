@@ -110,7 +110,6 @@ PHP_METHOD(Parser, parse)
 PHP_METHOD(Parser, finish)
 {
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
-	php_cmark_node_t *n;
 
 	php_cmark_no_parameters();
 
@@ -119,7 +118,7 @@ PHP_METHOD(Parser, finish)
 		return;
 	}
 
-	n = php_cmark_node_shadow(
+	php_cmark_node_shadow(
 		return_value, cmark_parser_finish(p->parser), 0);
 
 	ZVAL_COPY(&p->root,   return_value);
