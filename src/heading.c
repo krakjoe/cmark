@@ -128,9 +128,11 @@ php_cmark_node_heading_isset_result:
 	return php_cmark_node_isset(object, member, has_set_exists, rtc);
 }
 
+/* unused
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_heading_construct, 0, 0, 0)
 	ZEND_ARG_INFO(0, level)
 ZEND_END_ARG_INFO()
+*/
 
 PHP_METHOD(Heading, __construct)
 {

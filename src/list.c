@@ -317,10 +317,12 @@ static zend_function_entry php_cmark_node_list_ordered_methods[] = {
 	PHP_FE_END
 };
 
+/* unused
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_bullet_list_construct, 0, 0, 0)
 	ZEND_ARG_INFO(0, tight)
 	ZEND_ARG_INFO(0, delimiter)
 ZEND_END_ARG_INFO()
+*/
 
 PHP_METHOD(BulletList, __construct)
 {
