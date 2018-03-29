@@ -36,7 +36,7 @@ typedef struct _php_cmark_node_visitor_t {
 	zend_function          *leave;
 } php_cmark_node_visitor_t;
 
-static zend_always_inline zend_bool php_cmark_node_accept_can_shortcircuit(zend_function *fbc) {
+static zend_always_inline zend_bool php_cmark_node_visitor_shortcircuit(zend_function *fbc) {
 	return	fbc->type == ZEND_USER_FUNCTION &&
 		fbc->op_array.last == 2 &&
 		fbc->op_array.opcodes[1].opcode == ZEND_RETURN &&
@@ -48,14 +48,14 @@ static zend_always_inline void php_cmark_node_visitor_init(php_cmark_node_visito
 	v->enter = (zend_function*)
 			zend_hash_str_find_ptr(
 				&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("enter"));
-	if (php_cmark_node_accept_can_shortcircuit(v->enter)) {
+	if (php_cmark_node_visitor_shortcircuit(v->enter)) {
 		v->enter = NULL;
 	}
 
 	v->leave = (zend_function*)
 			zend_hash_str_find_ptr(
 				&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("leave"));
-	if (php_cmark_node_accept_can_shortcircuit(v->leave)) {
+	if (php_cmark_node_visitor_shortcircuit(v->leave)) {
 		v->leave = NULL;
 	}
 
