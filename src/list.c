@@ -353,7 +353,7 @@ PHP_METHOD(BulletList, __construct)
 }
 
 static zend_function_entry php_cmark_node_list_bullet_methods[] = {
-	PHP_ME(BulletList, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(BulletList, __construct, php_cmark_node_bullet_list_construct, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
