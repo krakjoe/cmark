@@ -9,7 +9,41 @@ cmark
 Requires
 ========
 
-  * libcmark
+  * libcmark version >= 0.28
+
+Installation
+============
+
+## From PECL
+
+To install latest stable version
+
+```
+pecl install cmark
+```
+
+## From sources
+
+Use `release` branch for stable version or `develop` branch.
+
+```
+phpize
+./configure --with-cmark
+make
+make test
+
+```
+
+## Binary packages
+
+### Microsoft Windows
+
+Download DLL from the [pecl page](https://pecl.php.net/package/cmark).
+
+### Fedora / CentOS / RHEL
+
+RPM are available in [Remi's repository](https://rpms.remirepo.net/).
+
 
 Documentation
 =============
