@@ -24,5 +24,5 @@ extern zend_class_entry *php_cmark_node_visitable_ce;
 extern PHP_MINIT_FUNCTION(CommonMark_Node_Visitor);
 extern PHP_RINIT_FUNCTION(CommonMark_Node_Visitor);
 
-void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor);
+extern void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor);
 #endif
