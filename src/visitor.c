@@ -59,12 +59,14 @@ static zend_always_inline void php_cmark_node_visitor_init(php_cmark_node_visito
 		v->leave = NULL;
 	}
 
+	v->fci = empty_fcall_info;
 	v->fci.size = sizeof(zend_fcall_info);
 	v->fci.object = Z_OBJ_P(visitor);
 	v->fci.param_count = 1;
 	v->fci.params = &v->visiting;
 	v->fci.retval = &v->result;
 
+	v->fcc = empty_fcall_info_cache;
 #if PHP_VERSION_ID < 70300
 	v->fcc.initialized = 1;
 #endif
