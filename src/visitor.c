@@ -26,74 +26,105 @@
 zend_class_entry *php_cmark_node_visitor_ce;
 zend_class_entry *php_cmark_node_visitable_ce;
 
-static inline zend_bool php_cmark_node_accept_scl(zend_function *fbc) {
+typedef struct _php_cmark_node_visitor_t {
+	zend_fcall_info        fci;
+	zend_fcall_info_cache  fcc;
+	zval                   result;
+	zval                   visiting;
+
+	zend_function          *enter;
+	zend_function          *leave;
+} php_cmark_node_visitor_t;
+
+static zend_always_inline zend_bool php_cmark_node_accept_can_shortcircuit(zend_function *fbc) {
 	return	fbc->type == ZEND_USER_FUNCTION &&
 		fbc->op_array.last == 2 &&
 		fbc->op_array.opcodes[1].opcode == ZEND_RETURN &&
 		fbc->op_array.opcodes[1].extended_value == -1;
 }
 
-void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
-	cmark_event_type event;	
-	cmark_iter *iterator = cmark_iter_new(root->node);
+static zend_always_inline void php_cmark_node_visitor_init(php_cmark_node_visitor_t *v, zval *visitor) 
+{
+	v->enter = (zend_function*)
+			zend_hash_str_find_ptr(
+				&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("enter"));
+	if (php_cmark_node_accept_can_shortcircuit(v->enter)) {
+		v->enter = NULL;
+	}
 
-	while ((event = cmark_iter_next(iterator)) != CMARK_EVENT_DONE) {
-		zval visiting;
-		zval result;
-		zend_fcall_info fci = empty_fcall_info;
-		zend_fcall_info_cache fcc = empty_fcall_info_cache;
-		php_cmark_node_t *node;
+	v->leave = (zend_function*)
+			zend_hash_str_find_ptr(
+				&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("leave"));
+	if (php_cmark_node_accept_can_shortcircuit(v->leave)) {
+		v->leave = NULL;
+	}
 
-		switch (event) {
-			case CMARK_EVENT_ENTER:
-				fcc.function_handler = zend_hash_str_find_ptr(
-					&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("enter"));
-				if (php_cmark_node_accept_scl(fcc.function_handler)) {
-					continue;
-				}
-			break;
-
-			case CMARK_EVENT_EXIT:
-				fcc.function_handler = zend_hash_str_find_ptr(
-					&Z_OBJCE_P(visitor)->function_table, ZEND_STRL("leave"));
-				if (php_cmark_node_accept_scl(fcc.function_handler)) {
-					continue;
-				}
-			break;
-		}
-
-		ZVAL_NULL(&result);
-
-		fci.size = sizeof(zend_fcall_info);
-		fci.retval = &result;
-		fci.object = Z_OBJ_P(visitor);
+	v->fci.size = sizeof(zend_fcall_info);
+	v->fci.object = Z_OBJ_P(visitor);
+	v->fci.param_count = 1;
+	v->fci.params = &v->visiting;
+	v->fci.retval = &v->result;
 
 #if PHP_VERSION_ID < 70300
-		fcc.initialized = 1;
+	v->fcc.initialized = 1;
 #endif
-		fcc.object = fci.object;
+	v->fcc.object = v->fci.object;
 
-		node = php_cmark_node_shadow(&visiting, cmark_iter_get_node(iterator), 0);
+	ZVAL_UNDEF(&v->result);
+}
 
-		fci.params = &visiting;
-		fci.param_count = 1;
+static zend_always_inline void php_cmark_node_visitor_call(
+		php_cmark_node_visitor_t *interface, cmark_event_type event, cmark_iter *iterator) {
 
-		zend_call_function(&fci, &fcc);
+	php_cmark_node_t *node = php_cmark_node_shadow(
+		&interface->visiting, cmark_iter_get_node(iterator), 0);
 
-		if (Z_TYPE(result) == IS_LONG && Z_LVAL(result) > CMARK_EVENT_NONE) {
-			cmark_iter_reset(iterator, 
-				node->node, (cmark_event_type) Z_LVAL(result));
+	zend_call_function(&interface->fci, &interface->fcc);
+
+	switch (Z_TYPE(interface->result)) {
+		case IS_LONG:
+			if (Z_LVAL(interface->result) > CMARK_EVENT_NONE) {
+				cmark_iter_reset(iterator, 
+					node->node, 
+					(cmark_event_type) Z_LVAL(interface->result));			
+			}
+		break;
+
+		case IS_OBJECT:
+			if (instanceof_function(Z_OBJCE(interface->result), php_cmark_node_visitable_ce)) {
+				cmark_iter_reset(iterator,
+					php_cmark_node_fetch(
+						&interface->result)->node, 
+					event);
+			}
+
+		default:
+			if (Z_REFCOUNTED(interface->result)) {
+				zval_ptr_dtor(&interface->result);
+			}
+	}
+
+	ZVAL_UNDEF(&interface->result);
+}
+
+void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
+	php_cmark_node_visitor_t interface;
+	cmark_event_type event;
+	cmark_iter *iterator = cmark_iter_new(root->node);
+
+	php_cmark_node_visitor_init(&interface, visitor);
+
+	while ((event = cmark_iter_next(iterator)) != CMARK_EVENT_DONE) {
+		interface.fcc.function_handler = 
+			(event == CMARK_EVENT_ENTER) ?
+				interface.enter :
+				interface.leave;
+
+		if (!interface.fcc.function_handler) {
+			continue;
 		}
 
-		if (Z_TYPE(result) == IS_OBJECT && 
-		    instanceof_function(Z_OBJCE(result), php_cmark_node_visitable_ce)) {
-			cmark_iter_reset(iterator,
-				php_cmark_node_fetch(&result)->node, event);
-		}
-
-		if (Z_REFCOUNTED(result)) {
-			zval_ptr_dtor(&result);
-		}
+		php_cmark_node_visitor_call(&interface, event, iterator);
 	}
 
 	cmark_iter_free(iterator);
