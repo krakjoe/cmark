@@ -97,7 +97,8 @@ static zend_always_inline void php_cmark_node_visitor_call(
 				cmark_iter_reset(iterator,
 					php_cmark_node_fetch(
 						&interface->result)->node, 
-					event);
+					event == CMARK_EVENT_ENTER ? 
+						CMARK_EVENT_EXIT : CMARK_EVENT_ENTER);
 			}
 
 		default:
