@@ -77,36 +77,58 @@ static zend_always_inline void php_cmark_node_visitor_init(php_cmark_node_visito
 
 static zend_always_inline void php_cmark_node_visitor_call(
 		php_cmark_node_visitor_t *interface, cmark_event_type event, cmark_iter *iterator) {
-
 	php_cmark_node_t *node = php_cmark_node_shadow(
 		&interface->visiting, cmark_iter_get_node(iterator), 0);
+	zval *result = &interface->result;
 
 	zend_call_function(&interface->fci, &interface->fcc);
 
-	switch (Z_TYPE(interface->result)) {
+	switch (Z_TYPE_P(result)) {
 		case IS_LONG:
-			if (Z_LVAL(interface->result) > CMARK_EVENT_NONE) {
-				cmark_iter_reset(iterator, 
-					node->node, 
-					(cmark_event_type) Z_LVAL(interface->result));			
-			}
+			php_cmark_assert_range(result, 
+				CMARK_EVENT_DONE, CMARK_EVENT_EXIT, 0, 
+				"IVisitor::Done, IVisitor::Enter, or IVisitor::Leave expected");
+
+			cmark_iter_reset(iterator, node->node, Z_LVAL_P(result));
 		break;
 
-		case IS_OBJECT:
-			if (instanceof_function(Z_OBJCE(interface->result), php_cmark_node_visitable_ce)) {
-				cmark_iter_reset(iterator,
-					php_cmark_node_fetch(
-						&interface->result)->node, 
-					event);
-			}
+		case IS_OBJECT: {
+			php_cmark_assert_class(result,
+				php_cmark_node_visitable_ce, 0, "IVisitable expected");
 
-		default:
-			if (Z_REFCOUNTED(interface->result)) {
-				zval_ptr_dtor(&interface->result);
-			}
+			cmark_iter_reset(iterator, php_cmark_node_fetch(result)->node, event);
+		} break;
+
+		case IS_ARRAY: {
+			Bucket *bucket = NULL;
+			zval   *reset   = NULL;
+
+			php_cmark_assert_count(result,
+				1, 0, "return [Event => IVisitable] expected");
+
+			ZEND_HASH_FOREACH_BUCKET(Z_ARRVAL_P(result), bucket) {
+				event  = bucket->h;
+				reset  = &bucket->val;
+				break;
+			} ZEND_HASH_FOREACH_END();
+
+			php_cmark_assert_range_ex(event, 
+				CMARK_EVENT_DONE, CMARK_EVENT_EXIT, 0, 
+				"return [Event => IVisitable] expected, "
+					"Event must be IVisitor::Done, IVisitor::Enter, or IVisitor::Leave");
+			
+			php_cmark_assert_class(reset,
+				php_cmark_node_visitable_ce, 0, "return [Event => IVisitable] expected");
+
+			cmark_iter_reset(iterator, php_cmark_node_fetch(reset)->node, event);
+		} break;
 	}
 
-	ZVAL_UNDEF(&interface->result);
+	if (Z_REFCOUNTED_P(result)) {
+		zval_ptr_dtor(result);
+	}
+
+	ZVAL_UNDEF(result);
 }
 
 void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
@@ -116,7 +138,7 @@ void php_cmark_node_accept_impl(php_cmark_node_t *root, zval *visitor) {
 
 	php_cmark_node_visitor_init(&interface, visitor);
 
-	while ((event = cmark_iter_next(iterator)) != CMARK_EVENT_DONE) {
+	while ((event = cmark_iter_next(iterator)) != CMARK_EVENT_DONE && !EG(exception)) {
 		interface.fcc.function_handler = 
 			(event == CMARK_EVENT_ENTER) ?
 				interface.enter :
