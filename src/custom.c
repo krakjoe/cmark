@@ -52,18 +52,18 @@ zval* php_cmark_node_custom_read(zval *object, zval *member, int type, void **rt
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_on_enter))
 			return php_cmark_node_read_str(&n->h, 
-				cmark_node_get_on_enter, &n->onEnter);
+				cmark_node_get_on_enter, &n->onEnter, rv);
 		if (RTC(rtc, cmark_node_get_on_exit))
 			return php_cmark_node_read_str(&n->h, 
-				cmark_node_get_on_exit, &n->onLeave);
+				cmark_node_get_on_exit, &n->onLeave, rv);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "onEnter")) {
 		return php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_on_enter), &n->onEnter);
+			RTS(rtc, cmark_node_get_on_enter), &n->onEnter, rv);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "onLeave")) {
 		return php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_on_exit), &n->onLeave);
+			RTS(rtc, cmark_node_get_on_exit), &n->onLeave, rv);
 	}
 
 php_cmark_node_custom_read_error:
@@ -119,21 +119,21 @@ int php_cmark_node_custom_isset(zval *object, zval *member, int has_set_exists, 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_on_enter)) {
 			zv = php_cmark_node_read_str(&n->h, 
-				cmark_node_get_on_enter, &n->onEnter);
+				cmark_node_get_on_enter, &n->onEnter, NULL);
 			goto php_cmark_node_custom_isset_result;
 		} else if (RTC(rtc, cmark_node_get_on_exit)) {
 			zv = php_cmark_node_read_str(&n->h, 
-				cmark_node_get_on_exit, &n->onLeave);
+				cmark_node_get_on_exit, &n->onLeave, NULL);
 			goto php_cmark_node_custom_isset_result;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "onEnter")) {
 		zv = php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_on_enter), &n->onEnter);
+			RTS(rtc, cmark_node_get_on_enter), &n->onEnter, NULL);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "onLeave")) {
 		zv = php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_on_exit), &n->onLeave);
+			RTS(rtc, cmark_node_get_on_exit), &n->onLeave, NULL);
 	}
 
 php_cmark_node_custom_isset_result:
@@ -177,26 +177,10 @@ php_cmark_node_custom_unset_error:
 	return php_cmark_node_unset(object, member, rtc);
 }
 
-void php_cmark_node_custom_free(zend_object *zo) {
-	php_cmark_node_custom_t *n = 
-		php_cmark_node_custom_from(zo);
-
-	if (!Z_ISUNDEF(n->onEnter)) {
-		zval_ptr_dtor(&n->onEnter);
-	}
-
-	if (!Z_ISUNDEF(n->onLeave)) {
-		zval_ptr_dtor(&n->onLeave);
-	}
-
-	php_cmark_node_free(zo);
-}
-
 PHP_MINIT_FUNCTION(CommonMark_Node_Custom)
 {	
 	memcpy(&php_cmark_node_custom_handlers, &php_cmark_node_handlers, sizeof(zend_object_handlers));
 
-	php_cmark_node_custom_handlers.free_obj = php_cmark_node_custom_free;
 	php_cmark_node_custom_handlers.read_property = php_cmark_node_custom_read;
 	php_cmark_node_custom_handlers.write_property = php_cmark_node_custom_write;
 	php_cmark_node_custom_handlers.has_property = php_cmark_node_custom_isset;

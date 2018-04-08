@@ -28,7 +28,7 @@ zend_object_handlers php_cmark_parser_handlers;
 
 typedef struct _php_cmark_parser_t {
 	cmark_parser *parser;
-	zval root;
+	zend_bool finished;
 	zend_object std;
 } php_cmark_parser_t;
 
@@ -39,15 +39,9 @@ typedef struct _php_cmark_parser_t {
 
 static inline void php_cmark_parser_free(zend_object *zo) {
 	php_cmark_parser_t *p = php_cmark_parser_from(zo);
-	zend_bool finished = 0;
-
-	if (!Z_ISUNDEF(p->root)) {
-		zval_ptr_dtor(&p->root);
-		finished = 1;
-	}
 
 	if (p->parser) {
-		if (!finished) {
+		if (!p->finished) {
 			cmark_node_free(
 				cmark_parser_finish(p->parser));
 		}
@@ -63,8 +57,6 @@ zend_object* php_cmark_parser_create(zend_class_entry *ce) {
 	zend_object_std_init(&p->std, ce);
 
 	p->std.handlers = &php_cmark_parser_handlers;
-
-	ZVAL_UNDEF(&p->root);
 
 	return &p->std;
 }
@@ -110,18 +102,25 @@ PHP_METHOD(Parser, parse)
 PHP_METHOD(Parser, finish)
 {
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
+	cmark_node *finish;
+	php_cmark_node_t *n;
 
 	php_cmark_no_parameters();
 
-	if (!Z_ISUNDEF(p->root)) {
+	if (p->finished) {
 		php_cmark_throw("already finished");
 		return;
 	}
+	
+	p->finished = 1;
 
-	php_cmark_node_shadow(
-		return_value, cmark_parser_finish(p->parser), 0);
+	finish = cmark_parser_finish(p->parser);
 
-	ZVAL_COPY(&p->root,   return_value);
+	object_init_ex(return_value, php_cmark_node_class(finish));
+
+	n = php_cmark_node_fetch(return_value);
+	n->node = finish;
+	n->owned = 1;
 }
 
 static zend_function_entry php_cmark_parser_methods[] = {
@@ -136,6 +135,8 @@ PHP_FUNCTION(CommonMark_Parse)
 	zval *content = NULL;
 	zval *options = NULL;
 	cmark_parser *parser;
+	cmark_node   *finish;
+	php_cmark_node_t *n;
 
 	ZEND_BEGIN_PARAMS(1, 1)
 		Z_PARAM_ZVAL(content)
@@ -151,8 +152,18 @@ PHP_FUNCTION(CommonMark_Parse)
 
 	cmark_parser_feed(parser, Z_STRVAL_P(content), Z_STRLEN_P(content));
 
-	php_cmark_node_shadow(
-		return_value, cmark_parser_finish(parser), 0);
+	finish = cmark_parser_finish(parser);
+
+	if (!finish) {
+		cmark_parser_free(parser);
+		return;
+	}
+
+	object_init_ex(return_value, php_cmark_node_class(finish));
+
+	n = php_cmark_node_fetch(return_value);
+	n->node = finish;
+	n->owned = 1;
 
 	cmark_parser_free(parser);
 }

@@ -25,7 +25,7 @@ extern zend_object_handlers   php_cmark_node_handlers;
 
 typedef struct _php_cmark_node_t {
 	cmark_node* node;
-	zend_bool used;
+	zend_bool owned;
 	struct {
 		zend_refcounted_h gc;
 		uint32_t handle;
@@ -56,6 +56,6 @@ extern PHP_RINIT_FUNCTION(CommonMark_Node);
 
 extern void php_cmark_node_new(zval *object, cmark_node_type type);
 extern void php_cmark_node_list_new(zval *object, cmark_list_type type);
-extern php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node, zend_bool addref);
+extern php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node);
 extern zend_class_entry* php_cmark_node_class(cmark_node* node);
 #endif

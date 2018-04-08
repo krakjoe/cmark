@@ -62,17 +62,17 @@ zval* php_cmark_node_media_read(zval *object, zval *member, int type, void **rtc
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_url))
-			return php_cmark_node_read_str(&n->h, cmark_node_get_url, &n->url);
+			return php_cmark_node_read_str(&n->h, cmark_node_get_url, &n->url, rv);
 		if (RTC(rtc, cmark_node_get_title))
-			return php_cmark_node_read_str(&n->h, cmark_node_get_title, &n->title);
+			return php_cmark_node_read_str(&n->h, cmark_node_get_title, &n->title, rv);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "url")) {
 		return php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_url), &n->url);
+			RTS(rtc, cmark_node_get_url), &n->url, rv);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
 		return php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_title), &n->title);
+			RTS(rtc, cmark_node_get_title), &n->title, rv);
 	}
 
 php_cmark_node_media_read_error:
@@ -128,21 +128,21 @@ int php_cmark_node_media_isset(zval *object, zval *member, int has_set_exists, v
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_url)) {
 			zv = php_cmark_node_read_str(&n->h, 
-				cmark_node_get_url, &n->url);
+				cmark_node_get_url, &n->url, NULL);
 			goto php_cmark_node_media_isset_result;
 		} else if (RTC(rtc, cmark_node_get_title)) {
 			zv = php_cmark_node_read_str(&n->h, 
-				cmark_node_get_title, &n->title);
+				cmark_node_get_title, &n->title, NULL);
 			goto php_cmark_node_media_isset_result;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "url")) {
 		zv = php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_url), &n->url);
+			RTS(rtc, cmark_node_get_url), &n->url, NULL);
 	} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
 		zv = php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_title), &n->title);
+			RTS(rtc, cmark_node_get_title), &n->title, NULL);
 	}
 
 php_cmark_node_media_isset_result:
@@ -189,11 +189,11 @@ void php_cmark_node_media_free(zend_object *zo) {
 		php_cmark_node_media_from(zo);
 
 	if (!Z_ISUNDEF(n->url)) {
-		zval_ptr_dtor(&n->url);
+		//zval_ptr_dtor(&n->url);
 	}
 	
 	if (!Z_ISUNDEF(n->title)) {
-		zval_ptr_dtor(&n->title);
+		//zval_ptr_dtor(&n->title);
 	}
 
 	php_cmark_node_free(zo);
@@ -297,7 +297,6 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Media)
 
 	memcpy(&php_cmark_node_media_handlers, &php_cmark_node_handlers, sizeof(zend_object_handlers));
 
-	php_cmark_node_media_handlers.free_obj = php_cmark_node_media_free;
 	php_cmark_node_media_handlers.read_property = php_cmark_node_media_read;
 	php_cmark_node_media_handlers.write_property = php_cmark_node_media_write;
 	php_cmark_node_media_handlers.has_property = php_cmark_node_media_isset;

@@ -62,12 +62,12 @@ zval* php_cmark_node_text_read(zval *object, zval *member, int type, void **rtc,
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_literal))
-			return php_cmark_node_read_str(&n->h, cmark_node_get_literal, &n->literal);
+			return php_cmark_node_read_str(&n->h, cmark_node_get_literal, &n->literal, rv);
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
 		return php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_literal), &n->literal);
+			RTS(rtc, cmark_node_get_literal), &n->literal, rv);
 	}
 
 php_cmark_node_text_read_error:
@@ -112,14 +112,14 @@ int php_cmark_node_text_isset(zval *object, zval *member, int has_set_exists, vo
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_literal)) {
 			zv = php_cmark_node_read_str(&n->h, 
-				RTS(rtc, cmark_node_get_literal), &n->literal);
+				RTS(rtc, cmark_node_get_literal), &n->literal, NULL);
 			goto php_cmark_node_text_isset_result;
 		}
 	}
 
 	if (zend_string_equals_literal(Z_STR_P(member), "literal")) {
 		zv = php_cmark_node_read_str(&n->h, 
-			RTS(rtc, cmark_node_get_literal), &n->literal);
+			RTS(rtc, cmark_node_get_literal), &n->literal, NULL);
 	}
 
 php_cmark_node_text_isset_result:
@@ -152,17 +152,6 @@ void php_cmark_node_text_unset(zval *object, zval *member, void **rtc) {
 
 php_cmark_node_text_unset_error:
 	return php_cmark_node_unset(object, member, rtc);
-}
-
-void php_cmark_node_text_free(zend_object *zo) {
-	php_cmark_node_text_t *n = 
-		php_cmark_node_text_from(zo);
-
-	if (!Z_ISUNDEF(n->literal)) {
-		zval_ptr_dtor(&n->literal);
-	}
-
-	php_cmark_node_free(zo);
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_text_construct, 0, 0, 0)
@@ -236,7 +225,7 @@ PHP_MINIT_FUNCTION(CommonMark_Node_Text)
 
 	memcpy(&php_cmark_node_text_handlers, &php_cmark_node_handlers, sizeof(zend_object_handlers));
 
-	php_cmark_node_text_handlers.free_obj = php_cmark_node_text_free;
+
 	php_cmark_node_text_handlers.read_property = php_cmark_node_text_read;
 	php_cmark_node_text_handlers.write_property = php_cmark_node_text_write;
 	php_cmark_node_text_handlers.has_property = php_cmark_node_text_isset;

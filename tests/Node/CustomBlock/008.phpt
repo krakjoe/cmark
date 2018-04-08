@@ -19,7 +19,7 @@ object(CommonMark\Node\Document)#1 (1) {
   ["children"]=>
   array(1) {
     [0]=>
-    object(CommonMark\Node\CustomBlock)#2 (3) {
+    object(CommonMark\Node\CustomBlock)#4 (3) {
       ["enter"]=>
       string(5) "ENTER"
       ["leave"]=>
@@ -27,7 +27,7 @@ object(CommonMark\Node\Document)#1 (1) {
       ["children"]=>
       array(1) {
         [0]=>
-        object(CommonMark\Node\Text)#3 (1) {
+        object(CommonMark\Node\Text)#5 (1) {
           ["literal"]=>
           string(4) "NODE"
         }
@@ -35,11 +35,11 @@ object(CommonMark\Node\Document)#1 (1) {
     }
   }
 }
-object(CommonMark\Node\Document)#4 (1) {
+object(CommonMark\Node\Document)#3 (1) {
   ["children"]=>
   array(1) {
     [0]=>
-    object(CommonMark\Node\CustomBlock)#5 (3) {
+    object(CommonMark\Node\CustomBlock)#4 (3) {
       ["enter"]=>
       string(5) "ENTER"
       ["leave"]=>
@@ -47,7 +47,7 @@ object(CommonMark\Node\Document)#4 (1) {
       ["children"]=>
       array(1) {
         [0]=>
-        object(CommonMark\Node\Text)#6 (1) {
+        object(CommonMark\Node\Text)#5 (1) {
           ["literal"]=>
           string(4) "NODE"
         }
@@ -55,3 +55,4 @@ object(CommonMark\Node\Document)#4 (1) {
     }
   }
 }
+

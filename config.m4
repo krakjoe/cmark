@@ -4,8 +4,6 @@ dnl config.m4 for extension cmark
 PHP_ARG_WITH(cmark, whether to enable cmark support,
 dnl Make sure that the comment is aligned:
 [  --with-cmark            Enable cmark support], no)
-PHP_ARG_WITH(cmark-coverage,      whether to enable cmark coverage support,
-[  --with-cmark-coverage   Enable cmark coverage support], no, no)
 
 LIBCMARK_MIN_MAJOR=0
 LIBCMARK_MIN_MINOR=28
@@ -100,14 +98,7 @@ int main() {
 
   AC_DEFINE(HAVE_CMARK, 1, [ Have cmark support ])
 
-  PHP_NEW_EXTENSION(cmark, cmark.c src/node.c src/handlers.c src/custom.c src/visitor.c src/document.c src/quote.c src/list.c src/item.c src/block.c src/paragraph.c src/heading.c src/break.c src/text.c src/code.c src/inline.c src/media.c src/render.c src/parse.c src/iterator.c, $ext_shared)
+  PHP_NEW_EXTENSION(cmark, cmark.c src/node.c src/handlers.c src/custom.c src/visitor.c src/document.c src/quote.c src/list.c src/item.c src/block.c src/paragraph.c src/heading.c src/break.c src/text.c src/code.c src/inline.c src/media.c src/render.c src/parse.c src/iterator.c src/cql_lexer.c src/cql_parser.c src/call.c src/cql.c, $ext_shared)
 
-  AC_MSG_CHECKING([cmark coverage])
-  if test "$PHP_CMARK_COVERAGE" != "no"; then
-    AC_MSG_RESULT([enabled])
-
-    PHP_ADD_MAKEFILE_FRAGMENT
-  else
-    AC_MSG_RESULT([disabled])
-  fi
+  PHP_ADD_MAKEFILE_FRAGMENT
 fi

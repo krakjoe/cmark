@@ -15,30 +15,16 @@
   | Author: krakjoe <krakjoe@php.net>                                    |
   +----------------------------------------------------------------------+
  */
-#ifndef PHP_CMARK_NODE_TEXT_H
-#define PHP_CMARK_NODE_TEXT_H
+#ifndef PHP_CMARK_CQL_LEXER_H
+#define PHP_CMARK_CQL_LEXER_H
 
-extern zend_class_entry *php_cmark_node_text_ce;
-extern zend_class_entry *php_cmark_node_text_emphasis_ce;
-extern zend_class_entry *php_cmark_node_text_strong_ce;
+#include <src/cql.h>
 
-extern PHP_MINIT_FUNCTION(CommonMark_Node_Text);
-extern PHP_RINIT_FUNCTION(CommonMark_Node_Text);
+typedef struct _cql_lex_t cql_lex_t;
 
-extern zend_object_handlers php_cmark_node_text_handlers;
+cql_lex_t* cql_lex_init (unsigned char *text, size_t length);
+int cql_lex (cql_ast_t *yylval, cql_lex_t *lex);
+unsigned char* cql_lex_cursor(cql_lex_t *lex, int offset);
+void cql_lex_free(cql_lex_t *lex);
 
-typedef struct _php_cmark_node_text_t {
-	php_cmark_node_t h;
-	zval literal;
-} php_cmark_node_text_t;
-
-#define php_cmark_node_text_from(o) \
-	((php_cmark_node_text_t*) \
-		((char*) o - XtOffsetOf(php_cmark_node_text_t, h.std)))
-#define php_cmark_node_text_fetch(z) php_cmark_node_text_from(Z_OBJ_P(z))
-
-extern int php_cmark_node_text_isset(zval *object, zval *member, int has_set_exists, void **rtc);
-extern void php_cmark_node_text_write(zval *object, zval *member, zval *value, void **rtc);
-extern zval* php_cmark_node_text_read(zval *object, zval *member, int type, void **rtc, zval *rv);
-extern void php_cmark_node_text_unset(zval *object, zval *member, void **rtc);
 #endif

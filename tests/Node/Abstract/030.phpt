@@ -23,7 +23,7 @@ object(CommonMark\Node\Document)#1 (1) {
   ["children"]=>
   array(1) {
     [0]=>
-    object(CommonMark\Node\Paragraph)#2 (0) {
+    object(CommonMark\Node\Paragraph)#3 (0) {
     }
   }
 }
@@ -33,7 +33,7 @@ object(CommonMark\Node\Document)#1 (1) {
   ["children"]=>
   array(1) {
     [0]=>
-    object(CommonMark\Node\Paragraph)#2 (0) {
+    object(CommonMark\Node\Paragraph)#3 (0) {
     }
   }
 }
