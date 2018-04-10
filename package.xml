@@ -24,9 +24,9 @@
   <email>remi@php.net</email>
   <active>yes</active>
  </lead>
- <date>2018-03-29</date>
+ <date>2018-04-10</date>
  <version>
-  <release>1.0.1dev</release>
+  <release>1.0.1</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -35,7 +35,8 @@
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
--
+- improve efficiency of visitation, only looking up functions one time for each accept()
+- allow returning [Event => Node] from enter/leave, providing full control over backing iterator
  </notes>
  <contents>
   <dir name="/">
