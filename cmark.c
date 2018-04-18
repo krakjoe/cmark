@@ -44,11 +44,14 @@
 #include <src/render.h>
 #include <src/parse.h>
 
+#include <src/cql.h>
+#include <src/call.h>
+
 cmark_mem php_cmark_mem;
 
 void* php_cmark_calloc_func(size_t n, size_t s) { return ecalloc(n, s); }
 void* php_cmark_realloc_func(void *p, size_t s) { return erealloc(p ,s); }
-void  php_cmark_free_func(void *p)              { efree(p); }
+void  php_cmark_free_func(void *p)              { efree(p); p = NULL; }
 
 /* {{{ */
 PHP_MINIT_FUNCTION(cmark)
@@ -79,6 +82,8 @@ PHP_MINIT_FUNCTION(cmark)
 	REGISTER_NS_LONG_CONSTANT("CommonMark", "Version", cmark_version(), CONST_CS|CONST_PERSISTENT);
 	REGISTER_NS_STRING_CONSTANT("CommonMark", "VersionString", (char*) cmark_version_string(), CONST_CS|CONST_PERSISTENT);
 
+	PHP_MINIT(CommonMark_CQL)(INIT_FUNC_ARGS_PASSTHRU);
+
 	return SUCCESS;
 } /* }}} */
 
@@ -108,6 +113,8 @@ PHP_RINIT_FUNCTION(cmark)
 
 	PHP_RINIT(CommonMark_Render)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_RINIT(CommonMark_Parser)(INIT_FUNC_ARGS_PASSTHRU);
+
+	PHP_RINIT(CommonMark_CQL)(INIT_FUNC_ARGS_PASSTHRU);
 
 	return SUCCESS;
 }

@@ -48,7 +48,7 @@ object(CommonMark\Node\Document)#2 (1) {
       ["children"]=>
       array(1) {
         [0]=>
-        object(CommonMark\Node\Text)#11 (1) {
+        object(CommonMark\Node\Text)#10 (1) {
           ["literal"]=>
           string(10) "Paragraph:"
         }
@@ -59,15 +59,15 @@ object(CommonMark\Node\Document)#2 (1) {
       ["children"]=>
       array(2) {
         [0]=>
-        object(CommonMark\Node\Item)#12 (1) {
+        object(CommonMark\Node\Item)#10 (1) {
           ["children"]=>
           array(1) {
             [0]=>
-            object(CommonMark\Node\Paragraph)#14 (1) {
+            object(CommonMark\Node\Paragraph)#12 (1) {
               ["children"]=>
               array(1) {
                 [0]=>
-                object(CommonMark\Node\Text)#15 (1) {
+                object(CommonMark\Node\Text)#13 (1) {
                   ["literal"]=>
                   string(4) "item"
                 }
@@ -76,15 +76,15 @@ object(CommonMark\Node\Document)#2 (1) {
           }
         }
         [1]=>
-        object(CommonMark\Node\Item)#13 (1) {
+        object(CommonMark\Node\Item)#11 (1) {
           ["children"]=>
           array(1) {
             [0]=>
-            object(CommonMark\Node\Paragraph)#16 (1) {
+            object(CommonMark\Node\Paragraph)#12 (1) {
               ["children"]=>
               array(1) {
                 [0]=>
-                object(CommonMark\Node\Text)#17 (1) {
+                object(CommonMark\Node\Text)#13 (1) {
                   ["literal"]=>
                   string(4) "item"
                 }
@@ -99,25 +99,25 @@ object(CommonMark\Node\Document)#2 (1) {
       ["children"]=>
       array(3) {
         [0]=>
-        object(CommonMark\Node\Text\Strong)#18 (1) {
+        object(CommonMark\Node\Text\Strong)#11 (1) {
           ["children"]=>
           array(1) {
             [0]=>
-            object(CommonMark\Node\Text)#21 (1) {
+            object(CommonMark\Node\Text)#13 (1) {
               ["literal"]=>
               string(6) "strong"
             }
           }
         }
         [1]=>
-        object(CommonMark\Node\SoftBreak)#19 (0) {
+        object(CommonMark\Node\SoftBreak)#10 (0) {
         }
         [2]=>
-        object(CommonMark\Node\Text\Emphasis)#20 (1) {
+        object(CommonMark\Node\Text\Emphasis)#12 (1) {
           ["children"]=>
           array(1) {
             [0]=>
-            object(CommonMark\Node\Text)#22 (1) {
+            object(CommonMark\Node\Text)#13 (1) {
               ["literal"]=>
               string(8) "emphasis"
             }
@@ -130,27 +130,27 @@ object(CommonMark\Node\Document)#2 (1) {
       ["children"]=>
       array(5) {
         [0]=>
-        object(CommonMark\Node\Text)#23 (1) {
+        object(CommonMark\Node\Text)#12 (1) {
           ["literal"]=>
           string(12) "some inline "
         }
         [1]=>
-        object(CommonMark\Node\HTMLInline)#24 (1) {
+        object(CommonMark\Node\HTMLInline)#10 (1) {
           ["literal"]=>
           string(6) "<html>"
         }
         [2]=>
-        object(CommonMark\Node\Text)#25 (1) {
+        object(CommonMark\Node\Text)#11 (1) {
           ["literal"]=>
           string(4) "html"
         }
         [3]=>
-        object(CommonMark\Node\HTMLInline)#26 (1) {
+        object(CommonMark\Node\HTMLInline)#13 (1) {
           ["literal"]=>
           string(7) "</html>"
         }
         [4]=>
-        object(CommonMark\Node\Text)#27 (1) {
+        object(CommonMark\Node\Text)#14 (1) {
           ["literal"]=>
           string(8) " is here"
         }
@@ -171,7 +171,7 @@ some_code();
       ["children"]=>
       array(3) {
         [0]=>
-        object(CommonMark\Node\Link)#28 (3) {
+        object(CommonMark\Node\Link)#14 (3) {
           ["url"]=>
           string(3) "url"
           ["title"]=>
@@ -179,17 +179,17 @@ some_code();
           ["children"]=>
           array(1) {
             [0]=>
-            object(CommonMark\Node\Text)#31 (1) {
+            object(CommonMark\Node\Text)#10 (1) {
               ["literal"]=>
               string(3) "alt"
             }
           }
         }
         [1]=>
-        object(CommonMark\Node\SoftBreak)#29 (0) {
+        object(CommonMark\Node\SoftBreak)#13 (0) {
         }
         [2]=>
-        object(CommonMark\Node\Image)#30 (3) {
+        object(CommonMark\Node\Image)#11 (3) {
           ["url"]=>
           string(3) "url"
           ["title"]=>
@@ -197,7 +197,7 @@ some_code();
           ["children"]=>
           array(1) {
             [0]=>
-            object(CommonMark\Node\Text)#32 (1) {
+            object(CommonMark\Node\Text)#10 (1) {
               ["literal"]=>
               string(3) "alt"
             }

@@ -36,6 +36,10 @@ typedef struct _php_cmark_iterator_t {
 static inline void php_cmark_iterator_dtor(php_cmark_iterator_t* iterator) {
 	cmark_iter_free(iterator->it);
 
+	if (Z_TYPE(iterator->zit.data) == IS_OBJECT) {
+		PHP_OBJ_SAFE_RELEASE(Z_OBJ(iterator->zit.data));
+	}
+
 	zval_ptr_dtor(&iterator->zo);
 }
 
@@ -50,7 +54,7 @@ static inline zval* php_cmark_iterator_current_data(php_cmark_iterator_t* iterat
 
 	php_cmark_node_shadow(
 		&iterator->zit.data, 
-			cmark_iter_get_node(iterator->it), 1);
+			cmark_iter_get_node(iterator->it));
 
 	return &iterator->zit.data;
 }

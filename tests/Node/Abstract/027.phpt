@@ -114,15 +114,15 @@ array(0) {
 }
 array(3) {
   [0]=>
-  object(CommonMark\Node\Document)#1 (1) {
+  object(CommonMark\Node\Document)#4 (1) {
     ["children"]=>
     array(1) {
       [0]=>
-      object(CommonMark\Node\Paragraph)#2 (1) {
+      object(CommonMark\Node\Paragraph)#3 (1) {
         ["children"]=>
         array(1) {
           [0]=>
-          object(CommonMark\Node\Text)#3 (1) {
+          object(CommonMark\Node\Text)#7 (1) {
             ["literal"]=>
             string(0) ""
           }
@@ -131,7 +131,7 @@ array(3) {
     }
   }
   [1]=>
-  object(CommonMark\Node\Paragraph)#2 (1) {
+  object(CommonMark\Node\Paragraph)#5 (1) {
     ["children"]=>
     array(1) {
       [0]=>
@@ -142,7 +142,7 @@ array(3) {
     }
   }
   [2]=>
-  object(CommonMark\Node\Text)#3 (1) {
+  object(CommonMark\Node\Text)#6 (1) {
     ["literal"]=>
     string(0) ""
   }
