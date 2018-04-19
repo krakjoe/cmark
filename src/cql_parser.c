@@ -145,12 +145,19 @@ static inline cql_ast_t* cql_ast_create(cql_ast_type_t type, cmark_node_type con
 static inline cql_ast_t* cql_ast_create_children(cql_ast_type_t type, cmark_node_type constraint, cql_ast_t *children) {
 	cql_ast_t *ast = cql_ast_create(type, constraint);
 
+	if (!ast) {
+		return NULL;
+	}
+
 	ast->children = children;
 
 	return ast;
 }
 
 static inline cql_ast_t* cql_ast_next(cql_ast_t *stack, cql_ast_t *next) {
+	if (!stack || !next) {
+		return NULL;
+	}
 
 	*(stack->last) = next;
 	stack->last = &next->next;
@@ -159,7 +166,7 @@ static inline cql_ast_t* cql_ast_next(cql_ast_t *stack, cql_ast_t *next) {
 }
 
 
-#line 163 "src/cql_parser.c" /* yacc.c:355  */
+#line 170 "src/cql_parser.c" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -246,7 +253,7 @@ int cql_parse (cql_lex_t *lex, cql_ast_t **stack);
 
 /* Copy the second part of user declarations.  */
 
-#line 250 "src/cql_parser.c" /* yacc.c:358  */
+#line 257 "src/cql_parser.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -547,10 +554,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   112,   112,   118,   121,   125,   126,   130,   131,   132,
-     133,   134,   135,   136,   137,   138,   139,   140,   141,   142,
-     143,   144,   145,   146,   147,   148,   152,   153,   157,   158,
-     162,   163,   167,   168,   169,   170,   171,   172,   173,   177
+       0,   119,   119,   125,   128,   132,   133,   137,   138,   139,
+     140,   141,   142,   143,   144,   145,   146,   147,   148,   149,
+     150,   151,   152,   153,   154,   155,   159,   160,   164,   165,
+     169,   170,   174,   175,   176,   177,   178,   179,   180,   184
 };
 #endif
 
@@ -1358,244 +1365,244 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 112 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 119 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     {
 		*stack = (yyvsp[0].ast); 
 	}
-#line 1366 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1373 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 118 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 125 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { 
 		(yyval.ast) = cql_ast_next((yyvsp[-2].ast), (yyvsp[0].ast));
 	}
-#line 1374 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1381 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 121 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 128 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.ast) = (yyvsp[0].ast); }
-#line 1380 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1387 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 125 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 132 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.ast) = (yyvsp[-1].ast); }
-#line 1386 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1393 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 126 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 133 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.ast) = NULL; }
-#line 1392 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1399 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 130 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 137 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_BLOCK_QUOTE; }
-#line 1398 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1405 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 131 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 138 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_LIST; }
-#line 1404 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1411 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 132 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 139 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_ITEM; }
-#line 1410 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1417 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 133 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 140 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_CODE_BLOCK; }
-#line 1416 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1423 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 134 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 141 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_HTML_BLOCK; }
-#line 1422 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1429 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 135 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 142 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_CUSTOM_BLOCK; }
-#line 1428 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1435 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 136 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 143 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_PARAGRAPH; }
-#line 1434 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1441 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 137 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 144 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_HEADING; }
-#line 1440 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1447 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 138 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 145 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_THEMATIC_BREAK; }
-#line 1446 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1453 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 139 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 146 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_TEXT; }
-#line 1452 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1459 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 140 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 147 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_SOFTBREAK; }
-#line 1458 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1465 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 141 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 148 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_LINEBREAK; }
-#line 1464 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1471 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 142 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 149 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_CODE; }
-#line 1470 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1477 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 143 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 150 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_HTML_INLINE; }
-#line 1476 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1483 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 144 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 151 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_CUSTOM_INLINE; }
-#line 1482 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1489 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 145 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 152 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_EMPH; }
-#line 1488 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1495 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 146 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 153 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_STRONG; }
-#line 1494 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1501 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 147 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 154 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_LINK; }
-#line 1500 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1507 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 148 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 155 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_IMAGE; }
-#line 1506 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1513 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 152 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 159 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = (yyvsp[-2].constraint) | 1u << (yyvsp[0].constraint); }
-#line 1512 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1519 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 153 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 160 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = 1u << (yyvsp[0].constraint); }
-#line 1518 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1525 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 157 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 164 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CQL_CONSTRAINT_NEGATE; }
-#line 1524 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1531 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 158 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 165 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = 0; }
-#line 1530 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1537 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 162 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 169 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = (yyvsp[-2].constraint) | (yyvsp[-1].constraint); }
-#line 1536 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1543 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 163 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 170 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = 0; }
-#line 1542 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1549 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 167 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 174 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_FIRST_CHILD; }
-#line 1548 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1555 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 168 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 175 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_LAST_CHILD; }
-#line 1554 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1561 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 169 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 176 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_PARENT; }
-#line 1560 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1567 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 170 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 177 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_NEXT; }
-#line 1566 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1573 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 171 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 178 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_PREVIOUS; }
-#line 1572 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1579 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 172 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 179 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_CHILDREN; }
-#line 1578 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1585 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 173 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 180 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_SIBLINGS; }
-#line 1584 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1591 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 177 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
+#line 184 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { 
 		if ((yyvsp[0].ast)) {
 			(yyval.ast) = cql_ast_create_children((yyvsp[-2].type), (yyvsp[-1].constraint), (yyvsp[0].ast));
 		} else  (yyval.ast) = cql_ast_create((yyvsp[-2].type), (yyvsp[-1].constraint));
 		
 	}
-#line 1595 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1602 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
 
-#line 1599 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1606 "src/cql_parser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1823,7 +1830,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 184 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1906  */
+#line 191 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1906  */
 
 
 static int yyerror(cql_lex_t *lex, cql_ast_t **stack, const char *msg) {

@@ -69,12 +69,19 @@ static inline cql_ast_t* cql_ast_create(cql_ast_type_t type, cmark_node_type con
 static inline cql_ast_t* cql_ast_create_children(cql_ast_type_t type, cmark_node_type constraint, cql_ast_t *children) {
 	cql_ast_t *ast = cql_ast_create(type, constraint);
 
+	if (!ast) {
+		return NULL;
+	}
+
 	ast->children = children;
 
 	return ast;
 }
 
 static inline cql_ast_t* cql_ast_next(cql_ast_t *stack, cql_ast_t *next) {
+	if (!stack || !next) {
+		return NULL;
+	}
 
 	*(stack->last) = next;
 	stack->last = &next->next;
@@ -83,7 +90,7 @@ static inline cql_ast_t* cql_ast_next(cql_ast_t *stack, cql_ast_t *next) {
 }
 
 
-#line 87 "src/cql_parser.h" /* yacc.c:1909  */
+#line 94 "src/cql_parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
