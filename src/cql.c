@@ -575,12 +575,11 @@ int cql_clone(cql_function_t *source, cql_function_t *destination) {
 				op->rv = op->op - source->ops;
 			break;
 
-			case CQLI_RET:
+			case CQLI_ENT:
+				op->iv = op->ip - source->stack.mem;
 			break;
 
-			case CQLI_ENT:
-				if (op->ip)
-					op->iv = op->ip - source->stack.mem;
+			case CQLI_RET:
 			break;
 
 			default:
