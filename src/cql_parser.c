@@ -568,7 +568,7 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "\"firstChild\"", "\"lastChild\"",
   "\"parent\"", "\"previous\"", "\"next\"", "\"children\"", "\"siblings\"",
-  "\"separator\"", "\"[\"", "\"]\"", "\"(\"", "\"^\"", "\")\"", "\"|\"",
+  "\"separator\"", "\"[\"", "\"]\"", "\"(\"", "\"~\"", "\")\"", "\"|\"",
   "\"BlockQuote\"", "\"List\"", "\"Item\"", "\"CodeBlock\"",
   "\"HtmlBlock\"", "\"CustomBlock\"", "\"Paragraph\"", "\"Heading\"",
   "\"ThematicBreak\"", "\"Text\"", "\"SoftBreak\"", "\"LineBreak\"",

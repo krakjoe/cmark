@@ -401,7 +401,14 @@ static inline int cql_op_stack(cql_function_t *function) {
 					op->ip = &function->stack.mem[op->iv];
 					op->op = (cql_op_t*) function->ops + op->rv;
 				} break;
-					
+
+				case CQLI_ENT:
+					op->ip = &function->stack.mem[op->iv];
+				break;
+
+				case CQLI_RET:
+				break;
+
 				default:
 					if (op->iv > -1)
 						op->ip = &function->stack.mem[op->iv];
@@ -568,10 +575,17 @@ int cql_clone(cql_function_t *source, cql_function_t *destination) {
 				op->rv = op->op - source->ops;
 			break;
 
+			case CQLI_RET:
+			break;
+
+			case CQLI_ENT:
+				if (op->ip)
+					op->iv = op->ip - source->stack.mem;
+			break;
+
 			default:
 				if (op->ip)
 					op->iv = op->ip - source->stack.mem;
-
 				if (op->rp)
 					op->rv = op->rp - source->stack.mem;
 		}
