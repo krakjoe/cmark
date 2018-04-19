@@ -83,7 +83,7 @@ PHP_METHOD(CQL, __construct)
 {
 	php_cmark_call_t *call = php_cmark_call_fetch(getThis());
 	zval *cql = NULL;
-	cql_error_t error = cql_error_init;
+	unsigned char *cursor = NULL;
 
 	ZEND_BEGIN_PARAMS(1, 1)
 		Z_PARAM_ZVAL(cql)
@@ -91,16 +91,9 @@ PHP_METHOD(CQL, __construct)
 
 	php_cmark_assert_type(cql, IS_STRING, 0, "cql expected to be string");
 
-	if (!cql_compile(&call->function, Z_STRVAL_P(cql), Z_STRLEN_P(cql), &error)) {
-		if (error.message) {
-			php_cmark_throw("failed to compile call, %s", error.message);
-		} else if (error.cursor) {
-			php_cmark_throw("failed to compile call at %s", error.cursor);
-		} else {
-			php_cmark_throw("failed to compile call");
-		}
-
-		cql_error_free(&error);
+	if (!cql_compile(&call->function, Z_STRVAL_P(cql), Z_STRLEN_P(cql), &cursor)) {
+		php_cmark_throw("failed to compile call near character %ld \"%s\"", 
+				(cursor - (unsigned char*) Z_STRVAL_P(cql)) + 1, cursor);
 	}
 }
 

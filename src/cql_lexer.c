@@ -846,32 +846,34 @@ yyc_ST_LOOKING_FOR_TYPE:
 				}
 			}
 		} else {
-			if (yych <= 'g') {
-				if (yych <= 'a') {
+			if (yych <= 'i') {
+				if (yych <= 'c') {
 					if (yych <= 'T') goto yy129;
-					if (yych == '^') goto yy130;
+					if (yych <= 'a') goto yy112;
+					if (yych <= 'b') goto yy121;
+					goto yy122;
 				} else {
-					if (yych <= 'c') {
-						if (yych <= 'b') goto yy121;
-						goto yy122;
+					if (yych <= 'e') {
+						if (yych >= 'e') goto yy123;
 					} else {
-						if (yych == 'e') goto yy123;
+						if (yych <= 'g') goto yy112;
+						if (yych <= 'h') goto yy124;
+						goto yy125;
 					}
 				}
 			} else {
-				if (yych <= 'o') {
-					if (yych <= 'i') {
-						if (yych <= 'h') goto yy124;
-						goto yy125;
+				if (yych <= 'r') {
+					if (yych <= 'l') {
+						if (yych >= 'l') goto yy126;
 					} else {
-						if (yych == 'l') goto yy126;
+						if (yych == 'p') goto yy127;
 					}
 				} else {
-					if (yych <= 'r') {
-						if (yych <= 'p') goto yy127;
-					} else {
+					if (yych <= 't') {
 						if (yych <= 's') goto yy128;
-						if (yych <= 't') goto yy129;
+						goto yy129;
+					} else {
+						if (yych == '~') goto yy130;
 					}
 				}
 			}
@@ -886,7 +888,7 @@ yy113:
 		{
 	return 0;
 }
-#line 890 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 892 "/opt/src/php-cmark/src/cql_lexer.c"
 yy115:
 		++lex->cursor;
 		(1);
@@ -899,7 +901,7 @@ yy115:
 		{
 	goto restart;
 }
-#line 903 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 905 "/opt/src/php-cmark/src/cql_lexer.c"
 yy118:
 		yych = *++lex->cursor;
 		if (yybm[0+yych] & 128) {
@@ -915,7 +917,7 @@ yy119:
 
 	return T_CONSTRAINT_END;
 }
-#line 919 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 921 "/opt/src/php-cmark/src/cql_lexer.c"
 yy121:
 		yych = *++lex->cursor;
 		if (yych == 'L') goto yy135;
@@ -1018,7 +1020,7 @@ yy130:
 		{
 	return T_CONSTRAINT_NEGATE;
 }
-#line 1022 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1024 "/opt/src/php-cmark/src/cql_lexer.c"
 yy132:
 		++lex->cursor;
 		(1);
@@ -1031,7 +1033,7 @@ yy132:
 		{
 	goto restart;
 }
-#line 1035 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1037 "/opt/src/php-cmark/src/cql_lexer.c"
 yy135:
 		yych = *++lex->cursor;
 		if (yych == 'O') goto yy149;
@@ -1214,7 +1216,7 @@ yy166:
 
 	return T_TYPE_CODE;
 }
-#line 1218 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1220 "/opt/src/php-cmark/src/cql_lexer.c"
 yy167:
 		yych = *++lex->cursor;
 		if (yych == 'O') goto yy187;
@@ -1259,7 +1261,7 @@ yy172:
 
 	return T_TYPE_ITEM;
 }
-#line 1263 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1265 "/opt/src/php-cmark/src/cql_lexer.c"
 yy174:
 		yych = *++lex->cursor;
 		if (yych == 'B') goto yy194;
@@ -1274,7 +1276,7 @@ yy175:
 
 	return T_TYPE_LINK;
 }
-#line 1278 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1280 "/opt/src/php-cmark/src/cql_lexer.c"
 yy177:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
@@ -1284,7 +1286,7 @@ yy177:
 
 	return T_TYPE_LIST;
 }
-#line 1288 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1290 "/opt/src/php-cmark/src/cql_lexer.c"
 yy179:
 		yych = *++lex->cursor;
 		if (yych == 'G') goto yy195;
@@ -1309,7 +1311,7 @@ yy182:
 
 	return T_TYPE_TEXT;
 }
-#line 1313 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1315 "/opt/src/php-cmark/src/cql_lexer.c"
 yy184:
 		yych = *++lex->cursor;
 		if (yych == 'A') goto yy198;
@@ -1359,7 +1361,7 @@ yy192:
 
 	return T_TYPE_IMAGE;
 }
-#line 1363 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1365 "/opt/src/php-cmark/src/cql_lexer.c"
 yy194:
 		yych = *++lex->cursor;
 		if (yych == 'R') goto yy206;
@@ -1454,7 +1456,7 @@ yy209:
 
 	return T_TYPE_STRONG;
 }
-#line 1458 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1460 "/opt/src/php-cmark/src/cql_lexer.c"
 yy211:
 		yych = *++lex->cursor;
 		if (yych == 'I') goto yy224;
@@ -1494,7 +1496,7 @@ yy217:
 
 	return T_TYPE_HEADING;
 }
-#line 1498 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1500 "/opt/src/php-cmark/src/cql_lexer.c"
 yy219:
 		yych = *++lex->cursor;
 		if (yych == 'C') goto yy231;
@@ -1554,7 +1556,7 @@ yy229:
 
 	return T_TYPE_EMPHASIS;
 }
-#line 1558 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1560 "/opt/src/php-cmark/src/cql_lexer.c"
 yy231:
 		yych = *++lex->cursor;
 		if (yych == 'K') goto yy242;
@@ -1599,7 +1601,7 @@ yy238:
 
 	return T_TYPE_CODE_BLOCK;
 }
-#line 1603 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1605 "/opt/src/php-cmark/src/cql_lexer.c"
 yy240:
 		yych = *++lex->cursor;
 		if (yych == 'C') goto yy254;
@@ -1619,7 +1621,7 @@ yy242:
 
 	return T_TYPE_HTML_BLOCK;
 }
-#line 1623 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1625 "/opt/src/php-cmark/src/cql_lexer.c"
 yy244:
 		yych = *++lex->cursor;
 		if (yych == 'E') goto yy256;
@@ -1634,7 +1636,7 @@ yy245:
 
 	return T_TYPE_LINE_BREAK;
 }
-#line 1638 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1640 "/opt/src/php-cmark/src/cql_lexer.c"
 yy247:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
@@ -1644,7 +1646,7 @@ yy247:
 
 	return T_TYPE_PARAGRAPH;
 }
-#line 1648 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1650 "/opt/src/php-cmark/src/cql_lexer.c"
 yy249:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
@@ -1654,7 +1656,7 @@ yy249:
 
 	return T_TYPE_SOFT_BREAK;
 }
-#line 1658 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1660 "/opt/src/php-cmark/src/cql_lexer.c"
 yy251:
 		yych = *++lex->cursor;
 		if (yych == 'R') goto yy258;
@@ -1669,7 +1671,7 @@ yy252:
 
 	return T_TYPE_BLOCK_QUOTE;
 }
-#line 1673 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1675 "/opt/src/php-cmark/src/cql_lexer.c"
 yy254:
 		yych = *++lex->cursor;
 		if (yych == 'K') goto yy259;
@@ -1689,7 +1691,7 @@ yy256:
 
 	return T_TYPE_HTML_INLINE;
 }
-#line 1693 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1695 "/opt/src/php-cmark/src/cql_lexer.c"
 yy258:
 		yych = *++lex->cursor;
 		if (yych == 'E') goto yy262;
@@ -1704,7 +1706,7 @@ yy259:
 
 	return T_TYPE_CUSTOM_BLOCK;
 }
-#line 1708 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1710 "/opt/src/php-cmark/src/cql_lexer.c"
 yy261:
 		yych = *++lex->cursor;
 		if (yych == 'E') goto yy263;
@@ -1724,7 +1726,7 @@ yy263:
 
 	return T_TYPE_CUSTOM_INLINE;
 }
-#line 1728 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1730 "/opt/src/php-cmark/src/cql_lexer.c"
 yy265:
 		yych = *++lex->cursor;
 		if (yych == 'K') goto yy266;
@@ -1738,7 +1740,7 @@ yy266:
 
 	return T_TYPE_THEMATIC_BREAK;
 }
-#line 1742 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1744 "/opt/src/php-cmark/src/cql_lexer.c"
 	}
 /* *********************************** */
 yyc_ST_LOOKING_FOR_TYPE_SEPARATOR:
@@ -1797,7 +1799,7 @@ yy271:
 		{
 	return 0;
 }
-#line 1801 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1803 "/opt/src/php-cmark/src/cql_lexer.c"
 yy273:
 		++lex->cursor;
 		(1);
@@ -1810,7 +1812,7 @@ yy273:
 		{
 	goto restart;
 }
-#line 1814 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1816 "/opt/src/php-cmark/src/cql_lexer.c"
 yy276:
 		yych = *++lex->cursor;
 		if (yybm[0+yych] & 128) {
@@ -1826,7 +1828,7 @@ yy277:
 
 	return T_CONSTRAINT_END;
 }
-#line 1830 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1832 "/opt/src/php-cmark/src/cql_lexer.c"
 yy279:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
@@ -1836,7 +1838,7 @@ yy279:
 
 	return T_TYPE_SEPARATOR;
 }
-#line 1840 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1842 "/opt/src/php-cmark/src/cql_lexer.c"
 yy281:
 		++lex->cursor;
 		(1);
@@ -1849,7 +1851,7 @@ yy281:
 		{
 	goto restart;
 }
-#line 1853 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1855 "/opt/src/php-cmark/src/cql_lexer.c"
 	}
 }
 #line 308 "/opt/src/php-cmark/src/cql_lexer.l"

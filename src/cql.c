@@ -36,7 +36,7 @@ typedef enum cql_in_t {
 	CQLI_PRN,    /* previous */
 	CQLI_NEN,    /* next */
 	CQLI_JMP,    /* jmp */
-	CQLI_GOTO,   /* goto */
+	CQLI_BRK,    /* break */
 	CQLI_ENT,    /* enter */
 	CQLI_SET,    /* set */
 	CQLI_CON,    /* constrain */
@@ -146,7 +146,7 @@ static inline int cql_ast_process(cql_ast_t *stack, cql_function_t *function, in
 			}
 
 			if (ast->type != CQL_PATH_CHILDREN && CQL_PATH_SIBLINGS != ast->type) {
-				go = cql_op_emit(function, CQLI_GOTO,
+				go = cql_op_emit(function, CQLI_BRK,
 					CQLI_OP_IR_NONE, 0, CQLI_OP_IR_NONE, 0, 0);
 			}
 
@@ -395,7 +395,7 @@ static inline int cql_op_stack(cql_function_t *function) {
 
 		while (op < end) {
 			switch (op->in) {
-				case CQLI_GOTO:
+				case CQLI_BRK:
 				case CQLI_JMP:
 				case CQLI_CON: {
 					op->ip = &function->stack.mem[op->iv];
@@ -450,7 +450,7 @@ static inline int cql_vm(cql_function_t *function,
 		switch (IN(op)) {
 			case CQLI_SET: *IV(op) = *RV(op); break;
 
-			case CQLI_GOTO: VMJMP(op, OP(op)); break;
+			case CQLI_BRK: VMJMP(op, OP(op)); break;
 
 			case CQLI_JMP:
 				if (*IV(op)) {
@@ -496,7 +496,7 @@ static inline int cql_vm(cql_function_t *function,
 /****************************************************************************************/
 #include <src/cql_printers.h>
 
-cql_function_t* cql_compile(cql_function_t *function, unsigned char *text, size_t length, cql_error_t *error) {
+cql_function_t* cql_compile(cql_function_t *function, unsigned char *text, size_t length, unsigned char **end) {
 	cql_lex_t *lex = cql_lex_init(text, length);
 	cql_ast_t *ast = NULL;
 
@@ -506,7 +506,7 @@ cql_function_t* cql_compile(cql_function_t *function, unsigned char *text, size_
 
 	memset(function, 0, sizeof(cql_function_t));
 
-	if (cql_parse(lex, &ast, error) != 0) {
+	if (cql_parse(lex, &ast) != 0) {
 		goto cql_compile_error;
 	}
 
@@ -530,9 +530,7 @@ cql_function_t* cql_compile(cql_function_t *function, unsigned char *text, size_
 	}
 
 cql_compile_error:
-	if (!error->message) {
-		error->cursor = cql_lex_cursor(lex, -1);
-	}
+	(*end) = cql_lex_cursor(lex, -1);
 
 	cql_lex_free(lex);
 	cql_ast_free(ast);
@@ -563,7 +561,7 @@ int cql_clone(cql_function_t *source, cql_function_t *destination) {
 
 	while (op < end) {
 		switch (op->in) {
-			case CQLI_GOTO:
+			case CQLI_BRK:
 			case CQLI_JMP:
 			case CQLI_CON:
 				op->iv = op->ip - source->stack.mem;

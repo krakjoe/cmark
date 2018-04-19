@@ -47,17 +47,6 @@ struct _cql_ast_t {
 	cql_ast_t *children;
 };
 
-typedef struct _cql_error_t {
-	char *message;
-	char *cursor;
-} cql_error_t;
-
-#define cql_error_init {NULL, NULL}
-#define cql_error_free(e) do { \
-	if((e)->message) \
-		free((e)->message); \
-} while(0)
-
 typedef struct _cql_op_t cql_op_t;
 
 typedef struct _cql_function_t {
@@ -74,7 +63,7 @@ typedef int (cql_enter_function_t)(cmark_node*, void*);
 
 typedef size_t (cql_print_function_t) (const char *format, ...);
 
-extern cql_function_t* cql_compile(cql_function_t *function, unsigned char *text, size_t length, cql_error_t *error);
+extern cql_function_t* cql_compile(cql_function_t *function, unsigned char *text, size_t length, unsigned char **end);
 extern int             cql_call(cql_function_t *function, cmark_node *node, cql_enter_function_t *cql_enter_function, void *arg);
 extern void            cql_print(cql_function_t *function, cql_print_function_t *output);
 extern int             cql_clone(cql_function_t *source, cql_function_t *destination);

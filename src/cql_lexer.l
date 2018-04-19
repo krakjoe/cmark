@@ -175,7 +175,7 @@ WS               [ \r\t\n]+
 	return T_CONSTRAINT_START;
 }
 
-<ST_LOOKING_FOR_TYPE>"^" {
+<ST_LOOKING_FOR_TYPE>"~" {
 	return T_CONSTRAINT_NEGATE;
 }
 

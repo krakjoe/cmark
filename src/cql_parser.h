@@ -164,6 +164,6 @@ static inline cql_ast_t* cql_ast_next(cql_ast_t *stack, cql_ast_t *next) {
 
 
 
-int cql_parse (cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error);
+int cql_parse (cql_lex_t *lex, cql_ast_t **stack);
 
 #endif /* !YY_CQL_SRC_CQL_PARSER_H_INCLUDED  */

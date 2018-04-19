@@ -78,7 +78,7 @@
 #include <src/cql_lexer.h>
 
 #undef yyerror
-static int yyerror(cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error, const char *msg);
+static int yyerror(cql_lex_t *lex, cql_ast_t **stack, const char *msg);
 
 #ifdef _MSC_VER
 #define YYMALLOC malloc
@@ -240,7 +240,7 @@ static inline cql_ast_t* cql_ast_next(cql_ast_t *stack, cql_ast_t *next) {
 
 
 
-int cql_parse (cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error);
+int cql_parse (cql_lex_t *lex, cql_ast_t **stack);
 
 #endif /* !YY_CQL_SRC_CQL_PARSER_H_INCLUDED  */
 
@@ -701,7 +701,7 @@ do                                                              \
     }                                                           \
   else                                                          \
     {                                                           \
-      yyerror (lex, stack, error, YY_("syntax error: cannot back up")); \
+      yyerror (lex, stack, YY_("syntax error: cannot back up")); \
       YYERROR;                                                  \
     }                                                           \
 while (0)
@@ -738,7 +738,7 @@ do {                                                                      \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value, lex, stack, error); \
+                  Type, Value, lex, stack); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -749,13 +749,12 @@ do {                                                                      \
 `----------------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, cql_lex_t *lex, cql_ast_t **stack)
 {
   FILE *yyo = yyoutput;
   YYUSE (yyo);
   YYUSE (lex);
   YYUSE (stack);
-  YYUSE (error);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
@@ -771,12 +770,12 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 `--------------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, cql_lex_t *lex, cql_ast_t **stack)
 {
   YYFPRINTF (yyoutput, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep, lex, stack, error);
+  yy_symbol_value_print (yyoutput, yytype, yyvaluep, lex, stack);
   YYFPRINTF (yyoutput, ")");
 }
 
@@ -809,7 +808,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error)
+yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, cql_lex_t *lex, cql_ast_t **stack)
 {
   unsigned long int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -823,7 +822,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, cql_lex_t *lex
       yy_symbol_print (stderr,
                        yystos[yyssp[yyi + 1 - yynrhs]],
                        &(yyvsp[(yyi + 1) - (yynrhs)])
-                                              , lex, stack, error);
+                                              , lex, stack);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -831,7 +830,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, cql_lex_t *lex
 # define YY_REDUCE_PRINT(Rule)          \
 do {                                    \
   if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, Rule, lex, stack, error); \
+    yy_reduce_print (yyssp, yyvsp, Rule, lex, stack); \
 } while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1089,12 +1088,11 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, cql_lex_t *lex, cql_ast_t **stack)
 {
   YYUSE (yyvaluep);
   YYUSE (lex);
   YYUSE (stack);
-  YYUSE (error);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
@@ -1112,7 +1110,7 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, cql_lex_t *lex, cq
 `----------*/
 
 int
-yyparse (cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error)
+yyparse (cql_lex_t *lex, cql_ast_t **stack)
 {
 /* The lookahead symbol.  */
 int yychar;
@@ -1364,7 +1362,7 @@ yyreduce:
     {
 		*stack = (yyvsp[0].ast); 
 	}
-#line 1368 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1366 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 3:
@@ -1372,217 +1370,217 @@ yyreduce:
     { 
 		(yyval.ast) = cql_ast_next((yyvsp[-2].ast), (yyvsp[0].ast));
 	}
-#line 1376 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1374 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 4:
 #line 121 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.ast) = (yyvsp[0].ast); }
-#line 1382 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1380 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 5:
 #line 125 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.ast) = (yyvsp[-1].ast); }
-#line 1388 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1386 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 6:
 #line 126 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.ast) = NULL; }
-#line 1394 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1392 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 7:
 #line 130 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_BLOCK_QUOTE; }
-#line 1400 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1398 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 8:
 #line 131 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_LIST; }
-#line 1406 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1404 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 9:
 #line 132 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_ITEM; }
-#line 1412 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1410 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 10:
 #line 133 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_CODE_BLOCK; }
-#line 1418 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1416 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 11:
 #line 134 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_HTML_BLOCK; }
-#line 1424 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1422 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 135 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_CUSTOM_BLOCK; }
-#line 1430 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1428 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 13:
 #line 136 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_PARAGRAPH; }
-#line 1436 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1434 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 14:
 #line 137 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_HEADING; }
-#line 1442 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1440 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 15:
 #line 138 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_THEMATIC_BREAK; }
-#line 1448 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1446 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 16:
 #line 139 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_TEXT; }
-#line 1454 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1452 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 17:
 #line 140 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_SOFTBREAK; }
-#line 1460 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1458 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 18:
 #line 141 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_LINEBREAK; }
-#line 1466 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1464 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 19:
 #line 142 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_CODE; }
-#line 1472 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1470 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 143 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_HTML_INLINE; }
-#line 1478 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1476 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 21:
 #line 144 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_CUSTOM_INLINE; }
-#line 1484 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1482 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 22:
 #line 145 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_EMPH; }
-#line 1490 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1488 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 23:
 #line 146 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_STRONG; }
-#line 1496 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1494 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 24:
 #line 147 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_LINK; }
-#line 1502 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1500 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 25:
 #line 148 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CMARK_NODE_IMAGE; }
-#line 1508 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1506 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 26:
 #line 152 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = (yyvsp[-2].constraint) | 1u << (yyvsp[0].constraint); }
-#line 1514 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1512 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 27:
 #line 153 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = 1u << (yyvsp[0].constraint); }
-#line 1520 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1518 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 28:
 #line 157 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = CQL_CONSTRAINT_NEGATE; }
-#line 1526 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1524 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 29:
 #line 158 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = 0; }
-#line 1532 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1530 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 30:
 #line 162 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = (yyvsp[-2].constraint) | (yyvsp[-1].constraint); }
-#line 1538 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1536 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 31:
 #line 163 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.constraint) = 0; }
-#line 1544 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1542 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 32:
 #line 167 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_FIRST_CHILD; }
-#line 1550 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1548 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 33:
 #line 168 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_LAST_CHILD; }
-#line 1556 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1554 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 34:
 #line 169 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_PARENT; }
-#line 1562 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1560 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 35:
 #line 170 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_NEXT; }
-#line 1568 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1566 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 36:
 #line 171 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_PREVIOUS; }
-#line 1574 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1572 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 37:
 #line 172 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_CHILDREN; }
-#line 1580 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1578 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 38:
 #line 173 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1646  */
     { (yyval.type) = CQL_PATH_SIBLINGS; }
-#line 1586 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1584 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
   case 39:
@@ -1593,11 +1591,11 @@ yyreduce:
 		} else  (yyval.ast) = cql_ast_create((yyvsp[-2].type), (yyvsp[-1].constraint));
 		
 	}
-#line 1597 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1595 "src/cql_parser.c" /* yacc.c:1646  */
     break;
 
 
-#line 1601 "src/cql_parser.c" /* yacc.c:1646  */
+#line 1599 "src/cql_parser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1647,7 +1645,7 @@ yyerrlab:
     {
       ++yynerrs;
 #if ! YYERROR_VERBOSE
-      yyerror (lex, stack, error, YY_("syntax error"));
+      yyerror (lex, stack, YY_("syntax error"));
 #else
 # define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
                                         yyssp, yytoken)
@@ -1674,7 +1672,7 @@ yyerrlab:
                 yymsgp = yymsg;
               }
           }
-        yyerror (lex, stack, error, yymsgp);
+        yyerror (lex, stack, yymsgp);
         if (yysyntax_error_status == 2)
           goto yyexhaustedlab;
       }
@@ -1698,7 +1696,7 @@ yyerrlab:
       else
         {
           yydestruct ("Error: discarding",
-                      yytoken, &yylval, lex, stack, error);
+                      yytoken, &yylval, lex, stack);
           yychar = YYEMPTY;
         }
     }
@@ -1754,7 +1752,7 @@ yyerrlab1:
 
 
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp, lex, stack, error);
+                  yystos[yystate], yyvsp, lex, stack);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -1791,7 +1789,7 @@ yyabortlab:
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (lex, stack, error, YY_("memory exhausted"));
+  yyerror (lex, stack, YY_("memory exhausted"));
   yyresult = 2;
   /* Fall through.  */
 #endif
@@ -1803,7 +1801,7 @@ yyreturn:
          user semantic actions for why this is necessary.  */
       yytoken = YYTRANSLATE (yychar);
       yydestruct ("Cleanup: discarding lookahead",
-                  yytoken, &yylval, lex, stack, error);
+                  yytoken, &yylval, lex, stack);
     }
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYABORT or YYACCEPT.  */
@@ -1812,7 +1810,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[*yyssp], yyvsp, lex, stack, error);
+                  yystos[*yyssp], yyvsp, lex, stack);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -1828,8 +1826,6 @@ yyreturn:
 #line 184 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1906  */
 
 
-static int yyerror(cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error, const char *msg) {
-	error->message = strdup(msg);
-
+static int yyerror(cql_lex_t *lex, cql_ast_t **stack, const char *msg) {
 	return 0;
 }

@@ -7,7 +7,7 @@
 #include <src/cql_lexer.h>
 
 #undef yyerror
-static int yyerror(cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error, const char *msg);
+static int yyerror(cql_lex_t *lex, cql_ast_t **stack, const char *msg);
 
 #ifdef _MSC_VER
 #define YYMALLOC malloc
@@ -19,7 +19,7 @@ static int yyerror(cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error, const 
 %pure-parser
 %error-verbose
 %lex-param {lex}
-%parse-param {cql_lex_t *lex} {cql_ast_t **stack} {cql_error_t *error}
+%parse-param {cql_lex_t *lex} {cql_ast_t **stack}
 
 %code requires {
 #include <stdlib.h>
@@ -183,8 +183,6 @@ selector
 	;
 %%
 
-static int yyerror(cql_lex_t *lex, cql_ast_t **stack, cql_error_t *error, const char *msg) {
-	error->message = strdup(msg);
-
+static int yyerror(cql_lex_t *lex, cql_ast_t **stack, const char *msg) {
 	return 0;
 }

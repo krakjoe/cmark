@@ -30,7 +30,7 @@ static inline char* cql_op_name(cql_op_t *op) {
 		case CQLI_CON: return "CON";
 		case CQLI_SET: return "SET";
 		case CQLI_RET: return "RET";
-		case CQLI_GOTO: return "GOTO";
+		case CQLI_BRK: return "BRK";
 	}
 
 	return "INV";
@@ -55,7 +55,7 @@ void cql_constraint_print(cql_constraint_t constraint, cql_print_function_t *out
 
 	output("(");
 	if (type & CQL_CONSTRAINT_NEGATE) {
-		output("^");
+		output("~");
 	}
 	while (type && type != CQL_CONSTRAINT_NEGATE) {
 		cql_constraint_print_reduce(type, CMARK_NODE_BLOCK_QUOTE,     BlockQuote);
@@ -100,7 +100,7 @@ static inline void cql_op_print(cql_function_t *function, cql_op_t *op, cql_prin
 			output(" %ld\t -\t|-", op->ip - function->stack.mem);
 		break;
 
-		case CQLI_GOTO:
+		case CQLI_BRK:
 			output(" -\t #%ld\t|-",
 				op->op - function->ops);
 		break;
