@@ -24,11 +24,7 @@ $call->print();
 ?>
 --EXPECTF--
 ---------------------------------------
-Function Size:  %d
-Function Space: %d bytes
-Stack Size:     %d
-Stack Space:    %d bytes
-Total Space:    %d bytes
+%A
 ---------------------------------------
 |OL	|INSTR	|IV	|RV/#T	|
 ---------------------------------------
@@ -49,11 +45,7 @@ Total Space:    %d bytes
 ---------------------------------------
 
 ---------------------------------------
-Function Size:  %d
-Function Space: %d bytes
-Stack Size:     %d
-Stack Space:    %d bytes
-Total Space:    %d bytes
+%A
 ---------------------------------------
 |OL	|INSTR	|IV	|RV/#T	|
 ---------------------------------------

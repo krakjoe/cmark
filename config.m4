@@ -5,6 +5,9 @@ PHP_ARG_WITH(cmark, whether to enable cmark support,
 dnl Make sure that the comment is aligned:
 [  --with-cmark            Enable cmark support], no)
 
+PHP_ARG_WITH(cql-jit, whether to enable libjit support for CQL,
+[  --with-cql-jit          Enable libjit support for CQL], no)
+
 LIBCMARK_MIN_MAJOR=0
 LIBCMARK_MIN_MINOR=28
 
@@ -92,6 +95,35 @@ int main() {
       AC_MSG_ERROR(system libcmark is too old: version 0.28 required)
     ])
     CFLAGS=$old_CFLAGS
+  fi
+
+  JIT_SEARCH_PATH="/usr /usr/local"
+  JIT_HEADER="include/jit/jit.h"
+  if test -r $PHP_CQL_JIT/$JIT_HEADER; then
+    PHP_CQL_JITDIR=$PHP_CQL_JIT
+  else 
+    AC_MSG_CHECKING([for libjit files in default path])
+    for i in $JIT_SEARCH_PATH; do
+      if test -r $i/$JIT_HEADER; then
+        PHP_CQL_JITDIR=$i
+        AC_MSG_RESULT(found in $i)
+        break
+      fi
+    done
+  fi
+
+  if test -r $PHP_CQL_JITDIR; then
+    PHP_ADD_INCLUDE($PHP_CQL_JITDIR/include)
+
+    PHP_CHECK_LIBRARY(jit, jit_context_create,
+    [
+      PHP_ADD_LIBRARY_WITH_PATH(jit, $PHP_CQL_JITDIR/lib, CMARK_SHARED_LIBADD)
+        AC_DEFINE(HAVE_CQL_JIT, 1, [ Have cmark libjit support ])
+    ],[
+      AC_MSG_WARN([wrong libjit version or libjit not found])
+    ],[
+      -L$PHP_CQL_JITDIR/lib -lm
+    ])
   fi
 
   PHP_SUBST(CMARK_SHARED_LIBADD)

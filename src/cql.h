@@ -20,6 +20,15 @@
 
 #include <cmark.h>
 
+#ifdef HAVE_CONFIG_H
+#	include "config.h"
+#endif
+
+#ifdef HAVE_CQL_JIT
+#	include <jit/jit.h>
+#	include <jit/jit-dump.h>
+#endif
+
 typedef signed long long cql_constraint_t;
 
 typedef enum _cql_ast_type_t {
@@ -50,6 +59,12 @@ struct _cql_ast_t {
 typedef struct _cql_op_t cql_op_t;
 
 typedef struct _cql_function_t {
+#ifdef HAVE_CQL_JIT
+	struct {
+		jit_context_t  context;
+		jit_function_t function;
+	} jit;
+#endif
 	cql_op_t  *ops;
 	int        size;
 	int        max;
@@ -62,6 +77,15 @@ typedef struct _cql_function_t {
 typedef int (cql_enter_function_t)(cmark_node*, void*);
 
 typedef size_t (cql_print_function_t) (const char *format, ...);
+
+#ifdef HAVE_CQL_JIT
+#ifndef CQL_JIT_SMALLEST
+#	define CQL_JIT_SMALLEST 10
+#endif
+
+extern void            cql_jit_init(void);
+extern void	       cql_jit_cleanup(void);
+#endif
 
 extern cql_function_t* cql_compile(cql_function_t *function, unsigned char *text, size_t length, unsigned char **end);
 extern int             cql_call(cql_function_t *function, cmark_node *node, cql_enter_function_t *cql_enter_function, void *arg);

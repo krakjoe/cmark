@@ -82,7 +82,21 @@ PHP_MINIT_FUNCTION(cmark)
 	REGISTER_NS_LONG_CONSTANT("CommonMark", "Version", cmark_version(), CONST_CS|CONST_PERSISTENT);
 	REGISTER_NS_STRING_CONSTANT("CommonMark", "VersionString", (char*) cmark_version_string(), CONST_CS|CONST_PERSISTENT);
 
+#ifdef HAVE_CQL_JIT
+	cql_jit_init();
+#endif
+
 	PHP_MINIT(CommonMark_CQL)(INIT_FUNC_ARGS_PASSTHRU);
+
+	return SUCCESS;
+} /* }}} */
+
+/* {{{ */
+PHP_MSHUTDOWN_FUNCTION(cmark)
+{
+#ifdef HAVE_CQL_JIT
+	cql_jit_cleanup();
+#endif
 
 	return SUCCESS;
 } /* }}} */
@@ -149,14 +163,14 @@ static const zend_function_entry cmark_functions[] = {
  */
 zend_module_entry cmark_module_entry = {
 	STANDARD_MODULE_HEADER,
-	"cmark",					/* Extension name */
-	cmark_functions,			/* zend_function_entry */
-	PHP_MINIT(cmark),							/* PHP_MINIT - Module initialization */
-	NULL,							/* PHP_MSHUTDOWN - Module shutdown */
-	PHP_RINIT(cmark),			/* PHP_RINIT - Request initialization */
-	NULL,							/* PHP_RSHUTDOWN - Request shutdown */
-	PHP_MINFO(cmark),			/* PHP_MINFO - Module info */
-	PHP_CMARK_VERSION,		/* Version */
+	"cmark",
+	cmark_functions,
+	PHP_MINIT(cmark),
+	PHP_MSHUTDOWN(cmark),
+	PHP_RINIT(cmark),
+	NULL,
+	PHP_MINFO(cmark),
+	PHP_CMARK_VERSION,
 	STANDARD_MODULE_PROPERTIES
 };
 /* }}} */

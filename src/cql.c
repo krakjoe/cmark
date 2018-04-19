@@ -46,7 +46,6 @@ typedef enum cql_in_t {
 struct _cql_op_t {
 	cql_in_t in;
 	cql_constraint_t constraint;
-
 	union {
 		int iv;
 		void **ip;
@@ -56,7 +55,6 @@ struct _cql_op_t {
 		void **rp;
 		cql_op_t *op;
 	};
-
 	cmark_node* (*handler) (cmark_node*);
 };
 
@@ -70,12 +68,30 @@ typedef enum _cql_op_ir_type_t {
 	CQLI_OP_IR_RV,
 } cql_op_ir_type_t;
 
+#ifdef HAVE_CQL_JIT
+#define CQL_JIT_NODE_PADDING sizeof(cmark_mem*) + \
+			     sizeof(unsigned char*) + \
+			     sizeof(int32_t) + \
+			     sizeof(int32_t)
+#define CQL_JIT_NODE_SIZE    sizeof(cmark_node*)
+#define CQL_JIT_NEXT_OFFSET   (CQL_JIT_NODE_PADDING)
+#define CQL_JIT_PREV_OFFSET   ((CQL_JIT_NEXT_OFFSET) + CQL_JIT_NODE_SIZE)
+#define CQL_JIT_PARENT_OFFSET ((CQL_JIT_PREV_OFFSET) + CQL_JIT_NODE_SIZE)
+#define CQL_JIT_FIRST_OFFSET  ((CQL_JIT_PARENT_OFFSET) + CQL_JIT_NODE_SIZE)
+#define CQL_JIT_LAST_OFFSET   ((CQL_JIT_FIRST_OFFSET) + CQL_JIT_NODE_SIZE)
+#define CQL_JIT_USER_OFFSET   ((CQL_JIT_LAST_OFFSET) + CQL_JIT_NODE_SIZE)
+#define CQL_JIT_TYPE_OFFSET   ((CQL_JIT_USER_OFFSET) + sizeof(void*) + (sizeof(int) * 4))
+#endif
+
+#include <src/cql_printers.h>
+
 static inline int cql_op_alloc(cql_function_t *function);
 static inline int cql_op_lastloop(cql_function_t *function, int last);
 static inline int cql_op_firstloop(cql_function_t *function, int pos);
 static inline int cql_op_firstof(cql_function_t *function, cql_in_t in);
 static inline int cql_op_emit(cql_function_t *function, cql_in_t in, cql_op_ir_type_t it, int iv, cql_op_ir_type_t rt, int rv, cql_constraint_t constraint);
 static inline int cql_op_update_ir(cql_function_t *function, int op, cql_op_ir_type_t it, int ir);
+static inline int cql_op_update_ext(cql_function_t *function, int op, cql_constraint_t ext);
 static inline int cql_op_emit_simple(cql_function_t *function, cql_in_t in);
 
 /****************************************************************************************/
@@ -381,6 +397,8 @@ static inline int cql_op_emit_simple(cql_function_t *function, cql_in_t in) {
 	return cql_op_emit(function, in, CQLI_OP_IR_RV_LAST, 0, CQLI_OP_IR_ALLOC, 0, -1);
 }
 
+static inline void cql_jit_build(cql_function_t *function);
+
 static inline int cql_op_stack(cql_function_t *function) {
 	if (!function->size) {
 		return -1;
@@ -415,15 +433,243 @@ static inline int cql_op_stack(cql_function_t *function) {
 					if (op->iv > -1)
 						op->ip = &function->stack.mem[op->iv];
 					if (op->rv > -1)
-						op->rp = &function->stack.mem[op->rv];		
+						op->rp = &function->stack.mem[op->rv];
+							
 			}
 
 			op++;
 		}
 	}
 
+#ifdef HAVE_CQL_JIT
+	if (function->size >= CQL_JIT_SMALLEST && !function->jit.function) {
+		cql_jit_build(function);
+	}
+#endif
+
 	return function->size;
 }
+
+/****************************************************************************************/
+/* CQL JIT                                                                              */
+/****************************************************************************************/
+#ifdef HAVE_CQL_JIT
+static jit_type_t cql_jit_enter_signature;
+static jit_type_t cql_jit_function_signature;
+
+typedef int (cql_call_jit_t)(cmark_node *node, cql_enter_function_t *cql_enter_function, void *arg);
+
+static inline jit_nuint cql_jit_node_offset(cql_function_t *function, cql_op_t *op) {
+	switch (op->in) {
+		case CQLI_NEN: return CQL_JIT_NEXT_OFFSET;
+		case CQLI_PRN: return CQL_JIT_PREV_OFFSET;
+		case CQLI_PAN: return CQL_JIT_PARENT_OFFSET;
+		case CQLI_FCN: return CQL_JIT_FIRST_OFFSET;
+		case CQLI_LCN: return CQL_JIT_LAST_OFFSET;
+	}
+	return 0;
+}
+
+#define cql_jit_op_stack(ir) function->stack.mem[ir - function->stack.mem]
+#define cql_jit_op_label(op, off) &labels[(op - function->ops) + off]
+
+static inline jit_label_t* cql_jit_build_labels(cql_function_t *function) {
+	jit_label_t *labels = 
+		(jit_label_t*) calloc(function->size, sizeof(jit_label_t));
+	jit_label_t *label, *end;
+
+	if (!labels) {
+		return NULL;
+	}
+
+	label = labels; 
+        end = label + function->size;
+
+	while (label < end) {
+		*label = jit_label_undefined;
+		label++;
+	}
+
+	return labels;
+}
+
+static inline void cql_jit_build(cql_function_t *function) {
+	cql_op_t *op = function->ops, *end = op + function->size;
+	jit_label_t *labels = cql_jit_build_labels(function);
+
+	if (!labels) {
+		return;
+	}
+
+	function->jit.context = jit_context_create();
+
+	if (!function->jit.context) {
+		return;
+	}
+
+	jit_context_build_start(function->jit.context);
+
+	function->jit.function = 
+		jit_function_create(
+			function->jit.context, cql_jit_function_signature);
+
+	if (!function->jit.function) {
+		jit_context_build_end(function->jit.context);
+		return;
+	}
+
+	cql_jit_op_stack(op->ip) = jit_value_get_param(function->jit.function, 0);
+
+	while (op < end) {
+		jit_insn_label(function->jit.function, cql_jit_op_label(op, 0));
+
+		switch (op->in) {
+			case CQLI_LCN:
+			case CQLI_PRN:
+			case CQLI_PAN:
+			case CQLI_NEN:
+			case CQLI_FCN: {
+				jit_insn_branch_if_not(function->jit.function, 
+					cql_jit_op_stack(op->ip), 
+					cql_jit_op_label(end, -1));
+
+				cql_jit_op_stack(op->rp) = jit_insn_load_relative(
+					function->jit.function, 
+					cql_jit_op_stack(op->ip), 
+					cql_jit_node_offset(function, op), jit_type_void_ptr);
+			} break;
+
+			case CQLI_SET:
+				jit_insn_store(function->jit.function, 
+					cql_jit_op_stack(op->ip), 
+					cql_jit_op_stack(op->rp));
+			break;
+
+			case CQLI_CON: {
+				jit_insn_branch_if_not(function->jit.function, 
+					cql_jit_op_stack(op->ip), 
+					cql_jit_op_label(op, 1));
+				{
+					jit_value_t type = jit_insn_load_relative(
+						function->jit.function, 
+						cql_jit_op_stack(op->ip), 
+						CQL_JIT_TYPE_OFFSET, jit_type_ushort);
+
+					jit_value_t shift = jit_insn_shl(
+						function->jit.function, 
+						jit_value_create_nint_constant(
+							function->jit.function, jit_type_sys_ulong, 1u
+						), type);
+
+					jit_value_t result = jit_insn_and(function->jit.function,
+					 			jit_value_create_nint_constant(
+									function->jit.function, 
+									jit_type_sys_ulonglong,
+									op->constraint
+								),
+								shift);
+
+					if (op->constraint & CQL_CONSTRAINT_NEGATE) {
+						jit_insn_branch_if(
+							function->jit.function,
+							result, 
+							cql_jit_op_label(op->op, 0)
+						);
+					} else {
+						jit_insn_branch_if_not(
+							function->jit.function,
+							result, 
+							cql_jit_op_label(op->op, 0)
+						);
+					}
+				}
+			} break;
+
+			case CQLI_JMP:
+				jit_insn_branch_if(
+					function->jit.function, 
+					cql_jit_op_stack(op->ip), 
+					cql_jit_op_label(op->op, 0));
+			break;
+
+			case CQLI_BRK:
+				jit_insn_branch(function->jit.function, cql_jit_op_label(op->op, 0));
+			break;
+
+			case CQLI_ENT:	{
+				jit_value_t params[2];
+
+				jit_insn_branch_if_not(
+					function->jit.function, 
+					cql_jit_op_stack(op->ip), 
+					cql_jit_op_label(op, 1));
+
+				params[0] = cql_jit_op_stack(op->ip);
+				params[1] = jit_value_get_param(function->jit.function, 2);
+
+				jit_insn_branch_if(function->jit.function, 
+					jit_insn_call_indirect(
+						function->jit.function, 
+						jit_value_get_param(function->jit.function, 1), 
+						cql_jit_enter_signature, (jit_value_t*) params, 2, 0), 	
+					cql_jit_op_label(op, 1));
+
+				jit_insn_return(function->jit.function, 
+					jit_value_create_nint_constant(
+						function->jit.function, jit_type_sys_int, 0));
+			}
+			break;
+
+			case CQLI_RET:
+				jit_insn_return(function->jit.function, 
+					jit_value_create_nint_constant(
+						function->jit.function, jit_type_sys_int, 0));
+			break;
+		}
+
+		op++;
+	}
+
+	jit_insn_return(function->jit.function, 
+		jit_value_create_nint_constant(
+			function->jit.function, jit_type_sys_int, -1));
+
+	jit_context_build_end(function->jit.context);
+
+	jit_function_set_on_demand_compiler(function->jit.function, jit_function_compile);
+
+	free(labels);
+}
+#undef cql_jit_op_stack
+#undef cql_jit_op_label
+
+void cql_jit_init(void) {
+	jit_type_t cql_jit_enter_params[2];
+	jit_type_t cql_jit_function_params[3];
+
+	cql_jit_enter_params[0] = jit_type_void_ptr;
+	cql_jit_enter_params[1] = jit_type_void_ptr;
+
+	cql_jit_enter_signature =
+		jit_type_create_signature(
+			jit_abi_cdecl, 
+				jit_type_void_ptr, (jit_type_t*) cql_jit_enter_params, 2, 0);
+
+	cql_jit_function_params[0] = jit_type_void_ptr;
+	cql_jit_function_params[1] = cql_jit_enter_signature;
+	cql_jit_function_params[2] = jit_type_void_ptr;
+
+	cql_jit_function_signature =
+		jit_type_create_signature(
+			jit_abi_cdecl, 
+				jit_type_void_ptr, (jit_type_t*) cql_jit_function_params, 3, 0);
+}
+
+void cql_jit_cleanup(void) {
+	jit_type_free(cql_jit_function_signature);
+	jit_type_free(cql_jit_enter_signature);
+}
+#endif
 
 /****************************************************************************************/
 /* CQL VM                                                                               */
@@ -503,8 +749,6 @@ static inline int cql_vm(cql_function_t *function,
 /****************************************************************************************/
 /* CQL PUBLIC                                                                           */
 /****************************************************************************************/
-#include <src/cql_printers.h>
-
 cql_function_t* cql_compile(cql_function_t *function, unsigned char *text, size_t length, unsigned char **end) {
 	cql_lex_t *lex = cql_lex_init(text, length);
 	cql_ast_t *ast = NULL;
@@ -593,6 +837,10 @@ int cql_clone(cql_function_t *source, cql_function_t *destination) {
 		op++;
 	}
 
+#ifdef HAVE_CQL_JIT
+	destination->jit.context = NULL;
+#endif
+
 	if (!cql_op_stack(destination)) {
 		free(destination->ops);
 
@@ -607,10 +855,29 @@ int cql_call(cql_function_t *function, cmark_node *node, cql_enter_function_t *c
 		return -1;
 	}
 
+#ifdef HAVE_CQL_JIT
+	if (function->size >= CQL_JIT_SMALLEST) {
+		cql_call_jit_t *closure = 
+			jit_function_to_closure(function->jit.function);
+
+		if (!closure) {
+			goto cql_vm_fallback;
+		}
+
+		return closure(node, cql_enter_function, arg);
+	}
+
+cql_vm_fallback:
+#endif
 	return cql_vm(function, node, cql_enter_function, arg);
 }
 
 void cql_free(cql_function_t *function) {
+#ifdef HAVE_CQL_JIT
+	if (function->jit.context) {
+		jit_context_destroy(function->jit.context);
+	}
+#endif
 	if (function->stack.mem) {
 		free(function->stack.mem);
 	}

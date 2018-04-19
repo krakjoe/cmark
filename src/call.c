@@ -168,10 +168,25 @@ PHP_METHOD(CQL, print)
 	cql_print(&c->function, php_printf);
 }
 
+#ifdef HAVE_CQL_JIT
+PHP_METHOD(CQL, dump)
+{
+	php_cmark_call_t *c = php_cmark_call_fetch(getThis());
+
+	ZEND_BEGIN_PARAMS(0, 0)
+	ZEND_END_PARAMS();
+
+	jit_dump_function(stdout, c->function.jit.function, "cql");
+}
+#endif
+
 static zend_function_entry php_cmark_call_methods[] = {
 	PHP_ME(CQL, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(CQL, __invoke,    php_cmark_call_invoke, ZEND_ACC_PUBLIC)
 	PHP_ME(CQL, print,       php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+#ifdef HAVE_CQL_JIT
+	PHP_ME(CQL, dump,        php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+#endif
 	PHP_FE_END
 };
 

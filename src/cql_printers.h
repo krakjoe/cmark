@@ -151,6 +151,13 @@ void cql_print(cql_function_t *function, cql_print_function_t *output) {
 		sizeof(cql_function_t) +
 		(sizeof(cql_op_t) * function->size) +
 		(sizeof(void*) * function->stack.space));
+#ifdef HAVE_CQL_JIT
+	output("JIT Status:     %s\n",        
+		function->size >= CQL_JIT_SMALLEST ?
+			jit_function_is_compiled(function->jit.function) ? 
+				"Compiled" : "Built" :
+			"Disabled");
+#endif
 
 	op = function->ops;
 	end = op + function->size;
