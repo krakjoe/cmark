@@ -86,7 +86,7 @@ static inline cql_ast_t* cql_ast_next(cql_ast_t *stack, cql_ast_t *next) {
 %token T_SUBQUERY_END "]"
 
 %token T_CONSTRAINT_START "("
-%token T_CONSTRAINT_NEGATE "^"
+%token T_CONSTRAINT_NEGATE "~"
 %token T_CONSTRAINT_END ")"
 %token T_TYPE_SEPARATOR "|"
 %token T_TYPE_BLOCK_QUOTE "BlockQuote"
