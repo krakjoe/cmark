@@ -50,6 +50,7 @@ void cql_lex_free(cql_lex_t *lex) {
 int cql_lex (cql_ast_t *yylval, cql_lex_t *lex) {
 
 restart:
+
 	lex->text = lex->cursor;
 
 /*!re2c
@@ -97,13 +98,14 @@ T_IMAGE          'Image'
 SEPARATOR	 [\\/]
 WS               [ \r\t\n]+
 
+
 <!*> := lex->len = (size_t) lex->cursor - (size_t) lex->text;
 
 <*>[\000] {
 	return 0;
 }
 
-<*>{WS} {
+<*>({WS}) {
 	goto restart;
 }
 
@@ -303,6 +305,10 @@ WS               [ \r\t\n]+
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_IMAGE;
+}
+
+<*>[^] {
+	return 1;
 }
 
 */

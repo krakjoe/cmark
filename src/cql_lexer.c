@@ -62,12 +62,14 @@ void cql_lex_free(cql_lex_t *lex) {
 int cql_lex (cql_ast_t *yylval, cql_lex_t *lex) {
 
 restart:
+
 	lex->text = lex->cursor;
 
 
-#line 69 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 70 "/opt/src/php-cmark/src/cql_lexer.c"
 {
 	unsigned char yych;
+	unsigned int yyaccept = 0;
 	if (lex->state < 2) {
 		if (lex->state < 1) {
 			goto yyc_ST_LOOKING_FOR_SEPARATOR;
@@ -125,389 +127,407 @@ yyc_ST_LOOKING_FOR_NODE:
 		(10);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy6;
+			goto yy7;
 		}
 		if (yych <= 'R') {
 			if (yych <= 'F') {
 				if (yych <= '#') {
-					if (yych <= 0x00) goto yy4;
-					if (yych >= '#') goto yy9;
+					if (yych <= 0x00) goto yy3;
+					if (yych <= '"') goto yy5;
+					goto yy10;
 				} else {
-					if (yych == 'C') goto yy10;
-					if (yych >= 'F') goto yy11;
+					if (yych == 'C') goto yy11;
+					if (yych <= 'E') goto yy5;
+					goto yy12;
 				}
 			} else {
 				if (yych <= 'M') {
-					if (yych == 'L') goto yy12;
+					if (yych == 'L') goto yy13;
+					goto yy5;
 				} else {
-					if (yych <= 'N') goto yy13;
-					if (yych == 'P') goto yy14;
+					if (yych <= 'N') goto yy14;
+					if (yych == 'P') goto yy15;
+					goto yy5;
 				}
 			}
 		} else {
 			if (yych <= 'l') {
 				if (yych <= 'c') {
-					if (yych <= 'S') goto yy15;
-					if (yych >= 'c') goto yy10;
+					if (yych <= 'S') goto yy16;
+					if (yych <= 'b') goto yy5;
+					goto yy11;
 				} else {
-					if (yych == 'f') goto yy11;
-					if (yych >= 'l') goto yy12;
+					if (yych == 'f') goto yy12;
+					if (yych <= 'k') goto yy5;
+					goto yy13;
 				}
 			} else {
 				if (yych <= 'o') {
-					if (yych == 'n') goto yy13;
+					if (yych == 'n') goto yy14;
+					goto yy5;
 				} else {
-					if (yych <= 'p') goto yy14;
-					if (yych == 's') goto yy15;
+					if (yych <= 'p') goto yy15;
+					if (yych == 's') goto yy16;
+					goto yy5;
 				}
 			}
 		}
 yy3:
-yy4:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 102 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 104 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	return 0;
 }
-#line 174 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 183 "/opt/src/php-cmark/src/cql_lexer.c"
+yy5:
+		++lex->cursor;
 yy6:
+		lex->len = (size_t) lex->cursor - (size_t) lex->text;
+#line 310 "/opt/src/php-cmark/src/cql_lexer.l"
+		{
+	return 1;
+}
+#line 192 "/opt/src/php-cmark/src/cql_lexer.c"
+yy7:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy6;
+			goto yy7;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 106 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 108 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 187 "/opt/src/php-cmark/src/cql_lexer.c"
-yy9:
-		yych = *++lex->cursor;
-		if (yybm[0+yych] & 128) {
-			goto yy16;
-		}
-		goto yy3;
+#line 205 "/opt/src/php-cmark/src/cql_lexer.c"
 yy10:
 		yych = *++lex->cursor;
-		if (yych == 'H') goto yy19;
-		if (yych == 'h') goto yy19;
-		goto yy3;
+		if (yybm[0+yych] & 128) {
+			goto yy17;
+		}
+		goto yy6;
 yy11:
-		yych = *++lex->cursor;
-		if (yych == 'I') goto yy20;
-		if (yych == 'i') goto yy20;
-		goto yy3;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'H') goto yy20;
+		if (yych == 'h') goto yy20;
+		goto yy6;
 yy12:
-		yych = *++lex->cursor;
-		if (yych == 'A') goto yy21;
-		if (yych == 'a') goto yy21;
-		goto yy3;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'I') goto yy22;
+		if (yych == 'i') goto yy22;
+		goto yy6;
 yy13:
-		yych = *++lex->cursor;
-		if (yych == 'E') goto yy22;
-		if (yych == 'e') goto yy22;
-		goto yy3;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'A') goto yy23;
+		if (yych == 'a') goto yy23;
+		goto yy6;
 yy14:
-		yych = *++lex->cursor;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'E') goto yy24;
+		if (yych == 'e') goto yy24;
+		goto yy6;
+yy15:
+		yych = *(lex->marker = ++lex->cursor);
 		if (yych <= 'R') {
-			if (yych == 'A') goto yy23;
-			if (yych <= 'Q') goto yy3;
-			goto yy24;
+			if (yych == 'A') goto yy25;
+			if (yych <= 'Q') goto yy6;
+			goto yy26;
 		} else {
 			if (yych <= 'a') {
-				if (yych <= '`') goto yy3;
-				goto yy23;
+				if (yych <= '`') goto yy6;
+				goto yy25;
 			} else {
-				if (yych == 'r') goto yy24;
-				goto yy3;
+				if (yych == 'r') goto yy26;
+				goto yy6;
 			}
 		}
-yy15:
-		yych = *++lex->cursor;
-		if (yych == 'I') goto yy25;
-		if (yych == 'i') goto yy25;
-		goto yy3;
 yy16:
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'I') goto yy27;
+		if (yych == 'i') goto yy27;
+		goto yy6;
+yy17:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy16;
+			goto yy17;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 110 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 112 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 246 "/opt/src/php-cmark/src/cql_lexer.c"
-yy19:
-		yych = *++lex->cursor;
-		if (yych == 'I') goto yy26;
-		if (yych == 'i') goto yy26;
-		goto yy3;
+#line 264 "/opt/src/php-cmark/src/cql_lexer.c"
 yy20:
 		yych = *++lex->cursor;
-		if (yych == 'R') goto yy27;
-		if (yych == 'r') goto yy27;
-		goto yy3;
+		if (yych == 'I') goto yy28;
+		if (yych == 'i') goto yy28;
 yy21:
-		yych = *++lex->cursor;
-		if (yych == 'S') goto yy28;
-		if (yych == 's') goto yy28;
-		goto yy3;
+		lex->cursor = lex->marker;
+		goto yy6;
 yy22:
 		yych = *++lex->cursor;
-		if (yych == 'X') goto yy29;
-		if (yych == 'x') goto yy29;
-		goto yy3;
+		if (yych == 'R') goto yy29;
+		if (yych == 'r') goto yy29;
+		goto yy21;
 yy23:
 		yych = *++lex->cursor;
-		if (yych == 'R') goto yy30;
-		if (yych == 'r') goto yy30;
-		goto yy3;
+		if (yych == 'S') goto yy30;
+		if (yych == 's') goto yy30;
+		goto yy21;
 yy24:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy31;
-		if (yych == 'e') goto yy31;
-		goto yy3;
+		if (yych == 'X') goto yy31;
+		if (yych == 'x') goto yy31;
+		goto yy21;
 yy25:
 		yych = *++lex->cursor;
-		if (yych == 'B') goto yy32;
-		if (yych == 'b') goto yy32;
-		goto yy3;
+		if (yych == 'R') goto yy32;
+		if (yych == 'r') goto yy32;
+		goto yy21;
 yy26:
 		yych = *++lex->cursor;
-		if (yych == 'L') goto yy33;
-		if (yych == 'l') goto yy33;
-		goto yy3;
+		if (yych == 'E') goto yy33;
+		if (yych == 'e') goto yy33;
+		goto yy21;
 yy27:
 		yych = *++lex->cursor;
-		if (yych == 'S') goto yy34;
-		if (yych == 's') goto yy34;
-		goto yy3;
+		if (yych == 'B') goto yy34;
+		if (yych == 'b') goto yy34;
+		goto yy21;
 yy28:
 		yych = *++lex->cursor;
-		if (yych == 'T') goto yy35;
-		if (yych == 't') goto yy35;
-		goto yy3;
+		if (yych == 'L') goto yy35;
+		if (yych == 'l') goto yy35;
+		goto yy21;
 yy29:
 		yych = *++lex->cursor;
-		if (yych == 'T') goto yy36;
-		if (yych == 't') goto yy36;
-		goto yy3;
+		if (yych == 'S') goto yy36;
+		if (yych == 's') goto yy36;
+		goto yy21;
 yy30:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy38;
-		if (yych == 'e') goto yy38;
-		goto yy3;
+		if (yych == 'T') goto yy37;
+		if (yych == 't') goto yy37;
+		goto yy21;
 yy31:
 		yych = *++lex->cursor;
-		if (yych == 'V') goto yy39;
-		if (yych == 'v') goto yy39;
-		goto yy3;
+		if (yych == 'T') goto yy38;
+		if (yych == 't') goto yy38;
+		goto yy21;
 yy32:
 		yych = *++lex->cursor;
-		if (yych == 'L') goto yy40;
-		if (yych == 'l') goto yy40;
-		goto yy3;
+		if (yych == 'E') goto yy40;
+		if (yych == 'e') goto yy40;
+		goto yy21;
 yy33:
 		yych = *++lex->cursor;
-		if (yych == 'D') goto yy41;
-		if (yych == 'd') goto yy41;
-		goto yy3;
+		if (yych == 'V') goto yy41;
+		if (yych == 'v') goto yy41;
+		goto yy21;
 yy34:
 		yych = *++lex->cursor;
-		if (yych == 'T') goto yy42;
-		if (yych == 't') goto yy42;
-		goto yy3;
+		if (yych == 'L') goto yy42;
+		if (yych == 'l') goto yy42;
+		goto yy21;
 yy35:
 		yych = *++lex->cursor;
-		if (yych == 'C') goto yy43;
-		if (yych == 'c') goto yy43;
-		goto yy3;
+		if (yych == 'D') goto yy43;
+		if (yych == 'd') goto yy43;
+		goto yy21;
 yy36:
+		yych = *++lex->cursor;
+		if (yych == 'T') goto yy44;
+		if (yych == 't') goto yy44;
+		goto yy21;
+yy37:
+		yych = *++lex->cursor;
+		if (yych == 'C') goto yy45;
+		if (yych == 'c') goto yy45;
+		goto yy21;
+yy38:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 138 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 140 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SEPARATOR;
 
 	return T_NEXT;
 }
-#line 341 "/opt/src/php-cmark/src/cql_lexer.c"
-yy38:
-		yych = *++lex->cursor;
-		if (yych == 'N') goto yy44;
-		if (yych == 'n') goto yy44;
-		goto yy3;
-yy39:
-		yych = *++lex->cursor;
-		if (yych == 'I') goto yy45;
-		if (yych == 'i') goto yy45;
-		goto yy3;
+#line 361 "/opt/src/php-cmark/src/cql_lexer.c"
 yy40:
 		yych = *++lex->cursor;
-		if (yych == 'I') goto yy46;
-		if (yych == 'i') goto yy46;
-		goto yy3;
+		if (yych == 'N') goto yy46;
+		if (yych == 'n') goto yy46;
+		goto yy21;
 yy41:
 		yych = *++lex->cursor;
-		if (yych == 'R') goto yy47;
-		if (yych == 'r') goto yy47;
-		goto yy3;
+		if (yych == 'I') goto yy47;
+		if (yych == 'i') goto yy47;
+		goto yy21;
 yy42:
 		yych = *++lex->cursor;
-		if (yych == 'C') goto yy48;
-		if (yych == 'c') goto yy48;
-		goto yy3;
+		if (yych == 'I') goto yy48;
+		if (yych == 'i') goto yy48;
+		goto yy21;
 yy43:
 		yych = *++lex->cursor;
-		if (yych == 'H') goto yy49;
-		if (yych == 'h') goto yy49;
-		goto yy3;
+		if (yych == 'R') goto yy49;
+		if (yych == 'r') goto yy49;
+		goto yy21;
 yy44:
 		yych = *++lex->cursor;
-		if (yych == 'T') goto yy50;
-		if (yych == 't') goto yy50;
-		goto yy3;
+		if (yych == 'C') goto yy50;
+		if (yych == 'c') goto yy50;
+		goto yy21;
 yy45:
 		yych = *++lex->cursor;
-		if (yych == 'O') goto yy52;
-		if (yych == 'o') goto yy52;
-		goto yy3;
+		if (yych == 'H') goto yy51;
+		if (yych == 'h') goto yy51;
+		goto yy21;
 yy46:
 		yych = *++lex->cursor;
-		if (yych == 'N') goto yy53;
-		if (yych == 'n') goto yy53;
-		goto yy3;
+		if (yych == 'T') goto yy52;
+		if (yych == 't') goto yy52;
+		goto yy21;
 yy47:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy54;
-		if (yych == 'e') goto yy54;
-		goto yy3;
+		if (yych == 'O') goto yy54;
+		if (yych == 'o') goto yy54;
+		goto yy21;
 yy48:
 		yych = *++lex->cursor;
-		if (yych == 'H') goto yy55;
-		if (yych == 'h') goto yy55;
-		goto yy3;
+		if (yych == 'N') goto yy55;
+		if (yych == 'n') goto yy55;
+		goto yy21;
 yy49:
 		yych = *++lex->cursor;
-		if (yych == 'I') goto yy56;
-		if (yych == 'i') goto yy56;
-		goto yy3;
+		if (yych == 'E') goto yy56;
+		if (yych == 'e') goto yy56;
+		goto yy21;
 yy50:
+		yych = *++lex->cursor;
+		if (yych == 'H') goto yy57;
+		if (yych == 'h') goto yy57;
+		goto yy21;
+yy51:
+		yych = *++lex->cursor;
+		if (yych == 'I') goto yy58;
+		if (yych == 'i') goto yy58;
+		goto yy21;
+yy52:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 132 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 134 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SEPARATOR;
 
 	return T_PARENT;
 }
-#line 411 "/opt/src/php-cmark/src/cql_lexer.c"
-yy52:
-		yych = *++lex->cursor;
-		if (yych == 'U') goto yy57;
-		if (yych == 'u') goto yy57;
-		goto yy3;
-yy53:
-		yych = *++lex->cursor;
-		if (yych == 'G') goto yy58;
-		if (yych == 'g') goto yy58;
-		goto yy3;
+#line 431 "/opt/src/php-cmark/src/cql_lexer.c"
 yy54:
 		yych = *++lex->cursor;
-		if (yych == 'N') goto yy59;
-		if (yych == 'n') goto yy59;
-		goto yy3;
+		if (yych == 'U') goto yy59;
+		if (yych == 'u') goto yy59;
+		goto yy21;
 yy55:
 		yych = *++lex->cursor;
-		if (yych == 'I') goto yy61;
-		if (yych == 'i') goto yy61;
-		goto yy3;
+		if (yych == 'G') goto yy60;
+		if (yych == 'g') goto yy60;
+		goto yy21;
 yy56:
 		yych = *++lex->cursor;
-		if (yych == 'L') goto yy62;
-		if (yych == 'l') goto yy62;
-		goto yy3;
+		if (yych == 'N') goto yy61;
+		if (yych == 'n') goto yy61;
+		goto yy21;
 yy57:
 		yych = *++lex->cursor;
-		if (yych == 'S') goto yy63;
-		if (yych == 's') goto yy63;
-		goto yy3;
+		if (yych == 'I') goto yy63;
+		if (yych == 'i') goto yy63;
+		goto yy21;
 yy58:
+		yych = *++lex->cursor;
+		if (yych == 'L') goto yy64;
+		if (yych == 'l') goto yy64;
+		goto yy21;
+yy59:
 		yych = *++lex->cursor;
 		if (yych == 'S') goto yy65;
 		if (yych == 's') goto yy65;
-		goto yy3;
-yy59:
+		goto yy21;
+yy60:
+		yych = *++lex->cursor;
+		if (yych == 'S') goto yy67;
+		if (yych == 's') goto yy67;
+		goto yy21;
+yy61:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 150 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 152 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SUBQUERY;
 
 	return T_CHILDREN;
 }
-#line 456 "/opt/src/php-cmark/src/cql_lexer.c"
-yy61:
-		yych = *++lex->cursor;
-		if (yych == 'L') goto yy67;
-		if (yych == 'l') goto yy67;
-		goto yy3;
-yy62:
-		yych = *++lex->cursor;
-		if (yych == 'D') goto yy68;
-		if (yych == 'd') goto yy68;
-		goto yy3;
+#line 476 "/opt/src/php-cmark/src/cql_lexer.c"
 yy63:
+		yych = *++lex->cursor;
+		if (yych == 'L') goto yy69;
+		if (yych == 'l') goto yy69;
+		goto yy21;
+yy64:
+		yych = *++lex->cursor;
+		if (yych == 'D') goto yy70;
+		if (yych == 'd') goto yy70;
+		goto yy21;
+yy65:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 144 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 146 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SEPARATOR;
 
 	return T_PREVIOUS;
 }
-#line 476 "/opt/src/php-cmark/src/cql_lexer.c"
-yy65:
+#line 496 "/opt/src/php-cmark/src/cql_lexer.c"
+yy67:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 156 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 158 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SUBQUERY;
 
 	return T_SIBLINGS;
 }
-#line 486 "/opt/src/php-cmark/src/cql_lexer.c"
-yy67:
+#line 506 "/opt/src/php-cmark/src/cql_lexer.c"
+yy69:
 		yych = *++lex->cursor;
-		if (yych == 'D') goto yy70;
-		if (yych == 'd') goto yy70;
-		goto yy3;
-yy68:
+		if (yych == 'D') goto yy72;
+		if (yych == 'd') goto yy72;
+		goto yy21;
+yy70:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 126 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 128 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SEPARATOR;
 
 	return T_LAST_CHILD;
 }
-#line 501 "/opt/src/php-cmark/src/cql_lexer.c"
-yy70:
+#line 521 "/opt/src/php-cmark/src/cql_lexer.c"
+yy72:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 120 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 122 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SEPARATOR;
 
 	return T_FIRST_CHILD;
 }
-#line 511 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 531 "/opt/src/php-cmark/src/cql_lexer.c"
 	}
 /* *********************************** */
 yyc_ST_LOOKING_FOR_SEPARATOR:
@@ -549,103 +569,115 @@ yyc_ST_LOOKING_FOR_SEPARATOR:
 		(2);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy77;
+			goto yy80;
 		}
 		if (yych <= '.') {
 			if (yych <= '#') {
-				if (yych <= 0x00) goto yy75;
-				if (yych >= '#') goto yy80;
+				if (yych <= 0x00) goto yy76;
+				if (yych <= '"') goto yy78;
+				goto yy83;
 			} else {
-				if (yych == '(') goto yy81;
+				if (yych == '(') goto yy84;
+				goto yy78;
 			}
 		} else {
 			if (yych <= '[') {
-				if (yych <= '/') goto yy83;
-				if (yych >= '[') goto yy85;
+				if (yych <= '/') goto yy86;
+				if (yych <= 'Z') goto yy78;
+				goto yy88;
 			} else {
-				if (yych <= '\\') goto yy83;
-				if (yych <= ']') goto yy87;
+				if (yych <= '\\') goto yy86;
+				if (yych <= ']') goto yy90;
+				goto yy78;
 			}
 		}
-yy74:
-yy75:
+yy76:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 102 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 104 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	return 0;
 }
-#line 579 "/opt/src/php-cmark/src/cql_lexer.c"
-yy77:
+#line 602 "/opt/src/php-cmark/src/cql_lexer.c"
+yy78:
+		++lex->cursor;
+yy79:
+		lex->len = (size_t) lex->cursor - (size_t) lex->text;
+#line 310 "/opt/src/php-cmark/src/cql_lexer.l"
+		{
+	return 1;
+}
+#line 611 "/opt/src/php-cmark/src/cql_lexer.c"
+yy80:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy77;
+			goto yy80;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 106 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 108 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 592 "/opt/src/php-cmark/src/cql_lexer.c"
-yy80:
+#line 624 "/opt/src/php-cmark/src/cql_lexer.c"
+yy83:
 		yych = *++lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy89;
+			goto yy92;
 		}
-		goto yy74;
-yy81:
+		goto yy79;
+yy84:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 172 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 174 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE;
 
 	return T_CONSTRAINT_START;
 }
-#line 608 "/opt/src/php-cmark/src/cql_lexer.c"
-yy83:
+#line 640 "/opt/src/php-cmark/src/cql_lexer.c"
+yy86:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 114 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 116 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_NODE;
 
 	return T_SEPERATOR;
 }
-#line 618 "/opt/src/php-cmark/src/cql_lexer.c"
-yy85:
+#line 650 "/opt/src/php-cmark/src/cql_lexer.c"
+yy88:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 162 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 164 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SEPARATOR;
 
 	return T_SUBQUERY_START;
 }
-#line 628 "/opt/src/php-cmark/src/cql_lexer.c"
-yy87:
+#line 660 "/opt/src/php-cmark/src/cql_lexer.c"
+yy90:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 168 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 170 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	return T_SUBQUERY_END;
 }
-#line 636 "/opt/src/php-cmark/src/cql_lexer.c"
-yy89:
+#line 668 "/opt/src/php-cmark/src/cql_lexer.c"
+yy92:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy89;
+			goto yy92;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 110 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 112 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 649 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 681 "/opt/src/php-cmark/src/cql_lexer.c"
 	}
 /* *********************************** */
 yyc_ST_LOOKING_FOR_SUBQUERY:
@@ -687,91 +719,101 @@ yyc_ST_LOOKING_FOR_SUBQUERY:
 		(2);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy97;
+			goto yy101;
 		}
 		if (yych <= '(') {
 			if (yych <= '"') {
-				if (yych <= 0x00) goto yy95;
+				if (yych >= 0x01) goto yy99;
 			} else {
-				if (yych <= '#') goto yy100;
-				if (yych >= '(') goto yy101;
+				if (yych <= '#') goto yy104;
+				if (yych <= '\'') goto yy99;
+				goto yy105;
 			}
 		} else {
 			if (yych <= '[') {
-				if (yych >= '[') goto yy103;
+				if (yych <= 'Z') goto yy99;
+				goto yy107;
 			} else {
-				if (yych == ']') goto yy105;
+				if (yych == ']') goto yy109;
+				goto yy99;
 			}
 		}
-yy94:
-yy95:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 102 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 104 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	return 0;
 }
-#line 715 "/opt/src/php-cmark/src/cql_lexer.c"
-yy97:
+#line 748 "/opt/src/php-cmark/src/cql_lexer.c"
+yy99:
+		++lex->cursor;
+yy100:
+		lex->len = (size_t) lex->cursor - (size_t) lex->text;
+#line 310 "/opt/src/php-cmark/src/cql_lexer.l"
+		{
+	return 1;
+}
+#line 757 "/opt/src/php-cmark/src/cql_lexer.c"
+yy101:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy97;
+			goto yy101;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 106 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 108 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 728 "/opt/src/php-cmark/src/cql_lexer.c"
-yy100:
+#line 770 "/opt/src/php-cmark/src/cql_lexer.c"
+yy104:
 		yych = *++lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy107;
+			goto yy111;
 		}
-		goto yy94;
-yy101:
+		goto yy100;
+yy105:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 172 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 174 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE;
 
 	return T_CONSTRAINT_START;
 }
-#line 744 "/opt/src/php-cmark/src/cql_lexer.c"
-yy103:
+#line 786 "/opt/src/php-cmark/src/cql_lexer.c"
+yy107:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 162 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 164 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SEPARATOR;
 
 	return T_SUBQUERY_START;
 }
-#line 754 "/opt/src/php-cmark/src/cql_lexer.c"
-yy105:
+#line 796 "/opt/src/php-cmark/src/cql_lexer.c"
+yy109:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 168 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 170 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	return T_SUBQUERY_END;
 }
-#line 762 "/opt/src/php-cmark/src/cql_lexer.c"
-yy107:
+#line 804 "/opt/src/php-cmark/src/cql_lexer.c"
+yy111:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy107;
+			goto yy111;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 110 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 112 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 775 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 817 "/opt/src/php-cmark/src/cql_lexer.c"
 	}
 /* *********************************** */
 yyc_ST_LOOKING_FOR_TYPE:
@@ -813,934 +855,967 @@ yyc_ST_LOOKING_FOR_TYPE:
 		(13);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy115;
+			goto yy120;
 		}
 		if (yych <= 'S') {
 			if (yych <= 'D') {
 				if (yych <= '(') {
-					if (yych <= 0x00) goto yy113;
-					if (yych == '#') goto yy118;
+					if (yych <= 0x00) goto yy116;
+					if (yych == '#') goto yy123;
+					goto yy118;
 				} else {
 					if (yych <= 'A') {
-						if (yych <= ')') goto yy119;
+						if (yych <= ')') goto yy124;
+						goto yy118;
 					} else {
-						if (yych <= 'B') goto yy121;
-						if (yych <= 'C') goto yy122;
+						if (yych <= 'B') goto yy126;
+						if (yych <= 'C') goto yy127;
+						goto yy118;
 					}
 				}
 			} else {
 				if (yych <= 'K') {
 					if (yych <= 'G') {
-						if (yych <= 'E') goto yy123;
+						if (yych <= 'E') goto yy128;
+						goto yy118;
 					} else {
-						if (yych <= 'H') goto yy124;
-						if (yych <= 'I') goto yy125;
+						if (yych <= 'H') goto yy129;
+						if (yych <= 'I') goto yy130;
+						goto yy118;
 					}
 				} else {
 					if (yych <= 'O') {
-						if (yych <= 'L') goto yy126;
+						if (yych <= 'L') goto yy131;
+						goto yy118;
 					} else {
-						if (yych <= 'P') goto yy127;
-						if (yych >= 'S') goto yy128;
+						if (yych <= 'P') goto yy132;
+						if (yych <= 'R') goto yy118;
+						goto yy133;
 					}
 				}
 			}
 		} else {
 			if (yych <= 'i') {
 				if (yych <= 'c') {
-					if (yych <= 'T') goto yy129;
-					if (yych <= 'a') goto yy112;
-					if (yych <= 'b') goto yy121;
-					goto yy122;
+					if (yych <= 'T') goto yy134;
+					if (yych <= 'a') goto yy118;
+					if (yych <= 'b') goto yy126;
+					goto yy127;
 				} else {
 					if (yych <= 'e') {
-						if (yych >= 'e') goto yy123;
+						if (yych <= 'd') goto yy118;
+						goto yy128;
 					} else {
-						if (yych <= 'g') goto yy112;
-						if (yych <= 'h') goto yy124;
-						goto yy125;
+						if (yych <= 'g') goto yy118;
+						if (yych <= 'h') goto yy129;
+						goto yy130;
 					}
 				}
 			} else {
 				if (yych <= 'r') {
 					if (yych <= 'l') {
-						if (yych >= 'l') goto yy126;
+						if (yych <= 'k') goto yy118;
+						goto yy131;
 					} else {
-						if (yych == 'p') goto yy127;
+						if (yych == 'p') goto yy132;
+						goto yy118;
 					}
 				} else {
 					if (yych <= 't') {
-						if (yych <= 's') goto yy128;
-						goto yy129;
+						if (yych <= 's') goto yy133;
+						goto yy134;
 					} else {
-						if (yych == '~') goto yy130;
+						if (yych == '~') goto yy135;
+						goto yy118;
 					}
 				}
 			}
 		}
-yy112:
-		lex->cursor = lex->marker;
-		goto yy166;
-yy113:
+yy116:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 102 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 104 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	return 0;
 }
-#line 892 "/opt/src/php-cmark/src/cql_lexer.c"
-yy115:
+#line 942 "/opt/src/php-cmark/src/cql_lexer.c"
+yy118:
+		++lex->cursor;
+yy119:
+		lex->len = (size_t) lex->cursor - (size_t) lex->text;
+#line 310 "/opt/src/php-cmark/src/cql_lexer.l"
+		{
+	return 1;
+}
+#line 951 "/opt/src/php-cmark/src/cql_lexer.c"
+yy120:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy115;
+			goto yy120;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 106 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 108 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 905 "/opt/src/php-cmark/src/cql_lexer.c"
-yy118:
+#line 964 "/opt/src/php-cmark/src/cql_lexer.c"
+yy123:
 		yych = *++lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy132;
+			goto yy137;
 		}
-		goto yy112;
-yy119:
+		goto yy119;
+yy124:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 182 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 184 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SUBQUERY;
 
 	return T_CONSTRAINT_END;
 }
-#line 921 "/opt/src/php-cmark/src/cql_lexer.c"
-yy121:
-		yych = *++lex->cursor;
-		if (yych == 'L') goto yy135;
-		if (yych == 'l') goto yy135;
-		goto yy112;
-yy122:
-		yych = *++lex->cursor;
+#line 980 "/opt/src/php-cmark/src/cql_lexer.c"
+yy126:
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'L') goto yy140;
+		if (yych == 'l') goto yy140;
+		goto yy119;
+yy127:
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
 		if (yych <= 'U') {
-			if (yych == 'O') goto yy136;
-			if (yych <= 'T') goto yy112;
-			goto yy137;
+			if (yych == 'O') goto yy142;
+			if (yych <= 'T') goto yy119;
+			goto yy143;
 		} else {
 			if (yych <= 'o') {
-				if (yych <= 'n') goto yy112;
-				goto yy136;
+				if (yych <= 'n') goto yy119;
+				goto yy142;
 			} else {
-				if (yych == 'u') goto yy137;
-				goto yy112;
+				if (yych == 'u') goto yy143;
+				goto yy119;
 			}
 		}
-yy123:
-		yych = *++lex->cursor;
-		if (yych == 'M') goto yy138;
-		if (yych == 'm') goto yy138;
-		goto yy112;
-yy124:
-		yych = *++lex->cursor;
-		if (yych <= 'T') {
-			if (yych == 'E') goto yy139;
-			if (yych <= 'S') goto yy112;
-			goto yy140;
-		} else {
-			if (yych <= 'e') {
-				if (yych <= 'd') goto yy112;
-				goto yy139;
-			} else {
-				if (yych == 't') goto yy140;
-				goto yy112;
-			}
-		}
-yy125:
-		yych = *++lex->cursor;
-		if (yych <= 'T') {
-			if (yych == 'M') goto yy141;
-			if (yych <= 'S') goto yy112;
-			goto yy142;
-		} else {
-			if (yych <= 'm') {
-				if (yych <= 'l') goto yy112;
-				goto yy141;
-			} else {
-				if (yych == 't') goto yy142;
-				goto yy112;
-			}
-		}
-yy126:
-		yych = *++lex->cursor;
-		if (yych == 'I') goto yy143;
-		if (yych == 'i') goto yy143;
-		goto yy112;
-yy127:
-		yych = *++lex->cursor;
-		if (yych == 'A') goto yy144;
-		if (yych == 'a') goto yy144;
-		goto yy112;
 yy128:
-		yych = *++lex->cursor;
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'M') goto yy144;
+		if (yych == 'm') goto yy144;
+		goto yy119;
+yy129:
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
 		if (yych <= 'T') {
-			if (yych == 'O') goto yy145;
-			if (yych <= 'S') goto yy112;
+			if (yych == 'E') goto yy145;
+			if (yych <= 'S') goto yy119;
 			goto yy146;
 		} else {
-			if (yych <= 'o') {
-				if (yych <= 'n') goto yy112;
+			if (yych <= 'e') {
+				if (yych <= 'd') goto yy119;
 				goto yy145;
 			} else {
 				if (yych == 't') goto yy146;
-				goto yy112;
-			}
-		}
-yy129:
-		yych = *++lex->cursor;
-		if (yych <= 'H') {
-			if (yych == 'E') goto yy147;
-			if (yych <= 'G') goto yy112;
-			goto yy148;
-		} else {
-			if (yych <= 'e') {
-				if (yych <= 'd') goto yy112;
-				goto yy147;
-			} else {
-				if (yych == 'h') goto yy148;
-				goto yy112;
+				goto yy119;
 			}
 		}
 yy130:
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych <= 'T') {
+			if (yych == 'M') goto yy147;
+			if (yych <= 'S') goto yy119;
+			goto yy148;
+		} else {
+			if (yych <= 'm') {
+				if (yych <= 'l') goto yy119;
+				goto yy147;
+			} else {
+				if (yych == 't') goto yy148;
+				goto yy119;
+			}
+		}
+yy131:
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'I') goto yy149;
+		if (yych == 'i') goto yy149;
+		goto yy119;
+yy132:
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'A') goto yy150;
+		if (yych == 'a') goto yy150;
+		goto yy119;
+yy133:
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych <= 'T') {
+			if (yych == 'O') goto yy151;
+			if (yych <= 'S') goto yy119;
+			goto yy152;
+		} else {
+			if (yych <= 'o') {
+				if (yych <= 'n') goto yy119;
+				goto yy151;
+			} else {
+				if (yych == 't') goto yy152;
+				goto yy119;
+			}
+		}
+yy134:
+		yyaccept = 0;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych <= 'H') {
+			if (yych == 'E') goto yy153;
+			if (yych <= 'G') goto yy119;
+			goto yy154;
+		} else {
+			if (yych <= 'e') {
+				if (yych <= 'd') goto yy119;
+				goto yy153;
+			} else {
+				if (yych == 'h') goto yy154;
+				goto yy119;
+			}
+		}
+yy135:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 178 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 180 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	return T_CONSTRAINT_NEGATE;
 }
-#line 1024 "/opt/src/php-cmark/src/cql_lexer.c"
-yy132:
+#line 1092 "/opt/src/php-cmark/src/cql_lexer.c"
+yy137:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy132;
+			goto yy137;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 110 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 112 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 1037 "/opt/src/php-cmark/src/cql_lexer.c"
-yy135:
-		yych = *++lex->cursor;
-		if (yych == 'O') goto yy149;
-		if (yych == 'o') goto yy149;
-		goto yy112;
-yy136:
-		yych = *++lex->cursor;
-		if (yych == 'D') goto yy150;
-		if (yych == 'd') goto yy150;
-		goto yy112;
-yy137:
-		yych = *++lex->cursor;
-		if (yych == 'S') goto yy151;
-		if (yych == 's') goto yy151;
-		goto yy112;
-yy138:
-		yych = *++lex->cursor;
-		if (yych == 'P') goto yy152;
-		if (yych == 'p') goto yy152;
-		goto yy112;
-yy139:
-		yych = *++lex->cursor;
-		if (yych == 'A') goto yy153;
-		if (yych == 'a') goto yy153;
-		goto yy112;
+#line 1105 "/opt/src/php-cmark/src/cql_lexer.c"
 yy140:
 		yych = *++lex->cursor;
-		if (yych == 'M') goto yy154;
-		if (yych == 'm') goto yy154;
-		goto yy112;
+		if (yych == 'O') goto yy155;
+		if (yych == 'o') goto yy155;
 yy141:
-		yych = *++lex->cursor;
-		if (yych == 'A') goto yy155;
-		if (yych == 'a') goto yy155;
-		goto yy112;
+		lex->cursor = lex->marker;
+		if (yyaccept == 0) {
+			goto yy119;
+		} else {
+			goto yy172;
+		}
 yy142:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy156;
-		if (yych == 'e') goto yy156;
-		goto yy112;
+		if (yych == 'D') goto yy156;
+		if (yych == 'd') goto yy156;
+		goto yy141;
 yy143:
 		yych = *++lex->cursor;
-		if (yych <= 'S') {
-			if (yych == 'N') goto yy157;
-			if (yych <= 'R') goto yy112;
-			goto yy158;
-		} else {
-			if (yych <= 'n') {
-				if (yych <= 'm') goto yy112;
-				goto yy157;
-			} else {
-				if (yych == 's') goto yy158;
-				goto yy112;
-			}
-		}
+		if (yych == 'S') goto yy157;
+		if (yych == 's') goto yy157;
+		goto yy141;
 yy144:
 		yych = *++lex->cursor;
-		if (yych == 'R') goto yy159;
-		if (yych == 'r') goto yy159;
-		goto yy112;
+		if (yych == 'P') goto yy158;
+		if (yych == 'p') goto yy158;
+		goto yy141;
 yy145:
 		yych = *++lex->cursor;
-		if (yych == 'F') goto yy160;
-		if (yych == 'f') goto yy160;
-		goto yy112;
+		if (yych == 'A') goto yy159;
+		if (yych == 'a') goto yy159;
+		goto yy141;
 yy146:
 		yych = *++lex->cursor;
-		if (yych == 'R') goto yy161;
-		if (yych == 'r') goto yy161;
-		goto yy112;
+		if (yych == 'M') goto yy160;
+		if (yych == 'm') goto yy160;
+		goto yy141;
 yy147:
 		yych = *++lex->cursor;
-		if (yych == 'X') goto yy162;
-		if (yych == 'x') goto yy162;
-		goto yy112;
+		if (yych == 'A') goto yy161;
+		if (yych == 'a') goto yy161;
+		goto yy141;
 yy148:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy163;
-		if (yych == 'e') goto yy163;
-		goto yy112;
+		if (yych == 'E') goto yy162;
+		if (yych == 'e') goto yy162;
+		goto yy141;
 yy149:
 		yych = *++lex->cursor;
-		if (yych == 'C') goto yy164;
-		if (yych == 'c') goto yy164;
-		goto yy112;
-yy150:
-		yych = *++lex->cursor;
-		if (yych == 'E') goto yy165;
-		if (yych == 'e') goto yy165;
-		goto yy112;
-yy151:
-		yych = *++lex->cursor;
-		if (yych == 'T') goto yy167;
-		if (yych == 't') goto yy167;
-		goto yy112;
-yy152:
-		yych = *++lex->cursor;
-		if (yych == 'H') goto yy168;
-		if (yych == 'h') goto yy168;
-		goto yy112;
-yy153:
-		yych = *++lex->cursor;
-		if (yych == 'D') goto yy169;
-		if (yych == 'd') goto yy169;
-		goto yy112;
-yy154:
-		yych = *++lex->cursor;
-		if (yych == 'L') goto yy170;
-		if (yych == 'l') goto yy170;
-		goto yy112;
-yy155:
-		yych = *++lex->cursor;
-		if (yych == 'G') goto yy171;
-		if (yych == 'g') goto yy171;
-		goto yy112;
-yy156:
-		yych = *++lex->cursor;
-		if (yych == 'M') goto yy172;
-		if (yych == 'm') goto yy172;
-		goto yy112;
-yy157:
-		yych = *++lex->cursor;
-		if (yych <= 'K') {
-			if (yych == 'E') goto yy174;
-			if (yych <= 'J') goto yy112;
-			goto yy175;
+		if (yych <= 'S') {
+			if (yych == 'N') goto yy163;
+			if (yych <= 'R') goto yy141;
+			goto yy164;
 		} else {
-			if (yych <= 'e') {
-				if (yych <= 'd') goto yy112;
-				goto yy174;
+			if (yych <= 'n') {
+				if (yych <= 'm') goto yy141;
+				goto yy163;
 			} else {
-				if (yych == 'k') goto yy175;
-				goto yy112;
+				if (yych == 's') goto yy164;
+				goto yy141;
 			}
 		}
+yy150:
+		yych = *++lex->cursor;
+		if (yych == 'R') goto yy165;
+		if (yych == 'r') goto yy165;
+		goto yy141;
+yy151:
+		yych = *++lex->cursor;
+		if (yych == 'F') goto yy166;
+		if (yych == 'f') goto yy166;
+		goto yy141;
+yy152:
+		yych = *++lex->cursor;
+		if (yych == 'R') goto yy167;
+		if (yych == 'r') goto yy167;
+		goto yy141;
+yy153:
+		yych = *++lex->cursor;
+		if (yych == 'X') goto yy168;
+		if (yych == 'x') goto yy168;
+		goto yy141;
+yy154:
+		yych = *++lex->cursor;
+		if (yych == 'E') goto yy169;
+		if (yych == 'e') goto yy169;
+		goto yy141;
+yy155:
+		yych = *++lex->cursor;
+		if (yych == 'C') goto yy170;
+		if (yych == 'c') goto yy170;
+		goto yy141;
+yy156:
+		yych = *++lex->cursor;
+		if (yych == 'E') goto yy171;
+		if (yych == 'e') goto yy171;
+		goto yy141;
+yy157:
+		yych = *++lex->cursor;
+		if (yych == 'T') goto yy173;
+		if (yych == 't') goto yy173;
+		goto yy141;
 yy158:
 		yych = *++lex->cursor;
-		if (yych == 'T') goto yy177;
-		if (yych == 't') goto yy177;
-		goto yy112;
+		if (yych == 'H') goto yy174;
+		if (yych == 'h') goto yy174;
+		goto yy141;
 yy159:
 		yych = *++lex->cursor;
-		if (yych == 'A') goto yy179;
-		if (yych == 'a') goto yy179;
-		goto yy112;
+		if (yych == 'D') goto yy175;
+		if (yych == 'd') goto yy175;
+		goto yy141;
 yy160:
 		yych = *++lex->cursor;
-		if (yych == 'T') goto yy180;
-		if (yych == 't') goto yy180;
-		goto yy112;
+		if (yych == 'L') goto yy176;
+		if (yych == 'l') goto yy176;
+		goto yy141;
 yy161:
 		yych = *++lex->cursor;
-		if (yych == 'O') goto yy181;
-		if (yych == 'o') goto yy181;
-		goto yy112;
+		if (yych == 'G') goto yy177;
+		if (yych == 'g') goto yy177;
+		goto yy141;
 yy162:
 		yych = *++lex->cursor;
-		if (yych == 'T') goto yy182;
-		if (yych == 't') goto yy182;
-		goto yy112;
+		if (yych == 'M') goto yy178;
+		if (yych == 'm') goto yy178;
+		goto yy141;
 yy163:
 		yych = *++lex->cursor;
-		if (yych == 'M') goto yy184;
-		if (yych == 'm') goto yy184;
-		goto yy112;
+		if (yych <= 'K') {
+			if (yych == 'E') goto yy180;
+			if (yych <= 'J') goto yy141;
+			goto yy181;
+		} else {
+			if (yych <= 'e') {
+				if (yych <= 'd') goto yy141;
+				goto yy180;
+			} else {
+				if (yych == 'k') goto yy181;
+				goto yy141;
+			}
+		}
 yy164:
 		yych = *++lex->cursor;
-		if (yych == 'K') goto yy185;
-		if (yych == 'k') goto yy185;
-		goto yy112;
+		if (yych == 'T') goto yy183;
+		if (yych == 't') goto yy183;
+		goto yy141;
 yy165:
-		yych = *(lex->marker = ++lex->cursor);
-		if (yych == 'B') goto yy186;
-		if (yych == 'b') goto yy186;
+		yych = *++lex->cursor;
+		if (yych == 'A') goto yy185;
+		if (yych == 'a') goto yy185;
+		goto yy141;
 yy166:
+		yych = *++lex->cursor;
+		if (yych == 'T') goto yy186;
+		if (yych == 't') goto yy186;
+		goto yy141;
+yy167:
+		yych = *++lex->cursor;
+		if (yych == 'O') goto yy187;
+		if (yych == 'o') goto yy187;
+		goto yy141;
+yy168:
+		yych = *++lex->cursor;
+		if (yych == 'T') goto yy188;
+		if (yych == 't') goto yy188;
+		goto yy141;
+yy169:
+		yych = *++lex->cursor;
+		if (yych == 'M') goto yy190;
+		if (yych == 'm') goto yy190;
+		goto yy141;
+yy170:
+		yych = *++lex->cursor;
+		if (yych == 'K') goto yy191;
+		if (yych == 'k') goto yy191;
+		goto yy141;
+yy171:
+		yyaccept = 1;
+		yych = *(lex->marker = ++lex->cursor);
+		if (yych == 'B') goto yy192;
+		if (yych == 'b') goto yy192;
+yy172:
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 266 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 268 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_CODE;
 }
-#line 1220 "/opt/src/php-cmark/src/cql_lexer.c"
-yy167:
+#line 1295 "/opt/src/php-cmark/src/cql_lexer.c"
+yy173:
 		yych = *++lex->cursor;
-		if (yych == 'O') goto yy187;
-		if (yych == 'o') goto yy187;
-		goto yy112;
-yy168:
+		if (yych == 'O') goto yy193;
+		if (yych == 'o') goto yy193;
+		goto yy141;
+yy174:
 		yych = *++lex->cursor;
-		if (yych == 'A') goto yy188;
-		if (yych == 'a') goto yy188;
-		goto yy112;
-yy169:
+		if (yych == 'A') goto yy194;
+		if (yych == 'a') goto yy194;
+		goto yy141;
+yy175:
 		yych = *++lex->cursor;
-		if (yych == 'I') goto yy189;
-		if (yych == 'i') goto yy189;
-		goto yy112;
-yy170:
+		if (yych == 'I') goto yy195;
+		if (yych == 'i') goto yy195;
+		goto yy141;
+yy176:
 		yych = *++lex->cursor;
 		if (yych <= 'I') {
-			if (yych == 'B') goto yy190;
-			if (yych <= 'H') goto yy112;
-			goto yy191;
+			if (yych == 'B') goto yy196;
+			if (yych <= 'H') goto yy141;
+			goto yy197;
 		} else {
 			if (yych <= 'b') {
-				if (yych <= 'a') goto yy112;
-				goto yy190;
+				if (yych <= 'a') goto yy141;
+				goto yy196;
 			} else {
-				if (yych == 'i') goto yy191;
-				goto yy112;
+				if (yych == 'i') goto yy197;
+				goto yy141;
 			}
 		}
-yy171:
+yy177:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy192;
-		if (yych == 'e') goto yy192;
-		goto yy112;
-yy172:
+		if (yych == 'E') goto yy198;
+		if (yych == 'e') goto yy198;
+		goto yy141;
+yy178:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 206 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 208 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_ITEM;
 }
-#line 1265 "/opt/src/php-cmark/src/cql_lexer.c"
-yy174:
+#line 1340 "/opt/src/php-cmark/src/cql_lexer.c"
+yy180:
 		yych = *++lex->cursor;
-		if (yych == 'B') goto yy194;
-		if (yych == 'b') goto yy194;
-		goto yy112;
-yy175:
+		if (yych == 'B') goto yy200;
+		if (yych == 'b') goto yy200;
+		goto yy141;
+yy181:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 296 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 298 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_LINK;
 }
-#line 1280 "/opt/src/php-cmark/src/cql_lexer.c"
-yy177:
+#line 1355 "/opt/src/php-cmark/src/cql_lexer.c"
+yy183:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 200 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 202 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_LIST;
 }
-#line 1290 "/opt/src/php-cmark/src/cql_lexer.c"
-yy179:
+#line 1365 "/opt/src/php-cmark/src/cql_lexer.c"
+yy185:
 		yych = *++lex->cursor;
-		if (yych == 'G') goto yy195;
-		if (yych == 'g') goto yy195;
-		goto yy112;
-yy180:
+		if (yych == 'G') goto yy201;
+		if (yych == 'g') goto yy201;
+		goto yy141;
+yy186:
 		yych = *++lex->cursor;
-		if (yych == 'B') goto yy196;
-		if (yych == 'b') goto yy196;
-		goto yy112;
-yy181:
+		if (yych == 'B') goto yy202;
+		if (yych == 'b') goto yy202;
+		goto yy141;
+yy187:
 		yych = *++lex->cursor;
-		if (yych == 'N') goto yy197;
-		if (yych == 'n') goto yy197;
-		goto yy112;
-yy182:
+		if (yych == 'N') goto yy203;
+		if (yych == 'n') goto yy203;
+		goto yy141;
+yy188:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 248 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 250 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_TEXT;
 }
-#line 1315 "/opt/src/php-cmark/src/cql_lexer.c"
-yy184:
-		yych = *++lex->cursor;
-		if (yych == 'A') goto yy198;
-		if (yych == 'a') goto yy198;
-		goto yy112;
-yy185:
-		yych = *++lex->cursor;
-		if (yych == 'Q') goto yy199;
-		if (yych == 'q') goto yy199;
-		goto yy112;
-yy186:
-		yych = *++lex->cursor;
-		if (yych == 'L') goto yy200;
-		if (yych == 'l') goto yy200;
-		goto yy112;
-yy187:
-		yych = *++lex->cursor;
-		if (yych == 'M') goto yy201;
-		if (yych == 'm') goto yy201;
-		goto yy112;
-yy188:
-		yych = *++lex->cursor;
-		if (yych == 'S') goto yy202;
-		if (yych == 's') goto yy202;
-		goto yy112;
-yy189:
-		yych = *++lex->cursor;
-		if (yych == 'N') goto yy203;
-		if (yych == 'n') goto yy203;
-		goto yy112;
+#line 1390 "/opt/src/php-cmark/src/cql_lexer.c"
 yy190:
 		yych = *++lex->cursor;
-		if (yych == 'L') goto yy204;
-		if (yych == 'l') goto yy204;
-		goto yy112;
+		if (yych == 'A') goto yy204;
+		if (yych == 'a') goto yy204;
+		goto yy141;
 yy191:
 		yych = *++lex->cursor;
-		if (yych == 'N') goto yy205;
-		if (yych == 'n') goto yy205;
-		goto yy112;
+		if (yych == 'Q') goto yy205;
+		if (yych == 'q') goto yy205;
+		goto yy141;
 yy192:
+		yych = *++lex->cursor;
+		if (yych == 'L') goto yy206;
+		if (yych == 'l') goto yy206;
+		goto yy141;
+yy193:
+		yych = *++lex->cursor;
+		if (yych == 'M') goto yy207;
+		if (yych == 'm') goto yy207;
+		goto yy141;
+yy194:
+		yych = *++lex->cursor;
+		if (yych == 'S') goto yy208;
+		if (yych == 's') goto yy208;
+		goto yy141;
+yy195:
+		yych = *++lex->cursor;
+		if (yych == 'N') goto yy209;
+		if (yych == 'n') goto yy209;
+		goto yy141;
+yy196:
+		yych = *++lex->cursor;
+		if (yych == 'L') goto yy210;
+		if (yych == 'l') goto yy210;
+		goto yy141;
+yy197:
+		yych = *++lex->cursor;
+		if (yych == 'N') goto yy211;
+		if (yych == 'n') goto yy211;
+		goto yy141;
+yy198:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 302 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 304 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_IMAGE;
 }
-#line 1365 "/opt/src/php-cmark/src/cql_lexer.c"
-yy194:
-		yych = *++lex->cursor;
-		if (yych == 'R') goto yy206;
-		if (yych == 'r') goto yy206;
-		goto yy112;
-yy195:
-		yych = *++lex->cursor;
-		if (yych == 'R') goto yy207;
-		if (yych == 'r') goto yy207;
-		goto yy112;
-yy196:
-		yych = *++lex->cursor;
-		if (yych == 'R') goto yy208;
-		if (yych == 'r') goto yy208;
-		goto yy112;
-yy197:
-		yych = *++lex->cursor;
-		if (yych == 'G') goto yy209;
-		if (yych == 'g') goto yy209;
-		goto yy112;
-yy198:
-		yych = *++lex->cursor;
-		if (yych == 'T') goto yy211;
-		if (yych == 't') goto yy211;
-		goto yy112;
-yy199:
-		yych = *++lex->cursor;
-		if (yych == 'U') goto yy212;
-		if (yych == 'u') goto yy212;
-		goto yy112;
+#line 1440 "/opt/src/php-cmark/src/cql_lexer.c"
 yy200:
 		yych = *++lex->cursor;
-		if (yych == 'O') goto yy213;
-		if (yych == 'o') goto yy213;
-		goto yy112;
+		if (yych == 'R') goto yy212;
+		if (yych == 'r') goto yy212;
+		goto yy141;
 yy201:
 		yych = *++lex->cursor;
-		if (yych <= 'I') {
-			if (yych == 'B') goto yy214;
-			if (yych <= 'H') goto yy112;
-			goto yy215;
-		} else {
-			if (yych <= 'b') {
-				if (yych <= 'a') goto yy112;
-				goto yy214;
-			} else {
-				if (yych == 'i') goto yy215;
-				goto yy112;
-			}
-		}
+		if (yych == 'R') goto yy213;
+		if (yych == 'r') goto yy213;
+		goto yy141;
 yy202:
 		yych = *++lex->cursor;
-		if (yych == 'I') goto yy216;
-		if (yych == 'i') goto yy216;
-		goto yy112;
+		if (yych == 'R') goto yy214;
+		if (yych == 'r') goto yy214;
+		goto yy141;
 yy203:
 		yych = *++lex->cursor;
-		if (yych == 'G') goto yy217;
-		if (yych == 'g') goto yy217;
-		goto yy112;
+		if (yych == 'G') goto yy215;
+		if (yych == 'g') goto yy215;
+		goto yy141;
 yy204:
+		yych = *++lex->cursor;
+		if (yych == 'T') goto yy217;
+		if (yych == 't') goto yy217;
+		goto yy141;
+yy205:
+		yych = *++lex->cursor;
+		if (yych == 'U') goto yy218;
+		if (yych == 'u') goto yy218;
+		goto yy141;
+yy206:
 		yych = *++lex->cursor;
 		if (yych == 'O') goto yy219;
 		if (yych == 'o') goto yy219;
-		goto yy112;
-yy205:
-		yych = *++lex->cursor;
-		if (yych == 'L') goto yy220;
-		if (yych == 'l') goto yy220;
-		goto yy112;
-yy206:
-		yych = *++lex->cursor;
-		if (yych == 'E') goto yy221;
-		if (yych == 'e') goto yy221;
-		goto yy112;
+		goto yy141;
 yy207:
 		yych = *++lex->cursor;
-		if (yych == 'A') goto yy222;
-		if (yych == 'a') goto yy222;
-		goto yy112;
+		if (yych <= 'I') {
+			if (yych == 'B') goto yy220;
+			if (yych <= 'H') goto yy141;
+			goto yy221;
+		} else {
+			if (yych <= 'b') {
+				if (yych <= 'a') goto yy141;
+				goto yy220;
+			} else {
+				if (yych == 'i') goto yy221;
+				goto yy141;
+			}
+		}
 yy208:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy223;
-		if (yych == 'e') goto yy223;
-		goto yy112;
+		if (yych == 'I') goto yy222;
+		if (yych == 'i') goto yy222;
+		goto yy141;
 yy209:
+		yych = *++lex->cursor;
+		if (yych == 'G') goto yy223;
+		if (yych == 'g') goto yy223;
+		goto yy141;
+yy210:
+		yych = *++lex->cursor;
+		if (yych == 'O') goto yy225;
+		if (yych == 'o') goto yy225;
+		goto yy141;
+yy211:
+		yych = *++lex->cursor;
+		if (yych == 'L') goto yy226;
+		if (yych == 'l') goto yy226;
+		goto yy141;
+yy212:
+		yych = *++lex->cursor;
+		if (yych == 'E') goto yy227;
+		if (yych == 'e') goto yy227;
+		goto yy141;
+yy213:
+		yych = *++lex->cursor;
+		if (yych == 'A') goto yy228;
+		if (yych == 'a') goto yy228;
+		goto yy141;
+yy214:
+		yych = *++lex->cursor;
+		if (yych == 'E') goto yy229;
+		if (yych == 'e') goto yy229;
+		goto yy141;
+yy215:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 290 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 292 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_STRONG;
 }
-#line 1460 "/opt/src/php-cmark/src/cql_lexer.c"
-yy211:
-		yych = *++lex->cursor;
-		if (yych == 'I') goto yy224;
-		if (yych == 'i') goto yy224;
-		goto yy112;
-yy212:
-		yych = *++lex->cursor;
-		if (yych == 'O') goto yy225;
-		if (yych == 'o') goto yy225;
-		goto yy112;
-yy213:
-		yych = *++lex->cursor;
-		if (yych == 'C') goto yy226;
-		if (yych == 'c') goto yy226;
-		goto yy112;
-yy214:
-		yych = *++lex->cursor;
-		if (yych == 'L') goto yy227;
-		if (yych == 'l') goto yy227;
-		goto yy112;
-yy215:
-		yych = *++lex->cursor;
-		if (yych == 'N') goto yy228;
-		if (yych == 'n') goto yy228;
-		goto yy112;
-yy216:
-		yych = *++lex->cursor;
-		if (yych == 'S') goto yy229;
-		if (yych == 's') goto yy229;
-		goto yy112;
+#line 1535 "/opt/src/php-cmark/src/cql_lexer.c"
 yy217:
+		yych = *++lex->cursor;
+		if (yych == 'I') goto yy230;
+		if (yych == 'i') goto yy230;
+		goto yy141;
+yy218:
+		yych = *++lex->cursor;
+		if (yych == 'O') goto yy231;
+		if (yych == 'o') goto yy231;
+		goto yy141;
+yy219:
+		yych = *++lex->cursor;
+		if (yych == 'C') goto yy232;
+		if (yych == 'c') goto yy232;
+		goto yy141;
+yy220:
+		yych = *++lex->cursor;
+		if (yych == 'L') goto yy233;
+		if (yych == 'l') goto yy233;
+		goto yy141;
+yy221:
+		yych = *++lex->cursor;
+		if (yych == 'N') goto yy234;
+		if (yych == 'n') goto yy234;
+		goto yy141;
+yy222:
+		yych = *++lex->cursor;
+		if (yych == 'S') goto yy235;
+		if (yych == 's') goto yy235;
+		goto yy141;
+yy223:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 236 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 238 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_HEADING;
 }
-#line 1500 "/opt/src/php-cmark/src/cql_lexer.c"
-yy219:
-		yych = *++lex->cursor;
-		if (yych == 'C') goto yy231;
-		if (yych == 'c') goto yy231;
-		goto yy112;
-yy220:
-		yych = *++lex->cursor;
-		if (yych == 'I') goto yy232;
-		if (yych == 'i') goto yy232;
-		goto yy112;
-yy221:
-		yych = *++lex->cursor;
-		if (yych == 'A') goto yy233;
-		if (yych == 'a') goto yy233;
-		goto yy112;
-yy222:
-		yych = *++lex->cursor;
-		if (yych == 'P') goto yy234;
-		if (yych == 'p') goto yy234;
-		goto yy112;
-yy223:
-		yych = *++lex->cursor;
-		if (yych == 'A') goto yy235;
-		if (yych == 'a') goto yy235;
-		goto yy112;
-yy224:
-		yych = *++lex->cursor;
-		if (yych == 'C') goto yy236;
-		if (yych == 'c') goto yy236;
-		goto yy112;
+#line 1575 "/opt/src/php-cmark/src/cql_lexer.c"
 yy225:
 		yych = *++lex->cursor;
-		if (yych == 'T') goto yy237;
-		if (yych == 't') goto yy237;
-		goto yy112;
+		if (yych == 'C') goto yy237;
+		if (yych == 'c') goto yy237;
+		goto yy141;
 yy226:
 		yych = *++lex->cursor;
-		if (yych == 'K') goto yy238;
-		if (yych == 'k') goto yy238;
-		goto yy112;
+		if (yych == 'I') goto yy238;
+		if (yych == 'i') goto yy238;
+		goto yy141;
 yy227:
 		yych = *++lex->cursor;
-		if (yych == 'O') goto yy240;
-		if (yych == 'o') goto yy240;
-		goto yy112;
+		if (yych == 'A') goto yy239;
+		if (yych == 'a') goto yy239;
+		goto yy141;
 yy228:
 		yych = *++lex->cursor;
-		if (yych == 'L') goto yy241;
-		if (yych == 'l') goto yy241;
-		goto yy112;
+		if (yych == 'P') goto yy240;
+		if (yych == 'p') goto yy240;
+		goto yy141;
 yy229:
+		yych = *++lex->cursor;
+		if (yych == 'A') goto yy241;
+		if (yych == 'a') goto yy241;
+		goto yy141;
+yy230:
+		yych = *++lex->cursor;
+		if (yych == 'C') goto yy242;
+		if (yych == 'c') goto yy242;
+		goto yy141;
+yy231:
+		yych = *++lex->cursor;
+		if (yych == 'T') goto yy243;
+		if (yych == 't') goto yy243;
+		goto yy141;
+yy232:
+		yych = *++lex->cursor;
+		if (yych == 'K') goto yy244;
+		if (yych == 'k') goto yy244;
+		goto yy141;
+yy233:
+		yych = *++lex->cursor;
+		if (yych == 'O') goto yy246;
+		if (yych == 'o') goto yy246;
+		goto yy141;
+yy234:
+		yych = *++lex->cursor;
+		if (yych == 'L') goto yy247;
+		if (yych == 'l') goto yy247;
+		goto yy141;
+yy235:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 284 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 286 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_EMPHASIS;
 }
-#line 1560 "/opt/src/php-cmark/src/cql_lexer.c"
-yy231:
-		yych = *++lex->cursor;
-		if (yych == 'K') goto yy242;
-		if (yych == 'k') goto yy242;
-		goto yy112;
-yy232:
-		yych = *++lex->cursor;
-		if (yych == 'N') goto yy244;
-		if (yych == 'n') goto yy244;
-		goto yy112;
-yy233:
-		yych = *++lex->cursor;
-		if (yych == 'K') goto yy245;
-		if (yych == 'k') goto yy245;
-		goto yy112;
-yy234:
-		yych = *++lex->cursor;
-		if (yych == 'H') goto yy247;
-		if (yych == 'h') goto yy247;
-		goto yy112;
-yy235:
-		yych = *++lex->cursor;
-		if (yych == 'K') goto yy249;
-		if (yych == 'k') goto yy249;
-		goto yy112;
-yy236:
-		yych = *++lex->cursor;
-		if (yych == 'B') goto yy251;
-		if (yych == 'b') goto yy251;
-		goto yy112;
+#line 1635 "/opt/src/php-cmark/src/cql_lexer.c"
 yy237:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy252;
-		if (yych == 'e') goto yy252;
-		goto yy112;
+		if (yych == 'K') goto yy248;
+		if (yych == 'k') goto yy248;
+		goto yy141;
 yy238:
+		yych = *++lex->cursor;
+		if (yych == 'N') goto yy250;
+		if (yych == 'n') goto yy250;
+		goto yy141;
+yy239:
+		yych = *++lex->cursor;
+		if (yych == 'K') goto yy251;
+		if (yych == 'k') goto yy251;
+		goto yy141;
+yy240:
+		yych = *++lex->cursor;
+		if (yych == 'H') goto yy253;
+		if (yych == 'h') goto yy253;
+		goto yy141;
+yy241:
+		yych = *++lex->cursor;
+		if (yych == 'K') goto yy255;
+		if (yych == 'k') goto yy255;
+		goto yy141;
+yy242:
+		yych = *++lex->cursor;
+		if (yych == 'B') goto yy257;
+		if (yych == 'b') goto yy257;
+		goto yy141;
+yy243:
+		yych = *++lex->cursor;
+		if (yych == 'E') goto yy258;
+		if (yych == 'e') goto yy258;
+		goto yy141;
+yy244:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 212 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 214 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_CODE_BLOCK;
 }
-#line 1605 "/opt/src/php-cmark/src/cql_lexer.c"
-yy240:
+#line 1680 "/opt/src/php-cmark/src/cql_lexer.c"
+yy246:
 		yych = *++lex->cursor;
-		if (yych == 'C') goto yy254;
-		if (yych == 'c') goto yy254;
-		goto yy112;
-yy241:
+		if (yych == 'C') goto yy260;
+		if (yych == 'c') goto yy260;
+		goto yy141;
+yy247:
 		yych = *++lex->cursor;
-		if (yych == 'I') goto yy255;
-		if (yych == 'i') goto yy255;
-		goto yy112;
-yy242:
+		if (yych == 'I') goto yy261;
+		if (yych == 'i') goto yy261;
+		goto yy141;
+yy248:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 218 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 220 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_HTML_BLOCK;
 }
-#line 1625 "/opt/src/php-cmark/src/cql_lexer.c"
-yy244:
+#line 1700 "/opt/src/php-cmark/src/cql_lexer.c"
+yy250:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy256;
-		if (yych == 'e') goto yy256;
-		goto yy112;
-yy245:
+		if (yych == 'E') goto yy262;
+		if (yych == 'e') goto yy262;
+		goto yy141;
+yy251:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 260 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 262 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_LINE_BREAK;
 }
-#line 1640 "/opt/src/php-cmark/src/cql_lexer.c"
-yy247:
+#line 1715 "/opt/src/php-cmark/src/cql_lexer.c"
+yy253:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 230 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 232 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_PARAGRAPH;
 }
-#line 1650 "/opt/src/php-cmark/src/cql_lexer.c"
-yy249:
+#line 1725 "/opt/src/php-cmark/src/cql_lexer.c"
+yy255:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 254 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 256 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_SOFT_BREAK;
 }
-#line 1660 "/opt/src/php-cmark/src/cql_lexer.c"
-yy251:
+#line 1735 "/opt/src/php-cmark/src/cql_lexer.c"
+yy257:
 		yych = *++lex->cursor;
-		if (yych == 'R') goto yy258;
-		if (yych == 'r') goto yy258;
-		goto yy112;
-yy252:
+		if (yych == 'R') goto yy264;
+		if (yych == 'r') goto yy264;
+		goto yy141;
+yy258:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 194 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 196 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_BLOCK_QUOTE;
 }
-#line 1675 "/opt/src/php-cmark/src/cql_lexer.c"
-yy254:
+#line 1750 "/opt/src/php-cmark/src/cql_lexer.c"
+yy260:
 		yych = *++lex->cursor;
-		if (yych == 'K') goto yy259;
-		if (yych == 'k') goto yy259;
-		goto yy112;
-yy255:
+		if (yych == 'K') goto yy265;
+		if (yych == 'k') goto yy265;
+		goto yy141;
+yy261:
 		yych = *++lex->cursor;
-		if (yych == 'N') goto yy261;
-		if (yych == 'n') goto yy261;
-		goto yy112;
-yy256:
+		if (yych == 'N') goto yy267;
+		if (yych == 'n') goto yy267;
+		goto yy141;
+yy262:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 272 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 274 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_HTML_INLINE;
 }
-#line 1695 "/opt/src/php-cmark/src/cql_lexer.c"
-yy258:
+#line 1770 "/opt/src/php-cmark/src/cql_lexer.c"
+yy264:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy262;
-		if (yych == 'e') goto yy262;
-		goto yy112;
-yy259:
+		if (yych == 'E') goto yy268;
+		if (yych == 'e') goto yy268;
+		goto yy141;
+yy265:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 224 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 226 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_CUSTOM_BLOCK;
 }
-#line 1710 "/opt/src/php-cmark/src/cql_lexer.c"
-yy261:
+#line 1785 "/opt/src/php-cmark/src/cql_lexer.c"
+yy267:
 		yych = *++lex->cursor;
-		if (yych == 'E') goto yy263;
-		if (yych == 'e') goto yy263;
-		goto yy112;
-yy262:
+		if (yych == 'E') goto yy269;
+		if (yych == 'e') goto yy269;
+		goto yy141;
+yy268:
 		yych = *++lex->cursor;
-		if (yych == 'A') goto yy265;
-		if (yych == 'a') goto yy265;
-		goto yy112;
-yy263:
+		if (yych == 'A') goto yy271;
+		if (yych == 'a') goto yy271;
+		goto yy141;
+yy269:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 278 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 280 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_CUSTOM_INLINE;
 }
-#line 1730 "/opt/src/php-cmark/src/cql_lexer.c"
-yy265:
+#line 1805 "/opt/src/php-cmark/src/cql_lexer.c"
+yy271:
 		yych = *++lex->cursor;
-		if (yych == 'K') goto yy266;
-		if (yych != 'k') goto yy112;
-yy266:
+		if (yych == 'K') goto yy272;
+		if (yych != 'k') goto yy141;
+yy272:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 242 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 244 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE_SEPARATOR;
 
 	return T_TYPE_THEMATIC_BREAK;
 }
-#line 1744 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1819 "/opt/src/php-cmark/src/cql_lexer.c"
 	}
 /* *********************************** */
 yyc_ST_LOOKING_FOR_TYPE_SEPARATOR:
@@ -1782,78 +1857,88 @@ yyc_ST_LOOKING_FOR_TYPE_SEPARATOR:
 		(2);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy273;
+			goto yy280;
 		}
 		if (yych <= '(') {
-			if (yych <= 0x00) goto yy271;
-			if (yych == '#') goto yy276;
+			if (yych <= 0x00) goto yy276;
+			if (yych == '#') goto yy283;
+			goto yy278;
 		} else {
-			if (yych <= ')') goto yy277;
-			if (yych == '|') goto yy279;
+			if (yych <= ')') goto yy284;
+			if (yych == '|') goto yy286;
+			goto yy278;
 		}
-yy270:
-yy271:
+yy276:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 102 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 104 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	return 0;
 }
-#line 1803 "/opt/src/php-cmark/src/cql_lexer.c"
-yy273:
+#line 1879 "/opt/src/php-cmark/src/cql_lexer.c"
+yy278:
+		++lex->cursor;
+yy279:
+		lex->len = (size_t) lex->cursor - (size_t) lex->text;
+#line 310 "/opt/src/php-cmark/src/cql_lexer.l"
+		{
+	return 1;
+}
+#line 1888 "/opt/src/php-cmark/src/cql_lexer.c"
+yy280:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 64) {
-			goto yy273;
+			goto yy280;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 106 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 108 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 1816 "/opt/src/php-cmark/src/cql_lexer.c"
-yy276:
+#line 1901 "/opt/src/php-cmark/src/cql_lexer.c"
+yy283:
 		yych = *++lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy281;
+			goto yy288;
 		}
-		goto yy270;
-yy277:
+		goto yy279;
+yy284:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 182 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 184 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_SUBQUERY;
 
 	return T_CONSTRAINT_END;
 }
-#line 1832 "/opt/src/php-cmark/src/cql_lexer.c"
-yy279:
+#line 1917 "/opt/src/php-cmark/src/cql_lexer.c"
+yy286:
 		++lex->cursor;
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 188 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 190 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	lex->state = ST_LOOKING_FOR_TYPE;
 
 	return T_TYPE_SEPARATOR;
 }
-#line 1842 "/opt/src/php-cmark/src/cql_lexer.c"
-yy281:
+#line 1927 "/opt/src/php-cmark/src/cql_lexer.c"
+yy288:
 		++lex->cursor;
 		(1);
 		yych = *lex->cursor;
 		if (yybm[0+yych] & 128) {
-			goto yy281;
+			goto yy288;
 		}
 		lex->len = (size_t) lex->cursor - (size_t) lex->text;
-#line 110 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 112 "/opt/src/php-cmark/src/cql_lexer.l"
 		{
 	goto restart;
 }
-#line 1855 "/opt/src/php-cmark/src/cql_lexer.c"
+#line 1940 "/opt/src/php-cmark/src/cql_lexer.c"
 	}
 }
-#line 308 "/opt/src/php-cmark/src/cql_lexer.l"
+#line 314 "/opt/src/php-cmark/src/cql_lexer.l"
 
 }
