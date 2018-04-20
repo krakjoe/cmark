@@ -9,6 +9,9 @@ LIBCMARK_MIN_MAJOR=0
 LIBCMARK_MIN_MINOR=28
 
 if test "$PHP_CMARK" != "no"; then
+  AC_PROG_YACC
+  PHP_SUBST(YACC)
+
   LIBCMARK_VERSON=""
   LIBNAME=cmark
   LIBSYMBOL=cmark_markdown_to_html
