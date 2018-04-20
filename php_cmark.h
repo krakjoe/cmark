@@ -22,7 +22,7 @@
 extern zend_module_entry cmark_module_entry;
 # define phpext_cmark_ptr &cmark_module_entry
 
-# define PHP_CMARK_VERSION "1.0.2-dev"
+# define PHP_CMARK_VERSION "1.1.0"
 
 # if defined(ZTS) && defined(COMPILE_DL_CMARK)
 ZEND_TSRMLS_CACHE_EXTERN()
