@@ -24,10 +24,10 @@
   <email>remi@php.net</email>
   <active>yes</active>
  </lead>
- <date>2018-04-10</date>
+ <date>2018-04-20</date>
  <version>
-  <release>1.0.1</release>
-  <api>1.0.0</api>
+  <release>1.1.0</release>
+  <api>1.1.0</api>
  </version>
  <stability>
   <release>stable</release>
@@ -35,8 +35,9 @@
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- improve efficiency of visitation, only looking up functions one time for each accept()
-- allow returning [Event => Node] from enter/leave, providing full control over backing iterator
+- Add CQL, CommonMark Query Language: allow the programmer to navigate the
+  document without loading entire trees or intermediate objects into memory
+- refcounting fixes
  </notes>
  <contents>
   <dir name="/">
@@ -46,6 +47,15 @@
    <file name="config.w32" role="src" />
    <file name="php_cmark.h" role="src" />
    <dir name="src">
+    <file name="call.c" role="src" />
+    <file name="call.h" role="src" />
+    <file name="cql.c" role="src" />
+    <file name="cql.h" role="src" />
+    <file name="cql_lexer.c" role="src" />
+    <file name="cql_lexer.h" role="src" />
+    <file name="cql_parser.c" role="src" />
+    <file name="cql_parser.h" role="src" />
+    <file name="cql_printers.h" role="src" />
     <file name="block.c" role="src" />
     <file name="block.h" role="src" />
     <file name="break.c" role="src" />
@@ -87,6 +97,46 @@
     <file name="visitor.h" role="src" />
    </dir> <!-- src -->
    <dir name="tests">
+      <file name="CQL/001.phpt" role="test" />
+      <file name="CQL/002.phpt" role="test" />
+      <file name="CQL/003.phpt" role="test" />
+      <file name="CQL/004.phpt" role="test" />
+      <file name="CQL/005.phpt" role="test" />
+      <file name="CQL/006.phpt" role="test" />
+      <file name="CQL/007.phpt" role="test" />
+      <file name="CQL/008.phpt" role="test" />
+      <file name="CQL/009.phpt" role="test" />
+      <file name="CQL/010.phpt" role="test" />
+      <file name="CQL/011.phpt" role="test" />
+      <file name="CQL/012.phpt" role="test" />
+      <file name="CQL/013.phpt" role="test" />
+      <file name="CQL/014.phpt" role="test" />
+      <file name="CQL/015.phpt" role="test" />
+      <file name="CQL/016.phpt" role="test" />
+      <file name="CQL/017.phpt" role="test" />
+      <file name="CQL/018.phpt" role="test" />
+      <file name="CQL/019.phpt" role="test" />
+      <file name="CQL/020.phpt" role="test" />
+      <file name="CQL/021.phpt" role="test" />
+      <file name="CQL/022.phpt" role="test" />
+      <file name="CQL/023.phpt" role="test" />
+      <file name="CQL/024.phpt" role="test" />
+      <file name="CQL/025.phpt" role="test" />
+      <file name="CQL/026.phpt" role="test" />
+      <file name="CQL/027.phpt" role="test" />
+      <file name="CQL/028.phpt" role="test" />
+      <file name="CQL/029.phpt" role="test" />
+      <file name="CQL/030.phpt" role="test" />
+      <file name="CQL/031.phpt" role="test" />
+      <file name="CQL/032.phpt" role="test" />
+      <file name="CQL/033.phpt" role="test" />
+      <file name="CQL/034.phpt" role="test" />
+      <file name="CQL/035.phpt" role="test" />
+      <file name="CQL/036.phpt" role="test" />
+      <file name="CQL/037.phpt" role="test" />
+      <file name="CQL/038.phpt" role="test" />
+      <file name="CQL/039.phpt" role="test" />
+      <file name="CQL/040.phpt" role="test" />
       <file name="Node/Heading/013.phpt" role="test" />
       <file name="Node/Heading/010.phpt" role="test" />
       <file name="Node/Heading/001.phpt" role="test" />
@@ -331,6 +381,22 @@
  <providesextension>cmark</providesextension>
  <extsrcrelease />
  <changelog>
+  <release>
+   <date>2018-04-10</date>
+   <version>
+    <release>1.0.1</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+- improve efficiency of visitation, only looking up functions one time for each accept()
+- allow returning [Event => Node] from enter/leave, providing full control over backing iterator
+   </notes>
+  </release>
   <release>
    <date>2018-03-29</date>
    <version>
