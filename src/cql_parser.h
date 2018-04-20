@@ -40,16 +40,16 @@
 extern int cql_debug;
 #endif
 /* "%code requires" blocks.  */
-#line 24 "/opt/src/php-cmark/src/cql_parser.y" /* yacc.c:1909  */
+#line 24 "/work/GIT/cmark/src/cql_parser.y" /* yacc.c:1909  */
 
 #include <stdlib.h>
 #include <string.h>
 
 #include <src/cql.h>
+#include <src/cql_lexer.h>
 #ifndef YY_TYPEDEF_YY_SCANNER_T
 #define YY_TYPEDEF_YY_SCANNER_T
 typedef void* yyscan_t;
-typedef struct _cql_lex_t cql_lex_t;
 #endif
 
 static inline cql_ast_t* cql_ast_create(cql_ast_type_t type, cmark_node_type constraint) {
@@ -132,40 +132,6 @@ static inline cql_ast_t* cql_ast_next(cql_ast_t *stack, cql_ast_t *next) {
     T_TYPE_IMAGE = 290
   };
 #endif
-/* Tokens.  */
-#define T_FIRST_CHILD 258
-#define T_LAST_CHILD 259
-#define T_PARENT 260
-#define T_PREVIOUS 261
-#define T_NEXT 262
-#define T_CHILDREN 263
-#define T_SIBLINGS 264
-#define T_SEPERATOR 265
-#define T_SUBQUERY_START 266
-#define T_SUBQUERY_END 267
-#define T_CONSTRAINT_START 268
-#define T_CONSTRAINT_NEGATE 269
-#define T_CONSTRAINT_END 270
-#define T_TYPE_SEPARATOR 271
-#define T_TYPE_BLOCK_QUOTE 272
-#define T_TYPE_LIST 273
-#define T_TYPE_ITEM 274
-#define T_TYPE_CODE_BLOCK 275
-#define T_TYPE_HTML_BLOCK 276
-#define T_TYPE_CUSTOM_BLOCK 277
-#define T_TYPE_PARAGRAPH 278
-#define T_TYPE_HEADING 279
-#define T_TYPE_THEMATIC_BREAK 280
-#define T_TYPE_TEXT 281
-#define T_TYPE_SOFT_BREAK 282
-#define T_TYPE_LINE_BREAK 283
-#define T_TYPE_CODE 284
-#define T_TYPE_HTML_INLINE 285
-#define T_TYPE_CUSTOM_INLINE 286
-#define T_TYPE_EMPHASIS 287
-#define T_TYPE_STRONG 288
-#define T_TYPE_LINK 289
-#define T_TYPE_IMAGE 290
 
 /* Value type.  */
 

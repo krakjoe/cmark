@@ -26,10 +26,10 @@ static int yyerror(cql_lex_t *lex, cql_ast_t **stack, const char *msg);
 #include <string.h>
 
 #include <src/cql.h>
+#include <src/cql_lexer.h>
 #ifndef YY_TYPEDEF_YY_SCANNER_T
 #define YY_TYPEDEF_YY_SCANNER_T
 typedef void* yyscan_t;
-typedef struct _cql_lex_t cql_lex_t;
 #endif
 
 static inline cql_ast_t* cql_ast_create(cql_ast_type_t type, cmark_node_type constraint) {
