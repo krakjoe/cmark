@@ -43,6 +43,8 @@
 #include <src/media.h>
 #include <src/visitor.h>
 
+#include <src/cql.h>
+
 zend_class_entry*      php_cmark_node_ce;
 zend_object_handlers   php_cmark_node_handlers;
 
@@ -57,7 +59,7 @@ typedef int (*php_cmark_node_edit_f) (cmark_node*, cmark_node*);
 
 static inline php_cmark_node_edit_result php_cmark_node_edit(php_cmark_node_edit_f handler, php_cmark_node_t *object, php_cmark_node_t *arg) {
 
-	if (arg->used) {
+	if (!arg->owned) {
 		return PHP_CMARK_NODE_EDIT_USED;
 	}
 
@@ -65,9 +67,9 @@ static inline php_cmark_node_edit_result php_cmark_node_edit(php_cmark_node_edit
 		return PHP_CMARK_NODE_EDIT_HANDLER;
 	}
 
-	GC_ADDREF(php_cmark_node_zend(arg));
+	arg->owned = 0;
 
-	arg->used = 1;
+
 
 	return PHP_CMARK_NODE_EDIT_OK;
 }
@@ -78,7 +80,7 @@ void php_cmark_node_new(zval *object, cmark_node_type type) {
 	n->node = cmark_node_new_with_mem(
 		type, &php_cmark_mem);
 
-	cmark_node_set_user_data(n->node, n);
+	n->owned = 1;
 }
 
 void php_cmark_node_list_new(zval *object, cmark_list_type type) {
@@ -88,7 +90,8 @@ void php_cmark_node_list_new(zval *object, cmark_list_type type) {
 		CMARK_NODE_LIST, &php_cmark_mem);
 
 	cmark_node_set_list_type(n->node, type);
-	cmark_node_set_user_data(n->node, n);
+
+	n->owned = 1;
 }
 
 zend_class_entry* php_cmark_node_class(cmark_node* node) {
@@ -155,27 +158,18 @@ zend_object* php_cmark_node_create(zend_class_entry *ce) {
 	return php_cmark_node_zend(n);
 }
 
-php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node, zend_bool addref) {
+php_cmark_node_t* php_cmark_node_shadow(zval *return_value, cmark_node *node) {
 	php_cmark_node_t *n;
-
+	
 	if (!node) {
 		return NULL;
 	}
 
-	if (!(n = cmark_node_get_user_data(node))) {
-		object_init_ex(return_value, php_cmark_node_class(node));
+	object_init_ex(return_value, php_cmark_node_class(node));
 
-		n = php_cmark_node_fetch(return_value);
-		n->node = node;
-
-		cmark_node_set_user_data(n->node, n);
-	} else {
-		ZVAL_OBJ(return_value, php_cmark_node_zend(n));
-	}
-
-	if (addref) {
-		Z_ADDREF_P(return_value);
-	}
+	n = php_cmark_node_fetch(return_value);
+	n->node = node;
+	n->owned = 0;
 
 	return n;
 }
@@ -337,10 +331,10 @@ PHP_METHOD(Node, replace)
 				"%s is already in use",
 				ZSTR_VAL(Z_OBJCE_P(target)->name));
 			return;
-
-		default: 
-			zval_ptr_dtor(getThis());
 	}
+
+	php_cmark_node_fetch(getThis())->owned = 1;
+	php_cmark_node_fetch(target)->owned = 0;
 
 	php_cmark_chain_ex(target);
 }
@@ -353,9 +347,7 @@ PHP_METHOD(Node, unlink)
 
 	cmark_node_unlink(n->node);
 
-	n->used = 0;
-
-	zval_ptr_dtor(getThis());
+	n->owned = 1;
 }
 
 ZEND_BEGIN_ARG_INFO_EX(php_cmark_node_accept, 0, 0, 1)

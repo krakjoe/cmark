@@ -77,8 +77,8 @@ static zend_always_inline void php_cmark_node_visitor_init(php_cmark_node_visito
 
 static zend_always_inline void php_cmark_node_visitor_call(
 		php_cmark_node_visitor_t *interface, cmark_event_type event, cmark_iter *iterator) {
-	php_cmark_node_t *node = php_cmark_node_shadow(
-		&interface->visiting, cmark_iter_get_node(iterator), 0);
+	php_cmark_node_t *node = node = php_cmark_node_shadow(
+		&interface->visiting, cmark_iter_get_node(iterator));
 	zval *result = &interface->result;
 
 	zend_call_function(&interface->fci, &interface->fcc);
@@ -123,6 +123,8 @@ static zend_always_inline void php_cmark_node_visitor_call(
 			cmark_iter_reset(iterator, php_cmark_node_fetch(reset)->node, event);
 		} break;
 	}
+
+	zval_ptr_dtor(&interface->visiting);
 
 	if (Z_REFCOUNTED_P(result)) {
 		zval_ptr_dtor(result);
