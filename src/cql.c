@@ -91,6 +91,7 @@ static inline cql_in_t cql_ast_loop_begin_in(cql_ast_type_t type) {
 		case CQL_PATH_PARENT: return CQLI_PAN;
 		case CQL_PATH_NEXT: return CQLI_NEN;
 	}
+	return CQLI_NOP;
 }
 
 static inline cql_in_t cql_ast_loop_next_in(cql_ast_type_t type) {
@@ -103,6 +104,7 @@ static inline cql_in_t cql_ast_loop_next_in(cql_ast_type_t type) {
 		case CQL_PATH_PARENT: return CQLI_PAN;
 		case CQL_PATH_NEXT: return CQLI_NEN; 
 	}
+	return CQLI_NOP;
 }
 
 static inline int cql_ast_process(cql_ast_t *stack, cql_function_t *function, int depth) {
