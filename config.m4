@@ -6,10 +6,12 @@ dnl Make sure that the comment is aligned:
 [  --with-cmark            Enable cmark support], no)
 
 PHP_ARG_WITH(cql-jit, whether to enable libjit support for CQL,
-[  --with-cql-jit          Enable libjit support for CQL], no)
+[  --with-cql-jit          Enable libjit support for CQL], yes, no)
 
 LIBCMARK_MIN_MAJOR=0
 LIBCMARK_MIN_MINOR=28
+
+LIBJIT_MIN_VERSION=0.1.3
 
 if test "$PHP_CMARK" != "no"; then
   AC_PROG_YACC
@@ -32,19 +34,20 @@ if test "$PHP_CMARK" != "no"; then
       else
         AC_MSG_ERROR(system libcmark is too old: version $LIBCMARK_MIN_MAJOR.$LIBCMARK_MIN_MINOR required)
       fi
-    fi
-    PHP_EVAL_LIBLINE($LIBCMARK_LIBDIR, CMARK_SHARED_LIBADD)
-    PHP_EVAL_INCLINE($LIBCMARK_CFLAGS)
 
-    dnl check symbol, can probably be removed, if minimal version is properly set
-    PHP_CHECK_LIBRARY($LIBNAME,$LIBSYMBOL,
-    [
-      AC_DEFINE(HAVE_CMARKLIB,1,[ ])
-    ],[
-      AC_MSG_ERROR([wrong cmark lib version or lib not found])
-    ],[
-      $CMARK_SHARED_LIBADD
-    ])
+      PHP_EVAL_LIBLINE($LIBCMARK_LIBDIR, CMARK_SHARED_LIBADD)
+      PHP_EVAL_INCLINE($LIBCMARK_CFLAGS)
+
+      dnl check symbol, can probably be removed, if minimal version is properly set
+      PHP_CHECK_LIBRARY($LIBNAME,$LIBSYMBOL,
+      [
+        AC_DEFINE(HAVE_CMARKLIB,1,[ ])
+      ],[
+        AC_MSG_ERROR([wrong cmark lib version or lib not found])
+      ],[
+        $CMARK_SHARED_LIBADD
+      ])
+    fi
   fi
 
   dnl fallback on patch search
@@ -66,7 +69,7 @@ if test "$PHP_CMARK" != "no"; then
     if test -n "$CMARK_DIR"; then
       AC_MSG_RESULT(found in $CMARK_DIR/include)
     else
-      AC_MSG_RESULT([not found $CMARK_DIR])
+      AC_MSG_RESULT([not found])
       AC_MSG_ERROR([Please reinstall the cmark distribution])
     fi
     PHP_ADD_INCLUDE($CMARK_DIR/include)
@@ -97,33 +100,75 @@ int main() {
     CFLAGS=$old_CFLAGS
   fi
 
-  JIT_SEARCH_PATH="/usr /usr/local"
-  JIT_HEADER="include/jit/jit.h"
-  if test -r $PHP_CQL_JIT/$JIT_HEADER; then
-    PHP_CQL_JITDIR=$PHP_CQL_JIT
-  else 
-    AC_MSG_CHECKING([for libjit files in default path])
-    for i in $JIT_SEARCH_PATH; do
-      if test -r $i/$JIT_HEADER; then
-        PHP_CQL_JITDIR=$i
-        AC_MSG_RESULT(found in $i)
-        break
+  LIBJIT_VERSON=""
+  LIBNAME=jit
+  LIBSYMBOL=jit_context_create
+
+  dnl try pkgconfig if no path provided
+  if test "$PHP_CQL_JIT" = "yes"; then
+    AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+    AC_MSG_CHECKING(for libjit)
+    if test -x "$PKG_CONFIG" && $PKG_CONFIG --exists libjit; then
+      if $PKG_CONFIG libjit --atleast-version $LIBJIT_MIN_VERSION; then
+        LIBJIT_CFLAGS=`$PKG_CONFIG libjit --cflags`
+        LIBJIT_LIBDIR=`$PKG_CONFIG libjit --libs`
+        LIBJIT_VERSON=`$PKG_CONFIG libjit --modversion`
+        AC_MSG_RESULT(from pkgconfig: version $LIBJIT_VERSON)
+      else
+        AC_MSG_ERROR(system libjit is too old: version $LIBJIT_MIN_VERSION required)
       fi
-    done
+
+      PHP_EVAL_LIBLINE($LIBJIT_LIBDIR, CMARK_SHARED_LIBADD)
+      PHP_EVAL_INCLINE($LIBJIT_CFLAGS)
+
+      dnl check symbol, can probably be removed, if minimal version is properly set
+      PHP_CHECK_LIBRARY($LIBNAME, $LIBSYMBOL,
+      [
+        AC_DEFINE(HAVE_CQL_JIT, 1, [ Have cmark libjit support ])
+      ],[
+        AC_MSG_ERROR([wrong libjit version or libjit not found])
+      ],[
+        $CMARK_SHARED_LIBADD
+      ])
+    else
+      AC_MSG_RESULT(not found by pkgconfig)
+    fi
   fi
 
-  if test -r $PHP_CQL_JITDIR; then
-    PHP_ADD_INCLUDE($PHP_CQL_JITDIR/include)
+  dnl fallback on patch search
+  if test -z "$LIBJIT_VERSON" -a "$PHP_CQL_JIT" != "no"; then
+    AC_MSG_CHECKING(for libjit headers)
+    JIT_SEARCH_PATH="/usr /usr/local"
+    JIT_HEADER="include/jit/jit.h"
+    if test -r $PHP_CQL_JIT/$JIT_HEADER; then
+      PHP_CQL_JITDIR=$PHP_CQL_JIT
+    else
+      AC_MSG_CHECKING([for libjit files in default path])
+      for i in $JIT_SEARCH_PATH; do
+        if test -r $i/$JIT_HEADER; then
+          PHP_CQL_JITDIR=$i
+          break
+        fi
+      done
+    fi
 
-    PHP_CHECK_LIBRARY(jit, jit_context_create,
-    [
-      PHP_ADD_LIBRARY_WITH_PATH(jit, $PHP_CQL_JITDIR/lib, CMARK_SHARED_LIBADD)
-        AC_DEFINE(HAVE_CQL_JIT, 1, [ Have cmark libjit support ])
-    ],[
-      AC_MSG_WARN([wrong libjit version or libjit not found])
-    ],[
-      -L$PHP_CQL_JITDIR/lib -lm
-    ])
+    if test -n "$PHP_CQL_JITDIR"; then
+      AC_MSG_RESULT(found in $PHP_CQL_JITDIR/include)
+      PHP_ADD_INCLUDE($PHP_CQL_JITDIR/include)
+
+      PHP_CHECK_LIBRARY($LIBNAME, $LIBSYMBOL,
+      [
+        PHP_ADD_LIBRARY_WITH_PATH(jit, $PHP_CQL_JITDIR/$PHP_LIBDIR, CMARK_SHARED_LIBADD)
+          AC_DEFINE(HAVE_CQL_JIT, 1, [ Have cmark libjit support ])
+      ],[
+        AC_MSG_WARN([wrong libjit version or libjit not found])
+      ],[
+        -L$PHP_CQL_JITDIR/$PHP_LIBDIR -lm
+      ])
+    else
+      AC_MSG_RESULT([not found])
+      AC_MSG_ERROR([Please reinstall the libjit distribution or use --without-cql-jit option])
+    fi
   fi
 
   PHP_SUBST(CMARK_SHARED_LIBADD)

@@ -91,7 +91,6 @@ static inline int cql_op_firstloop(cql_function_t *function, int pos);
 static inline int cql_op_firstof(cql_function_t *function, cql_in_t in);
 static inline int cql_op_emit(cql_function_t *function, cql_in_t in, cql_op_ir_type_t it, int iv, cql_op_ir_type_t rt, int rv, cql_constraint_t constraint);
 static inline int cql_op_update_ir(cql_function_t *function, int op, cql_op_ir_type_t it, int ir);
-static inline int cql_op_update_ext(cql_function_t *function, int op, cql_constraint_t ext);
 static inline int cql_op_emit_simple(cql_function_t *function, cql_in_t in);
 
 /****************************************************************************************/
@@ -397,7 +396,9 @@ static inline int cql_op_emit_simple(cql_function_t *function, cql_in_t in) {
 	return cql_op_emit(function, in, CQLI_OP_IR_RV_LAST, 0, CQLI_OP_IR_ALLOC, 0, -1);
 }
 
+#ifdef HAVE_CQL_JIT
 static inline void cql_jit_build(cql_function_t *function);
+#endif
 
 static inline int cql_op_stack(cql_function_t *function) {
 	if (!function->size) {
