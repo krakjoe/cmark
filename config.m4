@@ -6,7 +6,7 @@ dnl Make sure that the comment is aligned:
 [  --with-cmark            Enable cmark support], no)
 
 PHP_ARG_WITH(cql-jit, whether to enable libjit support for CQL,
-[  --with-cql-jit          Enable libjit support for CQL], yes, no)
+[  --with-cql-jit          Enable libjit support for CQL], no, no)
 
 LIBCMARK_MIN_MAJOR=0
 LIBCMARK_MIN_MINOR=28
@@ -167,7 +167,7 @@ int main() {
       ])
     else
       AC_MSG_RESULT([not found])
-      AC_MSG_ERROR([Please reinstall the libjit distribution or use --without-cql-jit option])
+      AC_MSG_ERROR([Please reinstall the libjit distribution])
     fi
   fi
 
