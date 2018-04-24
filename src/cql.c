@@ -532,7 +532,7 @@ static inline void cql_jit_build(cql_function_t *function) {
 			case CQLI_FCN: {
 				jit_insn_branch_if_not(function->jit.function, 
 					cql_jit_op_stack(op->ip), 
-					cql_jit_op_label(end, -1));
+					cql_jit_op_label(op, 1));
 
 				cql_jit_op_stack(op->rp) = jit_insn_load_relative(
 					function->jit.function, 
