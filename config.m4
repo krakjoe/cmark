@@ -1,4 +1,3 @@
-dnl $Id$
 dnl config.m4 for extension cmark
 
 PHP_ARG_WITH(cmark, whether to enable cmark support,
