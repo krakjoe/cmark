@@ -81,16 +81,16 @@ if test "$PHP_CMARK" != "no"; then
     AC_MSG_CHECKING([for cmark minimal version])
     old_CFLAGS=$CFLAGS
     CFLAGS="-I$CMARK_DIR/include"
-    AC_TRY_RUN([
+    AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <cmark.h>
 int main() {
   return (CMARK_VERSION < (($LIBCMARK_MIN_MAJOR << 16) | ($LIBCMARK_MIN_MINOR << 8)) ? 1 : 0);
 }
-    ], [
+    ]])],[
       AC_MSG_RESULT([ok])
-    ], [
+    ],[
       AC_MSG_ERROR(system libcmark is too old: version 0.28 required)
-    ])
+    ],[])
     CFLAGS=$old_CFLAGS
   fi
 
