@@ -6,9 +6,9 @@ addons:
     packages:
       - valgrind
 php:
-  - 7.0
-  - 7.1
   - 7.2
+  - 7.3
+  - 7.4snapshot
   - nightly
 
 env:
@@ -27,7 +27,13 @@ env:
 matrix:
   allow_failures:
     - php: nightly
+      env: OPCACHE=0 TEST_PHP_ARGS="$DEF"
+    - php: nightly
+      env: OPCACHE=1 TEST_PHP_ARGS="$DEF"
+    - php: nightly
       env: OPCACHE=0 TEST_PHP_ARGS="$DEF $MEMCHECK"
+    - php: nightly
+      env: OPCACHE=0 TEST_PHP_ARGS="$DEF" CONF="with-cmark-coverage" RULE="cmark-test-coverage-travis"
 
 before_install:
   - test $CONF != "with-cmark-coverage" || pip install --user cpp-coveralls
