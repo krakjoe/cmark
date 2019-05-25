@@ -214,11 +214,18 @@ php_cmark_node_read_error:
 	return &EG(uninitialized_zval);	
 }
 
+#if PHP_VERSION_ID >= 70400
+zval* php_cmark_node_write(zval *object, zval *member, zval *value, void **rtc) {
+#else
 void php_cmark_node_write(zval *object, zval *member, zval *value, void **rtc) {
+#endif
 	php_cmark_throw(
 		"invalid write of %s", 
 		Z_TYPE_P(member) == IS_STRING ? 
 			Z_STRVAL_P(member) : "invalid property");
+#if PHP_VERSION_ID >= 70400
+    return &EG(uninitialized_zval);
+#endif
 }
 
 int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **rtc) {

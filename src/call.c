@@ -89,7 +89,7 @@ PHP_METHOD(CQL, __construct)
 		Z_PARAM_ZVAL(cql)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(cql, IS_STRING, 0, "cql expected to be string");
+	php_cmark_assert_type(cql, IS_STRING, 0, return, "cql expected to be string");
 
 	if (!cql_compile(&call->function, Z_STRVAL_P(cql), Z_STRLEN_P(cql), &cursor)) {
 		php_cmark_throw("failed to compile call near character %ld \"%s\"", 

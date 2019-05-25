@@ -75,7 +75,7 @@ PHP_METHOD(Parser, __construct)
 		Z_PARAM_ZVAL(options)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(options, IS_LONG, 1, "options expected to be int");
+	php_cmark_assert_type(options, IS_LONG, 1, return, "options expected to be int");
 
 	p->parser = cmark_parser_new_with_mem(
 		options ? Z_LVAL_P(options) : 0, &php_cmark_mem);
@@ -94,7 +94,7 @@ PHP_METHOD(Parser, parse)
 		Z_PARAM_ZVAL(buffer)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(buffer, IS_STRING, 1, "buffer expected to be string");
+	php_cmark_assert_type(buffer, IS_STRING, 1, return, "buffer expected to be string");
 
 	cmark_parser_feed(p->parser, Z_STRVAL_P(buffer), Z_STRLEN_P(buffer));
 }
@@ -144,8 +144,8 @@ PHP_FUNCTION(CommonMark_Parse)
 		Z_PARAM_ZVAL(options)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(content, IS_STRING, 0, "content expected to be string");
-	php_cmark_assert_type(options, IS_LONG, 1, "options expected to be int");
+	php_cmark_assert_type(content, IS_STRING, 0, return, "content expected to be string");
+	php_cmark_assert_type(options, IS_LONG, 1, return, "options expected to be int");
 
 	parser = cmark_parser_new_with_mem(
 		options ? Z_LVAL_P(options) : 0, &php_cmark_mem);
