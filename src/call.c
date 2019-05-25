@@ -79,6 +79,10 @@ static inline zend_object* php_cmark_call_clone(zval *zv) {
 	return &dst->std;
 }
 
+ZEND_BEGIN_ARG_INFO_EX(php_cmark_call_construct, 0, 0, 1)
+    ZEND_ARG_INFO(0, cql)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(CQL, __construct)
 {
 	php_cmark_call_t *call = php_cmark_call_fetch(getThis());
@@ -158,6 +162,9 @@ PHP_METHOD(CQL, __invoke)
 			php_cmark_cql_enter_function, &info) == SUCCESS);
 }
 
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_TYPE(php_cmark_call_print, 0, 0, IS_VOID, 0)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(CQL, print)
 {
 	php_cmark_call_t *c = php_cmark_call_fetch(getThis());
@@ -169,9 +176,9 @@ PHP_METHOD(CQL, print)
 }
 
 static zend_function_entry php_cmark_call_methods[] = {
-	PHP_ME(CQL, __construct, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(CQL, __construct, php_cmark_call_construct, ZEND_ACC_PUBLIC)
 	PHP_ME(CQL, __invoke,    php_cmark_call_invoke, ZEND_ACC_PUBLIC)
-	PHP_ME(CQL, print,       php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(CQL, print,       php_cmark_call_print, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
