@@ -81,7 +81,7 @@ PHP_METHOD(Parser, __construct)
 		options ? Z_LVAL_P(options) : 0, &php_cmark_mem);
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_parser_parse, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_TYPE(php_cmark_parser_parse, 0, 1, IS_VOID, 0)
 	ZEND_ARG_INFO(0, buffer)
 ZEND_END_ARG_INFO()
 

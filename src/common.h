@@ -39,6 +39,13 @@
 		ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, IS_OBJECT, #type, nullable)
 #endif
 
+#if PHP_VERSION_ID >= 70200
+#   define ZEND_BEGIN_ARG_INFO_WITH_RETURN_TYPE ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX
+#else
+#   define ZEND_BEGIN_ARG_INFO_WTIH_RETURN_TYPE(name, ref, req, type, nullable) \
+        ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, type, NULL, nullable)
+#endif
+
 #if PHP_VERSION_ID < 70200
 #define ZEND_BEGIN_PARAMS(min, max) \
 	if (ZEND_NUM_ARGS() < min || ZEND_NUM_ARGS() > max) { \
