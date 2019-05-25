@@ -99,6 +99,9 @@ PHP_METHOD(Parser, parse)
 	cmark_parser_feed(p->parser, Z_STRVAL_P(buffer), Z_STRLEN_P(buffer));
 }
 
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_parser_finish, 0, 0, CommonMark\\Node, 0)
+ZEND_END_ARG_INFO()
+
 PHP_METHOD(Parser, finish)
 {
 	php_cmark_parser_t *p = php_cmark_parser_fetch(getThis());
@@ -126,7 +129,7 @@ PHP_METHOD(Parser, finish)
 static zend_function_entry php_cmark_parser_methods[] = {
 	PHP_ME(Parser, __construct, php_cmark_parser_construct, ZEND_ACC_PUBLIC)
 	PHP_ME(Parser, parse, php_cmark_parser_parse, ZEND_ACC_PUBLIC)
-	PHP_ME(Parser, finish, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Parser, finish, php_cmark_parser_finish, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
