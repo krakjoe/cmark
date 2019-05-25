@@ -105,6 +105,8 @@ zend_class_entry* php_cmark_node_class(cmark_node* node) {
 				return php_cmark_node_list_ordered_ce;
 			case CMARK_BULLET_LIST:
 				return php_cmark_node_list_bullet_ce;
+
+			EMPTY_SWITCH_DEFAULT_CASE();
 		} break;
 		case CMARK_NODE_ITEM:
 			return php_cmark_node_item_ce;
@@ -140,6 +142,8 @@ zend_class_entry* php_cmark_node_class(cmark_node* node) {
 			return php_cmark_node_image_ce;
 		case CMARK_NODE_LINK:
 			return php_cmark_node_link_ce;
+
+		EMPTY_SWITCH_DEFAULT_CASE();
 	}
 
 	return php_cmark_node_ce;
@@ -203,6 +207,9 @@ PHP_METHOD(Node, appendChild)
 				"%s is already in use",
 				ZSTR_VAL(Z_OBJCE_P(child)->name));
 			return;
+
+		case PHP_CMARK_NODE_EDIT_OK:
+			break;
 	}
 
 	php_cmark_chain();
@@ -233,6 +240,9 @@ PHP_METHOD(Node, prependChild)
 				"%s is already in use",
 				ZSTR_VAL(Z_OBJCE_P(child)->name));
 			return;
+
+		case PHP_CMARK_NODE_EDIT_OK:
+			break;
 	}
 
 	php_cmark_chain();
@@ -267,6 +277,9 @@ PHP_METHOD(Node, insertBefore)
 				"%s is already in use",
 				ZSTR_VAL(Z_OBJCE_P(sibling)->name));
 			return;
+
+		case PHP_CMARK_NODE_EDIT_OK:
+			break;
 	}
 
 	php_cmark_chain();
@@ -297,6 +310,9 @@ PHP_METHOD(Node, insertAfter)
 				"%s is already in use",
 				ZSTR_VAL(Z_OBJCE_P(sibling)->name));
 			return;
+
+		case PHP_CMARK_NODE_EDIT_OK:
+			break;
 	}
 	
 	php_cmark_chain();
@@ -331,6 +347,9 @@ PHP_METHOD(Node, replace)
 				"%s is already in use",
 				ZSTR_VAL(Z_OBJCE_P(target)->name));
 			return;
+
+		case PHP_CMARK_NODE_EDIT_OK:
+			break;
 	}
 
 	php_cmark_node_fetch(getThis())->owned = 1;

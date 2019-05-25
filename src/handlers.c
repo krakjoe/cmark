@@ -389,6 +389,10 @@ static inline cmark_node* php_cmark_node_clone_impl(cmark_node *source) {
 			cmark_node_set_on_exit(node,
 				cmark_node_get_on_exit(source));
 		break;
+
+		default:
+			/* nothing */
+			break;
 	}
 
 	if (cmark_node_first_child(source)) {
@@ -448,6 +452,10 @@ static inline void php_cmark_node_debug_impl(HashTable* debug, php_cmark_node_t 
 			zend_hash_str_update(debug, "enter", sizeof("enter")-1, &enter);
 			zend_hash_str_update(debug, "leave", sizeof("leave")-1, &leave);
 		} break;
+
+		default:
+			/* nothing */
+			break;
 	}
 
 	child = cmark_node_first_child(parent->node);

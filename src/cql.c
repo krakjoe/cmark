@@ -182,6 +182,10 @@ static inline int cql_ast_process(cql_ast_t *stack, cql_function_t *function, in
 			case CQL_PATH_PARENT:       cql_op_emit_simple(function, CQLI_PAN); break;
 			case CQL_PATH_PREVIOUS:     cql_op_emit_simple(function, CQLI_PRN); break;
 			case CQL_PATH_NEXT:         cql_op_emit_simple(function, CQLI_NEN); break;
+
+			default:
+				/* nothing */
+				break;
 		}
 
 		ast = ast->next;
@@ -239,6 +243,10 @@ static inline int cql_op_lastloop(cql_function_t *function, int last) {
 					return pos;
 				}
 			break;
+
+			default:
+				/* nothing */
+				break;
 		}
 		
 		pos--;
@@ -275,6 +283,10 @@ static inline int cql_op_firstloop(cql_function_t *function, int pos) {
 					return pos;
 				}
 			break;
+
+			default:
+				/* nothing */
+				break;
 		}
 		pos++;
 	}
@@ -289,6 +301,10 @@ static inline int cql_op_update_ir(cql_function_t *function, int op, cql_op_ir_t
 
 		case CQLI_OP_IR_IV:
 			return function->ops[op].iv = ir;
+
+		default:
+			/* nothing */
+			break;
 	}
 
 	return -1;
@@ -331,6 +347,10 @@ static inline int cql_op_ir(cql_function_t *function, cql_op_ir_type_t type, int
 
 		case CQLI_OP_IR_ALLOC:
 			return cql_op_alloc(function);
+
+		default:
+			/* nothing */
+			break;
 	}
 
 	return -1;
@@ -482,6 +502,10 @@ static inline int cql_vm(cql_function_t *function,
 			break;
 
 			case CQLI_RET: VMRET(0);
+
+			default:
+				/* nothing */
+				break;
 		}
 
 		VMNEXT(op);
