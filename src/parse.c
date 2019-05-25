@@ -138,7 +138,7 @@ PHP_FUNCTION(CommonMark_Parse)
 	cmark_node   *finish;
 	php_cmark_node_t *n;
 
-	ZEND_BEGIN_PARAMS(1, 1)
+	ZEND_BEGIN_PARAMS(1, 2)
 		Z_PARAM_ZVAL(content)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(options)
