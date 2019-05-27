@@ -24,10 +24,10 @@
   <email>remi@php.net</email>
   <active>yes</active>
  </lead>
- <date>2018-04-20</date>
+ <date>2019-05-27</date>
  <version>
-  <release>1.1.0</release>
-  <api>1.1.0</api>
+  <release>1.2.0</release>
+  <api>1.2.0</api>
  </version>
  <stability>
   <release>stable</release>
@@ -35,9 +35,11 @@
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Add CQL, CommonMark Query Language: allow the programmer to navigate the
-  document without loading entire trees or intermediate objects into memory
-- refcounting fixes
+- Fix #13 Reflection of CommonMark\CQL::__construct has no parameters
+- Fix #14 Reflection of CommonMark\Parse doesn't have return type
+- Fix #16 Reflection of CommonMark\Parser::finish doesn't have return type
+- Add PHP 7.4 support
+- Drop PHP 7.0 / 7.1 support
  </notes>
  <contents>
   <dir name="/">
@@ -371,7 +373,7 @@
  <dependencies>
   <required>
    <php>
-    <min>7.0.0</min>
+    <min>7.2.0</min>
    </php>
    <pearinstaller>
     <min>1.10</min>
@@ -381,6 +383,23 @@
  <providesextension>cmark</providesextension>
  <extsrcrelease />
  <changelog>
+  <release>
+   <date>2018-04-20</date>
+   <version>
+    <release>1.1.0</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+- Add CQL, CommonMark Query Language: allow the programmer to navigate the
+  document without loading entire trees or intermediate objects into memory
+- refcounting fixes
+   </notes>
+  </release>
   <release>
    <date>2018-04-10</date>
    <version>
