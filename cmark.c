@@ -127,6 +127,7 @@ PHP_MINFO_FUNCTION(cmark)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "cmark support", "enabled");
+	php_info_print_table_row(2, "cmark extension version", PHP_CMARK_VERSION);
 	php_info_print_table_row(2, "libcmark headers version", CMARK_VERSION_STRING);
 	php_info_print_table_row(2, "libcmark library version", cmark_version_string());
 	php_info_print_table_end();
