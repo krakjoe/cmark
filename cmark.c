@@ -25,6 +25,7 @@
 
 #include "php_cmark.h"
 
+#include <src/common.h>
 #include <src/node.h>
 #include <src/custom.h>
 #include <src/visitor.h>

@@ -79,42 +79,86 @@ php_cmark_node_media_read_error:
 	return php_cmark_node_read(object, member, type, rtc, rv);
 }
 
+#if PHP_VERSION_ID >= 70400
+zval* php_cmark_node_media_write(zval *object, zval *member, zval *value, void **rtc) {
+#else
 void php_cmark_node_media_write(zval *object, zval *member, zval *value, void **rtc) {
+#endif
 	php_cmark_node_media_t *n = php_cmark_node_media_fetch(object);
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_url)) {
 			php_cmark_assert_type(value, IS_STRING, 0, 
-				"url expected to be string");
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
+                "url expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				cmark_node_set_url, value, &n->url);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		} else if (RTC(rtc, cmark_node_set_title)) {
 			php_cmark_assert_type(value, IS_STRING, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
 				"title expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				cmark_node_set_title, value, &n->title);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "url")) {
 			php_cmark_assert_type(value, IS_STRING, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
 				"url expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				RTS(rtc, cmark_node_set_url), value, &n->url);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		} else if (zend_string_equals_literal(Z_STR_P(member), "title")) {
 			php_cmark_assert_type(value, IS_STRING, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
 				"title expected to be string");
 			php_cmark_node_write_str(&n->h, 
 				RTS(rtc, cmark_node_set_title), value, &n->title);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}
 	}
 
+#if PHP_VERSION_ID >= 70400
+    return php_cmark_node_write(object, member, value, rtc);
+#else
 	php_cmark_node_write(object, member, value, rtc);
+#endif
 }
 
 int php_cmark_node_media_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
@@ -233,8 +277,8 @@ PHP_METHOD(Link, __construct)
 		Z_PARAM_ZVAL(title)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(url, IS_STRING, 1, "url expected to be string");
-	php_cmark_assert_type(title, IS_STRING, 1, "title expected to be string");
+	php_cmark_assert_type(url, IS_STRING, 1, return, "url expected to be string");
+	php_cmark_assert_type(title, IS_STRING, 1, return, "title expected to be string");
 
 	php_cmark_node_media_construct_impl(getThis(), CMARK_NODE_LINK, url, title);
 }
@@ -255,8 +299,8 @@ PHP_METHOD(Image, __construct)
 		Z_PARAM_ZVAL(title)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(url, IS_STRING, 1, "url expected to be string");
-	php_cmark_assert_type(title, IS_STRING, 1, "title expected to be string");
+	php_cmark_assert_type(url, IS_STRING, 1, return, "url expected to be string");
+	php_cmark_assert_type(title, IS_STRING, 1, return, "title expected to be string");
 
 	php_cmark_node_media_construct_impl(getThis(), CMARK_NODE_IMAGE, url, title);
 }

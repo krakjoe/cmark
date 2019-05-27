@@ -38,7 +38,11 @@ typedef struct _php_cmark_node_text_t {
 #define php_cmark_node_text_fetch(z) php_cmark_node_text_from(Z_OBJ_P(z))
 
 extern int php_cmark_node_text_isset(zval *object, zval *member, int has_set_exists, void **rtc);
+#if PHP_VERSION_ID >= 70400
+extern zval* php_cmark_node_text_write(zval *object, zval *member, zval *value, void **rtc);
+#else
 extern void php_cmark_node_text_write(zval *object, zval *member, zval *value, void **rtc);
+#endif
 extern zval* php_cmark_node_text_read(zval *object, zval *member, int type, void **rtc, zval *rv);
 extern void php_cmark_node_text_unset(zval *object, zval *member, void **rtc);
 #endif

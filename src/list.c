@@ -89,42 +89,90 @@ php_cmark_node_list_read_error:
 	return php_cmark_node_read(object, member, type, rtc, rv);
 }
 
+#if PHP_VERSION_ID >= 70400
+zval* php_cmark_node_list_write(zval *object, zval *member, zval *value, void **rtc) {
+#else
 void php_cmark_node_list_write(zval *object, zval *member, zval *value, void **rtc) {
+#endif
 	php_cmark_node_list_t *n = php_cmark_node_list_fetch(object);
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_list_tight)) {
 			php_cmark_assert_type(
-				value, _IS_BOOL, 0, "tight expected to be bool");
+				value, _IS_BOOL, 0, 
+#if PHP_VERSION_ID >= 70400
+			    return &EG(uninitialized_zval),
+#else
+			    return,
+#endif
+                "tight expected to be bool");
 			php_cmark_node_write_bool(&n->h, 
 				(cmark_node_write_int) cmark_node_set_list_tight, value, &n->tight);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		} else if (RTC(rtc, cmark_node_set_list_delim)) {
 			php_cmark_assert_type(
-				value, IS_LONG, 0, "delimiter expected to be int");
+				value, IS_LONG, 0, 
+#if PHP_VERSION_ID >= 70400
+			    return &EG(uninitialized_zval),
+#else
+			    return,
+#endif
+                "delimiter expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				(cmark_node_write_int) cmark_node_set_list_delim, value, &n->delimiter);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "tight")) {
 			php_cmark_assert_type(
-				value, _IS_BOOL, 0, "tight expected to be bool");
+				value, _IS_BOOL, 0, 
+#if PHP_VERSION_ID >= 70400
+			    return &EG(uninitialized_zval),
+#else
+			    return,
+#endif
+                "tight expected to be bool");
 			php_cmark_node_write_bool(&n->h, 
 				(cmark_node_write_int) RTS(rtc, cmark_node_set_list_tight), value, &n->tight);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		} else if (zend_string_equals_literal(Z_STR_P(member), "delimiter")) {
 			php_cmark_assert_type(
-				value, IS_LONG, 0, "delimiter expected to be int");
+				value, IS_LONG, 0, 
+#if PHP_VERSION_ID >= 70400
+			    return &EG(uninitialized_zval),
+#else
+			    return,
+#endif
+                "delimiter expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				(cmark_node_write_int) RTS(rtc, cmark_node_set_list_delim), value, &n->delimiter);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}
 	}
 
+#if PHP_VERSION_ID >= 70400
+    return 	php_cmark_node_write(object, member, value, rtc);
+#else
 	php_cmark_node_write(object, member, value, rtc);
+#endif
 }
 
 int php_cmark_node_list_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
@@ -212,30 +260,58 @@ php_cmark_node_ordered_list_read_error:
 	return php_cmark_node_list_read(object, member, type, rtc, rv);
 }
 
+#if PHP_VERSION_ID >= 70400
+zval* php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, void **rtc) {
+#else
 void php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, void **rtc) {
+#endif
 	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_fetch(object);
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_list_start)) {
 			php_cmark_assert_type(
-				value, IS_LONG, 0, "start expected to be int");
+				value, IS_LONG, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
+                "start expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				(cmark_node_write_int) cmark_node_set_list_start, value, &n->start);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "start")) {
 			php_cmark_assert_type(
-				value, IS_LONG, 0, "start expected to be int");
+				value, IS_LONG, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
+                "start expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				(cmark_node_write_int) RTS(rtc, cmark_node_set_list_start), value, &n->tight);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}
 	}
 
+#if PHP_VERSION_ID >= 70400
+    return php_cmark_node_list_write(object, member, value, rtc);
+#else
 	php_cmark_node_list_write(object, member, value, rtc);
+#endif
 }
 
 int php_cmark_node_ordered_list_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
@@ -287,9 +363,9 @@ PHP_METHOD(OrderedList, __construct)
 		Z_PARAM_ZVAL(start)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(tight, _IS_BOOL, 1, "tight expected to be bool");
-	php_cmark_assert_type(delimiter, IS_LONG, 1, "delimiter expected to be int");
-	php_cmark_assert_type(start, IS_LONG, 1, "start expected to be int");
+	php_cmark_assert_type(tight, _IS_BOOL, 1, return, "tight expected to be bool");
+	php_cmark_assert_type(delimiter, IS_LONG, 1, return, "delimiter expected to be int");
+	php_cmark_assert_type(start, IS_LONG, 1, return, "start expected to be int");
 
 	php_cmark_node_list_new(getThis(), CMARK_ORDERED_LIST);
 
@@ -336,8 +412,8 @@ PHP_METHOD(BulletList, __construct)
 		Z_PARAM_ZVAL(delimiter)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(tight, _IS_BOOL, 1, "tight expected to be bool");
-	php_cmark_assert_type(delimiter, IS_LONG, 1, "delimiter expected to be int");
+	php_cmark_assert_type(tight, _IS_BOOL, 1, return, "tight expected to be bool");
+	php_cmark_assert_type(delimiter, IS_LONG, 1, return, "delimiter expected to be int");
 
 	php_cmark_node_list_new(getThis(), CMARK_BULLET_LIST);
 

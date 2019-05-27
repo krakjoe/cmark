@@ -73,30 +73,58 @@ php_cmark_node_heading_read_error:
 	return php_cmark_node_read(object, member, type, rtc, rv);
 }
 
+#if PHP_VERSION_ID >= 70400
+zval* php_cmark_node_heading_write(zval *object, zval *member, zval *value, void **rtc) {
+#else
 void php_cmark_node_heading_write(zval *object, zval *member, zval *value, void **rtc) {
+#endif
 	php_cmark_node_heading_t *n = php_cmark_node_heading_fetch(object);
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_heading_level)) {
 			php_cmark_assert_type(
-				value, IS_LONG, 0, "level expected to be int");
+				value, IS_LONG, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
+                "level expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				cmark_node_set_heading_level, value, &n->level);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}	
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "level")) {
 			php_cmark_assert_type(
-				value, IS_LONG, 0, "level expected to be int");
+				value, IS_LONG, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
+                "level expected to be int");
 			php_cmark_node_write_int(&n->h, 
 				RTS(rtc, cmark_node_set_heading_level), value, &n->level);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}
 	}
 
+#if PHP_VERSION_ID >= 70400
+	return php_cmark_node_write(object, member, value, rtc);
+#else
 	php_cmark_node_write(object, member, value, rtc);
+#endif
 }
 
 int php_cmark_node_heading_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
@@ -145,7 +173,7 @@ PHP_METHOD(Heading, __construct)
 	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(
-		level, IS_LONG, 1, "level expected to be int");
+		level, IS_LONG, 1, return, "level expected to be int");
 
 	php_cmark_node_new(getThis(), CMARK_NODE_HEADING);
 

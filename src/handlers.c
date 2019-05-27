@@ -214,11 +214,18 @@ php_cmark_node_read_error:
 	return &EG(uninitialized_zval);	
 }
 
+#if PHP_VERSION_ID >= 70400
+zval* php_cmark_node_write(zval *object, zval *member, zval *value, void **rtc) {
+#else
 void php_cmark_node_write(zval *object, zval *member, zval *value, void **rtc) {
+#endif
 	php_cmark_throw(
 		"invalid write of %s", 
 		Z_TYPE_P(member) == IS_STRING ? 
 			Z_STRVAL_P(member) : "invalid property");
+#if PHP_VERSION_ID >= 70400
+    return &EG(uninitialized_zval);
+#endif
 }
 
 int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
@@ -382,6 +389,10 @@ static inline cmark_node* php_cmark_node_clone_impl(cmark_node *source) {
 			cmark_node_set_on_exit(node,
 				cmark_node_get_on_exit(source));
 		break;
+
+		default:
+			/* nothing */
+			break;
 	}
 
 	if (cmark_node_first_child(source)) {
@@ -441,6 +452,10 @@ static inline void php_cmark_node_debug_impl(HashTable* debug, php_cmark_node_t 
 			zend_hash_str_update(debug, "enter", sizeof("enter")-1, &enter);
 			zend_hash_str_update(debug, "leave", sizeof("leave")-1, &leave);
 		} break;
+
+		default:
+			/* nothing */
+			break;
 	}
 
 	child = cmark_node_first_child(parent->node);

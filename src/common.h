@@ -39,6 +39,13 @@
 		ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, IS_OBJECT, #type, nullable)
 #endif
 
+#if PHP_VERSION_ID >= 70200
+#   define ZEND_BEGIN_ARG_INFO_WITH_RETURN_TYPE ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX
+#else
+#   define ZEND_BEGIN_ARG_INFO_WTIH_RETURN_TYPE(name, ref, req, type, nullable) \
+        ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, ref, req, type, NULL, nullable)
+#endif
+
 #if PHP_VERSION_ID < 70200
 #define ZEND_BEGIN_PARAMS(min, max) \
 	if (ZEND_NUM_ARGS() < min || ZEND_NUM_ARGS() > max) { \
@@ -71,44 +78,44 @@
 	} \
 } while(0)
 
-#define php_cmark_assert_type(v, e, n, s, ...) do { \
+#define php_cmark_assert_type(v, e, n, r, s, ...) do { \
 	if ((!(v) && (n)) || ((v) && ZEND_SAME_FAKE_TYPE((e), Z_TYPE_P(v)))) \
 		break; \
 	\
 	zend_throw_exception_ex(zend_ce_type_error, 0, (s), ##__VA_ARGS__); \
-	return; \
+	r; \
 } while(0)
 
-#define php_cmark_assert_class(v, e, n, s, ...) do { \
+#define php_cmark_assert_class(v, e, n, r, s, ...) do { \
 	if ((!(v) && (n)) || ((v) && Z_TYPE_P((v)) == IS_OBJECT && instanceof_function(Z_OBJCE_P(v), (e)))) \
 		break; \
 	\
 	zend_throw_exception_ex(zend_ce_type_error, 0, (s), ##__VA_ARGS__); \
-	return; \
+	r; \
 } while(0)
 
-#define php_cmark_assert_range(v, min, max, n, s, ...) do { \
+#define php_cmark_assert_range(v, min, max, n, r, s, ...) do { \
 	if ((!(v) && (n)) || ((v) && Z_TYPE_P((v)) == IS_LONG && Z_LVAL_P((v)) >= (min) && Z_LVAL_P((v)) <= (max))) \
 		break; \
 	\
 	zend_throw_exception_ex(zend_ce_type_error, 0, (s), ##__VA_ARGS__); \
-	return; \
+	r; \
 } while(0)
 
-#define php_cmark_assert_range_ex(v, min, max, n, s, ...) do { \
+#define php_cmark_assert_range_ex(v, min, max, n, r, s, ...) do { \
 	if ((!(v) && (n)) || ((v) && (v) >= (min) && (v) <= (max))) \
 		break; \
 	\
 	zend_throw_exception_ex(zend_ce_type_error, 0, (s), ##__VA_ARGS__); \
-	return; \
+	r; \
 } while(0)
 
-#define php_cmark_assert_count(v, e, n, s, ...) do { \
+#define php_cmark_assert_count(v, e, n, r, s, ...) do { \
 	if ((!(v) && (n)) || ((v) && Z_TYPE_P((v)) == IS_ARRAY && zend_hash_num_elements(Z_ARRVAL_P((v))) == (e))) \
 		break; \
 	\
 	zend_throw_exception_ex(zend_ce_type_error, 0, (s), ##__VA_ARGS__); \
-	return; \
+	r; \
 } while(0)
 
 #define php_cmark_chain_ex(t) ZVAL_ZVAL(return_value, t, 1, 0)

@@ -75,13 +75,13 @@ PHP_METHOD(Parser, __construct)
 		Z_PARAM_ZVAL(options)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(options, IS_LONG, 1, "options expected to be int");
+	php_cmark_assert_type(options, IS_LONG, 1, return, "options expected to be int");
 
 	p->parser = cmark_parser_new_with_mem(
 		options ? Z_LVAL_P(options) : 0, &php_cmark_mem);
 }
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_parser_parse, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_TYPE(php_cmark_parser_parse, 0, 1, IS_VOID, 0)
 	ZEND_ARG_INFO(0, buffer)
 ZEND_END_ARG_INFO()
 
@@ -94,10 +94,13 @@ PHP_METHOD(Parser, parse)
 		Z_PARAM_ZVAL(buffer)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(buffer, IS_STRING, 1, "buffer expected to be string");
+	php_cmark_assert_type(buffer, IS_STRING, 1, return, "buffer expected to be string");
 
 	cmark_parser_feed(p->parser, Z_STRVAL_P(buffer), Z_STRLEN_P(buffer));
 }
+
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_parser_finish, 0, 0, CommonMark\\Node, 0)
+ZEND_END_ARG_INFO()
 
 PHP_METHOD(Parser, finish)
 {
@@ -126,7 +129,7 @@ PHP_METHOD(Parser, finish)
 static zend_function_entry php_cmark_parser_methods[] = {
 	PHP_ME(Parser, __construct, php_cmark_parser_construct, ZEND_ACC_PUBLIC)
 	PHP_ME(Parser, parse, php_cmark_parser_parse, ZEND_ACC_PUBLIC)
-	PHP_ME(Parser, finish, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(Parser, finish, php_cmark_parser_finish, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 
@@ -138,14 +141,14 @@ PHP_FUNCTION(CommonMark_Parse)
 	cmark_node   *finish;
 	php_cmark_node_t *n;
 
-	ZEND_BEGIN_PARAMS(1, 1)
+	ZEND_BEGIN_PARAMS(1, 2)
 		Z_PARAM_ZVAL(content)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_ZVAL(options)
 	ZEND_END_PARAMS();
 
-	php_cmark_assert_type(content, IS_STRING, 0, "content expected to be string");
-	php_cmark_assert_type(options, IS_LONG, 1, "options expected to be int");
+	php_cmark_assert_type(content, IS_STRING, 0, return, "content expected to be string");
+	php_cmark_assert_type(options, IS_LONG, 1, return, "options expected to be int");
 
 	parser = cmark_parser_new_with_mem(
 		options ? Z_LVAL_P(options) : 0, &php_cmark_mem);

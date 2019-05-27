@@ -44,7 +44,7 @@ PHP_METHOD(HTMLInline, __construct)
 	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(
-		literal, IS_STRING, 1, "literal expected to be string");
+		literal, IS_STRING, 1, return, "literal expected to be string");
 
 	php_cmark_node_new(getThis(), CMARK_NODE_HTML_INLINE);
 

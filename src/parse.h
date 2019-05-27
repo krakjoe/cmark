@@ -20,7 +20,7 @@
 
 extern zend_class_entry *php_cmark_parser_ce;
 
-ZEND_BEGIN_ARG_INFO_EX(php_cmark_parse_arginfo, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_WITH_RETURN_CLASS(php_cmark_parse_arginfo, 0, 1, CommonMark\\Node, 0)
 	ZEND_ARG_INFO(0, content)
 	ZEND_ARG_INFO(0, options)
 ZEND_END_ARG_INFO()

@@ -36,7 +36,11 @@ void php_cmark_node_write_int(php_cmark_node_t *n, cmark_node_write_int cmark_no
 void php_cmark_node_write_bool(php_cmark_node_t *n, cmark_node_write_int cmark_node_write, zval *value, zval *cache);
 
 extern zval* php_cmark_node_read(zval *object, zval *member, int type, void **rtc, zval *rv);
+#if PHP_VERSION_ID >= 70400
+extern zval* php_cmark_node_write(zval *object, zval *member, zval *value, void **rtc);
+#else
 extern void php_cmark_node_write(zval *object, zval *member, zval *value, void **rtc);
+#endif
 extern int php_cmark_node_isset(zval *object, zval *member, int has_set_exists, void **rtc);
 extern void php_cmark_node_unset(zval *object, zval *member, void **rtc);
 

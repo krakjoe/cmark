@@ -87,6 +87,7 @@ static zend_always_inline void php_cmark_node_visitor_call(
 		case IS_LONG:
 			php_cmark_assert_range(result, 
 				CMARK_EVENT_DONE, CMARK_EVENT_EXIT, 0, 
+                return,
 				"IVisitor::Done, IVisitor::Enter, or IVisitor::Leave expected");
 
 			cmark_iter_reset(iterator, node->node, Z_LVAL_P(result));
@@ -94,7 +95,7 @@ static zend_always_inline void php_cmark_node_visitor_call(
 
 		case IS_OBJECT: {
 			php_cmark_assert_class(result,
-				php_cmark_node_visitable_ce, 0, "IVisitable expected");
+				php_cmark_node_visitable_ce, 0, return, "IVisitable expected");
 
 			cmark_iter_reset(iterator, php_cmark_node_fetch(result)->node, event);
 		} break;
@@ -104,7 +105,7 @@ static zend_always_inline void php_cmark_node_visitor_call(
 			zval   *reset   = NULL;
 
 			php_cmark_assert_count(result,
-				1, 0, "return [Event => IVisitable] expected");
+				1, 0, return, "return [Event => IVisitable] expected");
 
 			ZEND_HASH_FOREACH_BUCKET(Z_ARRVAL_P(result), bucket) {
 				event  = bucket->h;
@@ -113,12 +114,13 @@ static zend_always_inline void php_cmark_node_visitor_call(
 			} ZEND_HASH_FOREACH_END();
 
 			php_cmark_assert_range_ex(event, 
-				CMARK_EVENT_DONE, CMARK_EVENT_EXIT, 0, 
+				CMARK_EVENT_DONE, CMARK_EVENT_EXIT, 0,
+                return,
 				"return [Event => IVisitable] expected, "
 					"Event must be IVisitor::Done, IVisitor::Enter, or IVisitor::Leave");
 			
 			php_cmark_assert_class(reset,
-				php_cmark_node_visitable_ce, 0, "return [Event => IVisitable] expected");
+				php_cmark_node_visitable_ce, 0, return, "return [Event => IVisitable] expected");
 
 			cmark_iter_reset(iterator, php_cmark_node_fetch(reset)->node, event);
 		} break;

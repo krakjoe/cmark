@@ -77,32 +77,58 @@ php_cmark_node_code_block_read_error:
 	return php_cmark_node_text_read(object, member, type, rtc, rv);
 }
 
+#if PHP_VERSION_ID >= 70400
+zval* php_cmark_node_code_block_write(zval *object, zval *member, zval *value, void **rtc) {
+#else
 void php_cmark_node_code_block_write(zval *object, zval *member, zval *value, void **rtc) {
+#endif
 	php_cmark_node_code_block_t *n = php_cmark_node_code_block_fetch(object);
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_fence_info)) {
 			php_cmark_assert_type(value, IS_STRING, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
 				"fence expected to be string");
 
 			php_cmark_node_write_str(&n->h.h, 
 				cmark_node_set_fence_info, value, &n->fence);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}	
 	}
 
 	if (Z_TYPE_P(member) == IS_STRING) {
 		if (zend_string_equals_literal(Z_STR_P(member), "fence")) {
 			php_cmark_assert_type(value, IS_STRING, 0, 
+#if PHP_VERSION_ID >= 70400
+                return &EG(uninitialized_zval),
+#else
+                return,
+#endif
 				"fence expected to be string");
 
 			php_cmark_node_write_str(&n->h.h, 
 				RTS(rtc, cmark_node_set_fence_info), value, &n->fence);
+#if PHP_VERSION_ID >= 70400
+			return value;
+#else
 			return;
+#endif
 		}
 	}
 
+#if PHP_VERSION_ID >= 70400
+    return php_cmark_node_text_write(object, member, value, rtc);
+#else
 	php_cmark_node_text_write(object, member, value, rtc);
+#endif
 }
 
 int php_cmark_node_code_block_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
@@ -182,8 +208,8 @@ PHP_METHOD(CodeBlock, __construct)
 		ZEND_END_PARAMS();
 	}
 
-	php_cmark_assert_type(fence, IS_STRING, 1, "fence expected to be string");
-	php_cmark_assert_type(literal, IS_STRING, 1, "literal expected to be string");
+	php_cmark_assert_type(fence, IS_STRING, 1, return, "fence expected to be string");
+	php_cmark_assert_type(literal, IS_STRING, 1, return, "literal expected to be string");
 
 	php_cmark_node_new(
 		getThis(), CMARK_NODE_CODE_BLOCK);
@@ -218,7 +244,7 @@ PHP_METHOD(HTMLBlock, __construct)
 	ZEND_END_PARAMS();
 
 	php_cmark_assert_type(
-		literal, IS_STRING, 1, "literal expected to be string");
+		literal, IS_STRING, 1, return, "literal expected to be string");
 
 	php_cmark_node_new(getThis(), CMARK_NODE_HTML_BLOCK);
 
