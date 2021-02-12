@@ -439,7 +439,7 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 
 PHP_RINIT_FUNCTION(CommonMark_Node)
 {
-	php_cmark_node_ce->ce_flags |= ZEND_ACC_FINAL|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+	php_cmark_node_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
 	return SUCCESS;
 }
