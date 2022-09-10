@@ -384,6 +384,18 @@ PHP_METHOD(Node, accept)
 	php_cmark_node_accept_impl(php_cmark_node_fetch(getThis()), visitor);
 }
 
+#if PHP_VERSION_ID >= 80000
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(php_cmark_node_getIterator, 0, 0, Iterator, 0)
+ZEND_END_ARG_INFO()
+
+PHP_METHOD(Node, getIterator)
+{
+	ZEND_PARSE_PARAMETERS_NONE();
+
+	zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+}
+#endif
+
 static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, appendChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, prependChild, php_cmark_node_add, ZEND_ACC_PUBLIC)
@@ -392,6 +404,9 @@ static zend_function_entry php_cmark_node_type_methods[] = {
 	PHP_ME(Node, replace, php_cmark_node_replace, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, unlink, php_cmark_no_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(Node, accept, php_cmark_node_accept, ZEND_ACC_PUBLIC)
+#if PHP_VERSION_ID >= 80000
+	PHP_ME(Node, getIterator, php_cmark_node_getIterator, ZEND_ACC_PUBLIC)
+#endif
 	PHP_FE_END
 };
 
@@ -419,7 +434,13 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 	php_cmark_node_property("endColumn");
 #undef php_cmark_node_property
 
-	zend_class_implements(php_cmark_node_ce, 2, php_cmark_node_visitable_ce, zend_ce_traversable);
+	zend_class_implements(php_cmark_node_ce, 2, php_cmark_node_visitable_ce,
+#if PHP_VERSION_ID >= 80000
+		zend_ce_aggregate
+#else
+		zend_ce_traversable
+#endif
+		);
 
 	memcpy(&php_cmark_node_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
@@ -439,7 +460,7 @@ PHP_MINIT_FUNCTION(CommonMark_Node) {
 
 PHP_RINIT_FUNCTION(CommonMark_Node)
 {
-	php_cmark_node_ce->ce_flags |= ZEND_ACC_FINAL|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+	php_cmark_node_ce->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
 	return SUCCESS;
 }
