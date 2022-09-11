@@ -56,9 +56,15 @@ static inline void php_cmark_call_free(zend_object *zo) {
 	zend_object_std_dtor(zo);
 }
 
+#if PHP_VERSION_ID >= 80000
+static inline zend_object* php_cmark_call_clone(zend_object *zv) {
+	zend_class_entry *type = zv->ce;
+	php_cmark_call_t *src = php_cmark_call_from(zv);
+#else
 static inline zend_object* php_cmark_call_clone(zval *zv) {
 	zend_class_entry *type = Z_OBJCE_P(zv);
 	php_cmark_call_t *src = php_cmark_call_fetch(zv);
+#endif
 	php_cmark_call_t *dst = (php_cmark_call_t*) 
 		ecalloc(1, sizeof(php_cmark_call_t) + 
 			zend_object_properties_size(type));
