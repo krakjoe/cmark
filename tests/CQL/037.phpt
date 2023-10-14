@@ -14,8 +14,8 @@ EOD
 );
 ?>
 --EXPECTF--
-Fatal error: Uncaught RuntimeException: failed to compile call near character 21 "/children" in %s:9
+Fatal error: Uncaught RuntimeException: failed to compile call near character 21 "/children" in %s:%d
 Stack trace:
-#0 %s(9): CommonMark\CQL->__construct('/children(Parag...')
+#0 %s(%d): CommonMark\CQL->__construct('/children(Parag...')
 #1 {main}
-  thrown in %s on line 9
+  thrown in %s on line %d

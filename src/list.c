@@ -61,12 +61,17 @@ zend_object* php_cmark_node_list_create(zend_class_entry *ce) {
 	return php_cmark_node_zend(&n->h);
 }
 
+#if PHP_VERSION_ID >= 80000
+zval* php_cmark_node_list_read(zend_object *object, zend_string *member, int type, void **rtc, zval *rv) {
+	php_cmark_node_list_t *n = php_cmark_node_list_from(object);
+#else
 zval* php_cmark_node_list_read(zval *object, zval *member, int type, void **rtc, zval *rv) {
 	php_cmark_node_list_t *n = php_cmark_node_list_fetch(object);
 
 	if (Z_TYPE_P(member) != IS_STRING) {
 		goto php_cmark_node_list_read_error;
 	}
+#endif
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_list_tight))
@@ -77,10 +82,18 @@ zval* php_cmark_node_list_read(zval *object, zval *member, int type, void **rtc,
 				(cmark_node_read_int) cmark_node_get_list_delim, &n->delimiter);
 	}
 
+#if PHP_VERSION_ID >= 80000
+	if (zend_string_equals_literal(member, "tight")) {
+#else
 	if (zend_string_equals_literal(Z_STR_P(member), "tight")) {
+#endif
 		return php_cmark_node_read_bool(&n->h, (cmark_node_read_int) 
 			RTS(rtc, cmark_node_get_list_tight), &n->tight);
+#if PHP_VERSION_ID >= 80000
+	} else if (zend_string_equals_literal(member, "delimiter")) {
+#else
 	} else if (zend_string_equals_literal(Z_STR_P(member), "delimiter")) {
+#endif
 		return php_cmark_node_read_int(&n->h, (cmark_node_read_int) 
 			RTS(rtc, cmark_node_get_list_delim), &n->delimiter);
 	}
@@ -89,12 +102,16 @@ php_cmark_node_list_read_error:
 	return php_cmark_node_read(object, member, type, rtc, rv);
 }
 
-#if PHP_VERSION_ID >= 70400
+#if PHP_VERSION_ID >= 80000
+zval* php_cmark_node_list_write(zend_object *object, zend_string *member, zval *value, void **rtc) {
+	php_cmark_node_list_t *n = php_cmark_node_list_from(object);
+#elif PHP_VERSION_ID >= 70400
 zval* php_cmark_node_list_write(zval *object, zval *member, zval *value, void **rtc) {
+	php_cmark_node_list_t *n = php_cmark_node_list_fetch(object);
 #else
 void php_cmark_node_list_write(zval *object, zval *member, zval *value, void **rtc) {
-#endif
 	php_cmark_node_list_t *n = php_cmark_node_list_fetch(object);
+#endif
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_list_tight)) {
@@ -132,8 +149,14 @@ void php_cmark_node_list_write(zval *object, zval *member, zval *value, void **r
 		}
 	}
 
+#if PHP_VERSION_ID < 80000
 	if (Z_TYPE_P(member) == IS_STRING) {
+#endif
+#if PHP_VERSION_ID >= 80000
+		if (zend_string_equals_literal(member, "tight")) {
+#else
 		if (zend_string_equals_literal(Z_STR_P(member), "tight")) {
+#endif
 			php_cmark_assert_type(
 				value, _IS_BOOL, 0, 
 #if PHP_VERSION_ID >= 70400
@@ -149,7 +172,11 @@ void php_cmark_node_list_write(zval *object, zval *member, zval *value, void **r
 #else
 			return;
 #endif
+#if PHP_VERSION_ID >= 80000
+		} else if (zend_string_equals_literal(member, "delimiter")) {
+#else
 		} else if (zend_string_equals_literal(Z_STR_P(member), "delimiter")) {
+#endif
 			php_cmark_assert_type(
 				value, IS_LONG, 0, 
 #if PHP_VERSION_ID >= 70400
@@ -166,7 +193,9 @@ void php_cmark_node_list_write(zval *object, zval *member, zval *value, void **r
 			return;
 #endif
 		}
+#if PHP_VERSION_ID < 80000
 	}
+#endif
 
 #if PHP_VERSION_ID >= 70400
     return 	php_cmark_node_write(object, member, value, rtc);
@@ -175,13 +204,20 @@ void php_cmark_node_list_write(zval *object, zval *member, zval *value, void **r
 #endif
 }
 
+#if PHP_VERSION_ID >= 80000
+int php_cmark_node_list_isset(zend_object *object, zend_string *member, int has_set_exists, void **rtc) {
+	php_cmark_node_list_t *n = php_cmark_node_list_from(object);
+#else
 int php_cmark_node_list_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
 	php_cmark_node_list_t *n = php_cmark_node_list_fetch(object);
+#endif
 	zval *zv = &EG(uninitialized_zval);
 
+#if PHP_VERSION_ID < 80000
 	if (Z_TYPE_P(member) != IS_STRING) {
 		return 0;
 	}
+#endif
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_list_tight)) {
@@ -195,10 +231,18 @@ int php_cmark_node_list_isset(zval *object, zval *member, int has_set_exists, vo
 		}
 	}
 
+#if PHP_VERSION_ID >= 80000
+	if (zend_string_equals_literal(member, "tight")) {
+#else
 	if (zend_string_equals_literal(Z_STR_P(member), "tight")) {
+#endif
 		zv = php_cmark_node_read_bool(&n->h, 
 			(cmark_node_read_int) RTS(rtc, cmark_node_get_list_tight), &n->tight);
+#if PHP_VERSION_ID >= 80000
+	} else if (zend_string_equals_literal(member, "delimiter")) {
+#else
 	} else if (zend_string_equals_literal(Z_STR_P(member), "delimiter")) {
+#endif
 		zv = php_cmark_node_read_int(&n->h, 
 			(cmark_node_read_int) RTS(rtc, cmark_node_get_list_delim), &n->delimiter);
 	}
@@ -238,12 +282,17 @@ zend_object* php_cmark_node_ordered_list_create(zend_class_entry *ce) {
 	return php_cmark_node_zend(&n->h);
 }
 
+#if PHP_VERSION_ID >= 80000
+zval* php_cmark_node_ordered_list_read(zend_object *object, zend_string *member, int type, void **rtc, zval *rv) {
+	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_from(object);
+#else
 zval* php_cmark_node_ordered_list_read(zval *object, zval *member, int type, void **rtc, zval *rv) {
 	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_fetch(object);
 
 	if (Z_TYPE_P(member) != IS_STRING) {
 		goto php_cmark_node_ordered_list_read_error;
 	}
+#endif
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_list_start))
@@ -251,7 +300,11 @@ zval* php_cmark_node_ordered_list_read(zval *object, zval *member, int type, voi
 				(cmark_node_read_int) cmark_node_get_list_start, &n->start);
 	}
 
+#if PHP_VERSION_ID >= 80000
+	if (zend_string_equals_literal(member, "start")) {
+#else
 	if (zend_string_equals_literal(Z_STR_P(member), "start")) {
+#endif
 		return php_cmark_node_read_int(&n->h, 
 			(cmark_node_read_int) RTS(rtc, cmark_node_get_list_start), &n->start);
 	}
@@ -260,12 +313,16 @@ php_cmark_node_ordered_list_read_error:
 	return php_cmark_node_list_read(object, member, type, rtc, rv);
 }
 
-#if PHP_VERSION_ID >= 70400
+#if PHP_VERSION_ID >= 80000
+zval* php_cmark_node_ordered_list_write(zend_object *object, zend_string *member, zval *value, void **rtc) {
+	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_from(object);
+#elif PHP_VERSION_ID >= 70400
 zval* php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, void **rtc) {
+	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_fetch(object);
 #else
 void php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, void **rtc) {
-#endif
 	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_fetch(object);
+#endif
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_set_list_start)) {
@@ -287,8 +344,14 @@ void php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, 
 		}
 	}
 
+#if PHP_VERSION_ID < 80000
 	if (Z_TYPE_P(member) == IS_STRING) {
+#endif
+#if PHP_VERSION_ID >= 80000
+		if (zend_string_equals_literal(member, "start")) {
+#else
 		if (zend_string_equals_literal(Z_STR_P(member), "start")) {
+#endif
 			php_cmark_assert_type(
 				value, IS_LONG, 0, 
 #if PHP_VERSION_ID >= 70400
@@ -305,7 +368,9 @@ void php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, 
 			return;
 #endif
 		}
+#if PHP_VERSION_ID < 80000
 	}
+#endif
 
 #if PHP_VERSION_ID >= 70400
     return php_cmark_node_list_write(object, member, value, rtc);
@@ -314,13 +379,20 @@ void php_cmark_node_ordered_list_write(zval *object, zval *member, zval *value, 
 #endif
 }
 
+#if PHP_VERSION_ID >= 80000
+int php_cmark_node_ordered_list_isset(zend_object *object, zend_string *member, int has_set_exists, void **rtc) {
+	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_from(object);
+#else
 int php_cmark_node_ordered_list_isset(zval *object, zval *member, int has_set_exists, void **rtc) {
 	php_cmark_node_ordered_list_t *n = php_cmark_node_ordered_list_fetch(object);
+#endif
 	zval *zv = &EG(uninitialized_zval);
 
+#if PHP_VERSION_ID < 80000
 	if (Z_TYPE_P(member) != IS_STRING) {
 		return 0;
 	}
+#endif
 
 	if (EXPECTED(rtc)) {
 		if (RTC(rtc, cmark_node_get_list_start)) {
@@ -330,7 +402,11 @@ int php_cmark_node_ordered_list_isset(zval *object, zval *member, int has_set_ex
 		}
 	}
 
+#if PHP_VERSION_ID >= 80000
+	if (zend_string_equals_literal(member, "start")) {
+#else
 	if (zend_string_equals_literal(Z_STR_P(member), "start")) {
+#endif
 		zv = php_cmark_node_read_int(&n->h, (cmark_node_read_int) 
 			RTS(rtc, cmark_node_get_list_start), &n->start);
 	}
