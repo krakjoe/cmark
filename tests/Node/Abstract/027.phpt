@@ -22,6 +22,8 @@ $para->appendChild(
 	new \CommonMark\Node\Text());
 
 $doc->accept(new class($visited) implements \CommonMark\Interfaces\IVisitor {
+	private array $visited;
+
 	public function __construct(array &$visited) {
 		$this->visited = &$visited;
 	}
@@ -41,6 +43,8 @@ $doc = new \CommonMark\Node\Document;
 $doc->appendChild(new \CommonMark\Node\Paragraph);
 
 $doc->accept(new class($visited) implements \CommonMark\Interfaces\IVisitor {
+	private array $visited;
+
 	public function __construct(array &$visited) {
 		$this->visited = &$visited;
 	}
@@ -60,6 +64,8 @@ var_dump($visited);
 $visited = [];
 
 $doc->accept(new class($visited) implements \CommonMark\Interfaces\IVisitor {
+	private array $visited;
+
 	public function __construct(array &$visited) {
 		$this->visited = &$visited;
 	}
@@ -86,6 +92,8 @@ EOD
 );
 
 $doc->accept(new class($visited) implements \CommonMark\Interfaces\IVisitor {
+	private array $visited;
+
 	public function __construct(array &$visited) {
 		$this->visited = &$visited;
 	}
